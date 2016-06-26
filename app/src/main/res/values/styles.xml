@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="color_accent">#FFEA00</color>
+    <color name="color_primary">#EF6C00</color>
+    <color name="color_primary_dark">#E65100</color>
+    <color name="color_gray">#BDBDBD</color>
+    <color name="color_back">#EEEEEE</color>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/color_accent</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+
+        <!--item name="colorControlNormal">@color/color_gray</item-->
+        <!--item name="colorControlActivated">@color/color_secondary</item-->
+        <!--item name="colorControlHighlight">@color/color_gray</item-->
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+
+        <item name="android:windowBackground">@color/color_gray</item>
+    </style>
+
+    <style name="ToolbarTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+</resources>

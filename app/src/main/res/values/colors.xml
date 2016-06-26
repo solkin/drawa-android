@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color1">#dfac20</color>
+    <color name="color2">#d87021</color>
+    <color name="color3">#cd0219</color>
+    <color name="color4">#5200be</color>
+    <color name="color5">#1e25c7</color>
+    <color name="color6">#42a220</color>
+    <color name="color7">#4a3c35</color>
+    <color name="color8">#ecd937</color>
+    <color name="color9">#ce4b1d</color>
+    <color name="color10">#cf1a48</color>
+    <color name="color11">#8c00ba</color>
+    <color name="color12">#2b96c3</color>
+    <color name="color13">#a8c225</color>
+    <color name="color14">#85766e</color>
+    <color name="color15">#ffffff</color>
+    <color name="color16">#040404</color>
+    <color name="color17">#282828</color>
+    <color name="color18">#595959</color>
+    <color name="color19">#8b8b8b</color>
+    <color name="color20">#c5c5c5</color>
+    <color name="color21">#c0b2aa</color>
+
+    <array name="palette">
+        <item>@color/color1</item>
+        <item>@color/color2</item>
+        <item>@color/color3</item>
+        <item>@color/color3</item>
+        <item>@color/color5</item>
+        <item>@color/color6</item>
+        <item>@color/color7</item>
+        <item>@color/color8</item>
+        <item>@color/color9</item>
+        <item>@color/color10</item>
+        <item>@color/color11</item>
+        <item>@color/color12</item>
+        <item>@color/color13</item>
+        <item>@color/color14</item>
+        <item>@color/color15</item>
+        <item>@color/color16</item>
+        <item>@color/color17</item>
+        <item>@color/color18</item>
+        <item>@color/color19</item>
+        <item>@color/color20</item>
+        <item>@color/color21</item>
+    </array>
+</resources>
