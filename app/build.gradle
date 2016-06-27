@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.0"
 
     defaultConfig {
-        applicationId "com.tomclaw.kuva"
+        applicationId "com.tomclaw.drawa"
         minSdkVersion 14
         targetSdkVersion 24
     }

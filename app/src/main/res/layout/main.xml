@@ -21,7 +21,7 @@
                 app:elevation="@dimen/cardview_default_elevation"
                 app:cardCornerRadius="@dimen/cardview_default_radius"
                 android:layout_gravity="center">
-            <com.tomclaw.kuva.SketchView
+            <com.tomclaw.drawa.SketchView
                     android:id="@+id/sketch_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
