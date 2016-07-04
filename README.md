@@ -1,2 +1,2 @@
-# drawa-android
+# Drawa
 Drawing application for Android
