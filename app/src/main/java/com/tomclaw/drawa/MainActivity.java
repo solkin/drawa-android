@@ -1,20 +1,22 @@
 package com.tomclaw.drawa;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private SketchView sketchView;
+    private RecyclerView paletteView;
+    private PaletteAdapter adapter;
 
     /**
      * Called when the activity is first created.
@@ -26,15 +28,26 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         sketchView = (SketchView) findViewById(R.id.sketch_view);
-        GridView gridView = (GridView) findViewById(R.id.palette_view);
-        gridView.setAdapter(new PaletteAdapter(this));
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        paletteView = (RecyclerView) findViewById(R.id.palette_recycler);
+        paletteView.setLayoutManager(layoutManager);
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        paletteView.setItemAnimator(itemAnimator);
+
+        int[] colors = getResources().getIntArray(R.array.palette);
+        List<Integer> palette = new ArrayList<>();
+        for (int c : colors) {
+            palette.add(c);
+        }
+        adapter = new PaletteAdapter(this, palette);
+        adapter.setListener(new PaletteAdapter.PaletteClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Integer color = (Integer) parent.getAdapter().getItem(position);
-                sketchView.color(color.intValue());
+            public void onColorClicked(int color) {
+                sketchView.color(color);
             }
         });
+        paletteView.setAdapter(adapter);
     }
 
     @Override
@@ -63,40 +76,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static class PaletteAdapter extends BaseAdapter {
-
-        int[] colors;
-        private Context context;
-
-        public PaletteAdapter(Context context) {
-            this.context = context;
-            colors = context.getResources().getIntArray(R.array.palette);
-        }
-
-        @Override
-        public int getCount() {
-            return colors.length;
-        }
-
-        @Override
-        public Integer getItem(int position) {
-            return colors[position];
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            PaletteImageView view = (PaletteImageView) convertView;
-            if(view == null) {
-                view = new PaletteImageView(context);
-                view.setImageResource(R.drawable.palette_item);
-            }
-            view.setColorFilter(getItem(position));
-            return view;
-        }
-    }
 }
