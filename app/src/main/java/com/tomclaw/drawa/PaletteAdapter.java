@@ -1,6 +1,8 @@
 package com.tomclaw.drawa;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,18 +52,17 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteI
 
     public static class PaletteItem extends RecyclerView.ViewHolder {
 
-        private PaletteImageView paletteImage;
+        private FloatingActionButton paletteImage;
         private View itemView;
 
         public PaletteItem(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            paletteImage = (PaletteImageView) itemView.findViewById(R.id.palette_image);
-            paletteImage.setImageResource(R.drawable.palette_item);
+            paletteImage = (FloatingActionButton) itemView.findViewById(R.id.palette_image);
         }
 
         public void bind(final int color, final PaletteClickListener listener) {
-            paletteImage.setColorFilter(color);
+            paletteImage.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{color}));
             paletteImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

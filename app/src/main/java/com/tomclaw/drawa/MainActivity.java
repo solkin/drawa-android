@@ -6,34 +6,53 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.tomclaw.drawa.stack.BitmapStack;
+import com.tomclaw.drawa.stack.FileStack;
+import com.tomclaw.drawa.stack.Stack;
+import com.tomclaw.drawa.stack.StackItem;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.ViewById;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+@EActivity(R.layout.main)
+@OptionsMenu(R.menu.main_menu)
 public class MainActivity extends AppCompatActivity {
 
-    private SketchView sketchView;
-    private RecyclerView paletteView;
+    @ViewById
+    Toolbar toolbar;
+
+    @ViewById
+    SketchView sketchView;
+
+    @ViewById
+    RecyclerView paletteRecycler;
+
     private PaletteAdapter adapter;
 
-    /**
-     * Called when the activity is first created.
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    @AfterViews
+    void init() {
         setSupportActionBar(toolbar);
-        sketchView = (SketchView) findViewById(R.id.sketch_view);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        paletteView = (RecyclerView) findViewById(R.id.palette_recycler);
-        paletteView.setLayoutManager(layoutManager);
+        paletteRecycler.setLayoutManager(layoutManager);
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        paletteView.setItemAnimator(itemAnimator);
+        paletteRecycler.setItemAnimator(itemAnimator);
 
         int[] colors = getResources().getIntArray(R.array.palette);
         List<Integer> palette = new ArrayList<>();
@@ -47,33 +66,88 @@ public class MainActivity extends AppCompatActivity {
                 sketchView.color(color);
             }
         });
-        paletteView.setAdapter(adapter);
+        paletteRecycler.setAdapter(adapter);
+
+//        final File file = new File(getFilesDir(), "file.dat");
+//        if (file.exists()) {
+//            file.delete();
+//        }
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                BitmapStack bitmapStack = new BitmapStack(file);
+//
+////                FileStack<StringStackItem> fileStack = new FileStack<StringStackItem>(file) {
+////                    @Override
+////                    public StringStackItem createItem() {
+////                        return new StringStackItem("");
+////                    }
+////                };
+//                try {
+//                    fileStack.push(new StringStackItem("one"));
+//                    fileStack.push(new StringStackItem("two"));
+//                    fileStack.push(new StringStackItem("three"));
+//                    fileStack.push(new StringStackItem("four"));
+//
+//                    Log.d("~!~", fileStack.pop().getString());
+//                    Log.d("~!~", fileStack.pop().getString());
+//                    Log.d("~!~", fileStack.pop().getString());
+//                    Log.d("~!~", fileStack.pop().getString());
+//
+//                    fileStack.push(new StringStackItem("five"));
+//                    fileStack.push(new StringStackItem("six"));
+//                    fileStack.push(new StringStackItem("seven"));
+//
+//                    Log.d("~!~", fileStack.pop().getString());
+//                    Log.d("~!~", fileStack.pop().getString());
+//                    Log.d("~!~", fileStack.pop().getString());
+//                } catch (Stack.StackException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            class StringStackItem implements StackItem {
+//
+//                private String string;
+//
+//                StringStackItem(String string) {
+//                    this.string = string;
+//                }
+//
+//                public String getString() {
+//                    return string;
+//                }
+//
+//                @Override
+//                public void write(OutputStream output) throws IOException {
+//                    DataOutputStream dos = new DataOutputStream(output);
+//                    dos.writeUTF(string);
+//                }
+//
+//                @Override
+//                public void read(InputStream input) throws IOException {
+//                    DataInputStream dis = new DataInputStream(input);
+//                    string = dis.readUTF();
+//                }
+//            }
+//        }.start();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+    @OptionsItem
+    boolean menuUndo() {
+        sketchView.undo();
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_undo: {
-                sketchView.undo();
-                return true;
-            }
-            case R.id.menu_save: {
-                return true;
-            }
-            case R.id.menu_clean: {
-                sketchView.reset();
-                return true;
-            }
-            default: {
-                return super.onOptionsItemSelected(item);
-            }
-        }
+    @OptionsItem
+    boolean menuSave() {
+        return true;
+    }
+
+    @OptionsItem
+    boolean menuClean() {
+        sketchView.reset();
+        return true;
     }
 
 }

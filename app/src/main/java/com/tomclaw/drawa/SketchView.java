@@ -6,15 +6,17 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.tomclaw.drawa.stack.Stack;
+
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EView;
 
 /**
  * Created by Solkin on 24.12.2014.
  */
 public class SketchView extends View {
 
-    private List<Bitmap> backup;
+    private UndoController undoController;
 
     private Paint paint;
 
@@ -36,7 +38,8 @@ public class SketchView extends View {
 
     public SketchView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        backup = new ArrayList<>();
+
+        undoController = UndoController_.getInstance_(context);
 
         initPencil();
 //        initBrush();
@@ -98,7 +101,7 @@ public class SketchView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if(bitmap == null) {
+        if (bitmap == null) {
             initBitmap();
         }
 
@@ -115,11 +118,8 @@ public class SketchView extends View {
         canvas.drawColor(Color.WHITE);
         src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         dst = new Rect(0, 0, getWidth(), getHeight());
-    }
 
-    private void cloneBitmap() {
-        bitmap = Bitmap.createBitmap(bitmap);
-        canvas = new Canvas(bitmap);
+        apply(undoController.get());
     }
 
     @Override
@@ -128,10 +128,10 @@ public class SketchView extends View {
         float eventY = event.getY() / scaleFactor;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
+                undoController.add(bitmap);
+
                 prevPoint = null;
                 radius(baseRadius / scaleFactor);
-                backup.add(bitmap);
-                cloneBitmap();
                 path.moveTo(eventX, eventY);
                 break;
             }
@@ -195,18 +195,16 @@ public class SketchView extends View {
     }
 
     public void undo() {
-        if(!backup.isEmpty()) {
-            bitmap = backup.remove(backup.size() - 1);
-            canvas = new Canvas(bitmap);
+        if(undoController.canUndo()) {
+            apply(undoController.undo());
             invalidate();
         }
     }
 
     public void reset() {
-        if(!backup.isEmpty()) {
-            bitmap = backup.get(0);
-            backup.clear();
-            canvas = new Canvas(bitmap);
+        if(undoController.canUndo()) {
+            clear();
+            undoController.clear();
             invalidate();
         }
     }
@@ -222,5 +220,18 @@ public class SketchView extends View {
 
     public float getRadius() {
         return paint.getStrokeWidth();
+    }
+
+    private void apply(Bitmap immutable) {
+        if (immutable != null) {
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawColor(Color.WHITE);
+            canvas.drawBitmap(immutable, new Matrix(), simplePaint);
+        }
+    }
+
+    private void clear() {
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.WHITE);
     }
 }

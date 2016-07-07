@@ -36,41 +36,48 @@
             android:layout_height="match_parent"
             android:layout_weight="0.6"
             android:scaleType="center"
-            android:src="@drawable/ic_color_pencil"/>
+            android:tint="@color/color_tint"
+            android:src="@drawable/lead_pencil"/>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.6"
             android:scaleType="center"
-            android:src="@drawable/ic_color_brush"/>
+            android:tint="@color/color_tint"
+            android:src="@drawable/brush"/>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.6"
             android:scaleType="center"
-            android:src="@drawable/ic_color_marker"/>
+            android:tint="@color/color_tint"
+            android:src="@drawable/marker"/>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.6"
             android:scaleType="center"
-            android:src="@drawable/ic_color_flaffy"/>
+            android:tint="@color/color_tint"
+            android:src="@drawable/broom"/>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.6"
             android:scaleType="center"
-            android:src="@drawable/ic_color_roller"/>
+            android:tint="@color/color_tint"
+            android:src="@drawable/format_color_fill"/>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.6"
             android:scaleType="center"
-            android:src="@drawable/ic_color_eraser"/>
+            android:tint="@color/color_tint"
+            android:src="@drawable/eraser"/>
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/palette_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:padding="2dp"/>
 </LinearLayout>
 
