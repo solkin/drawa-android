@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -56,14 +55,15 @@ public abstract class FileStack<E extends StackItem> implements Stack<E> {
         synchronized (offsets) {
             stream.seek(0);
             offsets.clear();
-            int size = 0, offset = 0;
+            int size, offset = 0;
             try {
-                do {
+                offsets.add(0);
+                while ((size = stream.readInt()) != -1) {
+                    offset += 4;
                     offset += size;
                     offsets.add(offset);
                     stream.seek(offset);
-                    offset += 4;
-                } while ((size = stream.readInt()) != -1);
+                }
             } catch (EOFException ignored) {
             }
         }

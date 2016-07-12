@@ -128,6 +128,7 @@ public class SketchView extends View {
         float eventY = event.getY() / scaleFactor;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
+
                 undoController.add(bitmap);
 
                 prevPoint = null;
