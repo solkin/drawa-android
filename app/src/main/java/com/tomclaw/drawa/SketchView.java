@@ -1,28 +1,30 @@
 package com.tomclaw.drawa;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.DiscretePathEffect;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.tomclaw.drawa.stack.Stack;
-
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EView;
+import java.util.Stack;
 
 /**
  * Created by Solkin on 24.12.2014.
  */
 public class SketchView extends View {
 
-    private UndoController undoController;
-
     private Paint paint;
 
     private float prevX, prevY;
     private Point prevPoint;
-    private Path path;
+    private MultiPath path;
     private Bitmap bitmap;
     private Canvas canvas;
     private Paint simplePaint;
@@ -36,10 +38,15 @@ public class SketchView extends View {
 
     private int baseRadius = 60;
 
+    private Stack<Stroke> stack;
+
+    private final int DRAW = 0;
+    private final int BACK = 1;
+
     public SketchView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        undoController = UndoController_.getInstance_(context);
+        stack = new Stack<>();
 
         initPencil();
 //        initBrush();
@@ -50,7 +57,7 @@ public class SketchView extends View {
         radius(baseRadius / scaleFactor);
         color(0xcd0219);
 
-        path = new Path();
+        path = new MultiPath(2);
         simplePaint = new Paint();
         simplePaint.setAntiAlias(true);
         simplePaint.setFilterBitmap(true);
@@ -106,7 +113,7 @@ public class SketchView extends View {
         }
 
         canvas.drawBitmap(bitmap, src, dst, simplePaint);
-        path.reset();
+        path.get(DRAW).reset();
     }
 
     private void initBitmap() {
@@ -118,8 +125,6 @@ public class SketchView extends View {
         canvas.drawColor(Color.WHITE);
         src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         dst = new Rect(0, 0, getWidth(), getHeight());
-
-        apply(undoController.get());
     }
 
     @Override
@@ -128,21 +133,22 @@ public class SketchView extends View {
         float eventY = event.getY() / scaleFactor;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-
-                undoController.add(bitmap);
-
                 prevPoint = null;
                 radius(baseRadius / scaleFactor);
                 path.moveTo(eventX, eventY);
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                if(path.isEmpty()) {
+                if (path.get(DRAW).isEmpty()) {
                     path.moveTo(prevX, prevY);
                 }
-                path.lineTo(eventX+1, eventY);
-                canvas.drawPath(path, paint);
-                path.reset();
+                path.lineTo(eventX + 1, eventY);
+                canvas.drawPath(path.get(DRAW), paint);
+
+                Stroke stroke = new Stroke(new Path(path.get(BACK)), new Paint(paint));
+                stack.add(stroke);
+
+                path.get(BACK).reset();
                 invalidate();
 
                 prevX = 0;
@@ -151,7 +157,7 @@ public class SketchView extends View {
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                if(path.isEmpty()) {
+                if (path.get(DRAW).isEmpty()) {
                     path.moveTo(prevX, prevY);
                 }
                 path.lineTo(eventX, eventY);
@@ -169,8 +175,7 @@ public class SketchView extends View {
                     }
                 }
 
-                canvas.drawPath(path, paint);
-                path.reset();
+                canvas.drawPath(path.get(DRAW), paint);
 
                 prevX = eventX;
                 prevY = eventY;
@@ -196,18 +201,19 @@ public class SketchView extends View {
     }
 
     public void undo() {
-        if(undoController.canUndo()) {
-            apply(undoController.undo());
+        if (stack.isEmpty()) {
+            clear();
+        } else {
+            stack.pop();
+            applyStack();
             invalidate();
         }
     }
 
     public void reset() {
-        if(undoController.canUndo()) {
-            clear();
-            undoController.clear();
-            invalidate();
-        }
+        clear();
+        stack.clear();
+        invalidate();
     }
 
     public void color(int color) {
@@ -223,12 +229,14 @@ public class SketchView extends View {
         return paint.getStrokeWidth();
     }
 
-    private void apply(Bitmap immutable) {
-        if (immutable != null) {
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawColor(Color.WHITE);
-            canvas.drawBitmap(immutable, new Matrix(), simplePaint);
+    private void applyStack() {
+        Canvas canvas = new Canvas(bitmap);
+        canvas.save();
+        canvas.drawColor(Color.WHITE);
+        for (Stroke stroke : stack) {
+            canvas.drawPath(stroke.getPath(), stroke.getPaint());
         }
+        canvas.restore();
     }
 
     private void clear() {

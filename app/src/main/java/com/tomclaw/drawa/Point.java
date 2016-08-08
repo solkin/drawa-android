@@ -17,7 +17,7 @@ public class Point {
         this((int) x, (int) y);
     }
 
-    public Point(float x, float y, long time){
+    public Point(float x, float y, long time) {
         this.x = x;
         this.y = y;
         this.time = time;
