@@ -13,9 +13,9 @@
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
 
-        <!--item name="colorControlNormal">@color/color_gray</item-->
-        <!--item name="colorControlActivated">@color/color_secondary</item-->
-        <!--item name="colorControlHighlight">@color/color_gray</item-->
+        <!--item name="colorControlNormal">@setColor/color_gray</item-->
+        <!--item name="colorControlActivated">@setColor/color_secondary</item-->
+        <!--item name="colorControlHighlight">@setColor/color_gray</item-->
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -32,5 +32,15 @@
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="ToolItem">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">0.6</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:tint">@color/color_tint</item>
     </style>
 </resources>

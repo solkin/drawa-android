@@ -30,54 +30,37 @@
     </FrameLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="64dp">
         <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
-            android:scaleType="center"
-            android:tint="@color/color_tint"
+            android:id="@+id/tool_pencil"
+            style="@style/ToolItem"
             android:src="@drawable/lead_pencil"/>
         <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
-            android:scaleType="center"
-            android:tint="@color/color_tint"
+            android:id="@+id/tool_brush"
+            style="@style/ToolItem"
             android:src="@drawable/brush"/>
         <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
-            android:scaleType="center"
-            android:tint="@color/color_tint"
+            android:id="@+id/tool_marker"
+            style="@style/ToolItem"
             android:src="@drawable/marker"/>
         <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
-            android:scaleType="center"
-            android:tint="@color/color_tint"
+            android:id="@+id/tool_broom"
+            style="@style/ToolItem"
             android:src="@drawable/broom"/>
         <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
-            android:scaleType="center"
-            android:tint="@color/color_tint"
+            android:id="@+id/tool_fill"
+            style="@style/ToolItem"
             android:src="@drawable/format_color_fill"/>
         <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
-            android:scaleType="center"
-            android:tint="@color/color_tint"
+            android:id="@+id/tool_eraser"
+            style="@style/ToolItem"
             android:src="@drawable/eraser"/>
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/palette_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="2dp"/>
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"/>
 </LinearLayout>
 

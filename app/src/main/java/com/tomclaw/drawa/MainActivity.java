@@ -1,10 +1,13 @@
 package com.tomclaw.drawa;
 
+import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -26,9 +29,28 @@ public class MainActivity extends AppCompatActivity {
     SketchView sketchView;
 
     @ViewById
+    ImageView toolPencil;
+
+    @ViewById
+    ImageView toolBrush;
+
+    @ViewById
+    ImageView toolMarker;
+
+    @ViewById
+    ImageView toolBroom;
+
+    @ViewById
+    ImageView toolFill;
+
+    @ViewById
+    ImageView toolEraser;
+
+    @ViewById
     RecyclerView paletteRecycler;
 
     private PaletteAdapter adapter;
+    private ImageView[] toolViews;
 
     @AfterViews
     void init() {
@@ -48,74 +70,58 @@ public class MainActivity extends AppCompatActivity {
         adapter.setListener(new PaletteAdapter.PaletteClickListener() {
             @Override
             public void onColorClicked(int color) {
-                sketchView.color(color);
+                sketchView.setColor(color);
             }
         });
         paletteRecycler.setAdapter(adapter);
 
-//        final File file = new File(getFilesDir(), "file.dat");
-//        if (file.exists()) {
-//            file.delete();
-//        }
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                BitmapStack bitmapStack = new BitmapStack(file);
-//
-////                FileStack<StringStackItem> fileStack = new FileStack<StringStackItem>(file) {
-////                    @Override
-////                    public StringStackItem createItem() {
-////                        return new StringStackItem("");
-////                    }
-////                };
-//                try {
-//                    fileStack.push(new StringStackItem("one"));
-//                    fileStack.push(new StringStackItem("two"));
-//                    fileStack.push(new StringStackItem("three"));
-//                    fileStack.push(new StringStackItem("four"));
-//
-//                    Log.d("~!~", fileStack.pop().getString());
-//                    Log.d("~!~", fileStack.pop().getString());
-//                    Log.d("~!~", fileStack.pop().getString());
-//                    Log.d("~!~", fileStack.pop().getString());
-//
-//                    fileStack.push(new StringStackItem("five"));
-//                    fileStack.push(new StringStackItem("six"));
-//                    fileStack.push(new StringStackItem("seven"));
-//
-//                    Log.d("~!~", fileStack.pop().getString());
-//                    Log.d("~!~", fileStack.pop().getString());
-//                    Log.d("~!~", fileStack.pop().getString());
-//                } catch (Stack.StackException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            class StringStackItem implements StackItem {
-//
-//                private String string;
-//
-//                StringStackItem(String string) {
-//                    this.string = string;
-//                }
-//
-//                public String getString() {
-//                    return string;
-//                }
-//
-//                @Override
-//                public void write(OutputStream output) throws IOException {
-//                    DataOutputStream dos = new DataOutputStream(output);
-//                    dos.writeUTF(string);
-//                }
-//
-//                @Override
-//                public void read(InputStream input) throws IOException {
-//                    DataInputStream dis = new DataInputStream(input);
-//                    string = dis.readUTF();
-//                }
-//            }
-//        }.start();
+        toolViews = new ImageView[6];
+        toolViews[0] = toolPencil;
+        toolViews[1] = toolBrush;
+        toolViews[2] = toolMarker;
+        toolViews[3] = toolBroom;
+        toolViews[4] = toolFill;
+        toolViews[5] = toolEraser;
+
+        for (ImageView toolView : toolViews) {
+            toolView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setSelectedTool((ImageView) view);
+                }
+            });
+        }
+
+        setSelectedTool(toolPencil);
+    }
+
+    private void setSelectedTool(ImageView selected) {
+        int colorSelected = getResources().getColor(R.color.color_primary);
+        int colorUnselected = getResources().getColor(R.color.color_tint);
+
+        int color;
+        for (ImageView imageView : toolViews) {
+            color = (imageView == selected) ? colorSelected : colorUnselected;
+            imageView.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
+
+        switch (selected.getId()) {
+            case R.id.tool_pencil:
+                sketchView.initPencil();
+                break;
+            case R.id.tool_brush:
+                sketchView.initBrush();
+                break;
+            case R.id.tool_marker:
+                sketchView.initMarker();
+                break;
+            case R.id.tool_broom:
+                sketchView.initFluffy();
+                break;
+            case R.id.tool_fill:
+                sketchView.initFill();
+                break;
+        }
     }
 
     @OptionsItem
