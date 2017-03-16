@@ -4,17 +4,13 @@ package com.tomclaw.drawa;
  * Created by Solkin on 24.12.2014.
  */
 public class Point {
-
-    private float x, y;
     public long time;
-
-    public Point(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+    public float x;
+    public float y;
 
     public Point(float x, float y) {
-        this((int) x, (int) y);
+        this.x = x;
+        this.y = y;
     }
 
     public Point(float x, float y, long time) {
@@ -23,27 +19,21 @@ public class Point {
         this.time = time;
     }
 
-    public float getX() {
-        return x;
+    protected float distanceTo(Point paramPoint) {
+        float f1 = x - paramPoint.x;
+        float f2 = y - paramPoint.y;
+        return (float) Math.sqrt(f1 * f1 + f2 * f2);
     }
 
-    public void setX(float x) {
-        this.x = x;
+    public void setX(float paramFloat) {
+        x = paramFloat;
     }
 
-    public float getY() {
-        return y;
+    public void setY(float paramFloat) {
+        y = paramFloat;
     }
 
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    private float distanceTo(Point start) {
-        return (float) (Math.sqrt(Math.pow((x - start.x), 2) + Math.pow((y - start.y), 2)));
-    }
-
-    public float velocityFrom(Point start) {
-        return distanceTo(start) / (this.time - start.time);
+    public float velocityFrom(Point paramPoint) {
+        return distanceTo(paramPoint) / (time - paramPoint.time);
     }
 }

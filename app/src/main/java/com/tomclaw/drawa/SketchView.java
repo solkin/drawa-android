@@ -13,8 +13,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -26,7 +26,8 @@ public class SketchView extends View {
 
     private float prevX, prevY;
     private Point prevPoint;
-    private MultiPath path;
+    private Path path;
+    private List<Point> points;
     private Bitmap bitmap;
     private Canvas canvas;
     private Paint simplePaint;
@@ -41,14 +42,14 @@ public class SketchView extends View {
 
     private int baseRadius = 60;
 
-    private Stack<Stroke> stack;
+    private Stack<History> stack;
 
     private final int DRAW = 0;
     private final int BACK = 1;
 
     private int color = 0xcd0219;
 
-    private final int COLOR_DELTA = 0xff / 100;
+    private final int COLOR_DELTA = 0x32;
 
     public SketchView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -64,7 +65,8 @@ public class SketchView extends View {
         setRadius(baseRadius / scaleFactor);
         setColor(color);
 
-        path = new MultiPath(2);
+        path = new Path();
+        points = new ArrayList<>();
         simplePaint = new Paint();
         simplePaint.setAntiAlias(true);
         simplePaint.setFilterBitmap(true);
@@ -140,7 +142,7 @@ public class SketchView extends View {
         }
 
         canvas.drawBitmap(bitmap, src, dst, simplePaint);
-        path.get(DRAW).reset();
+        path.reset();
     }
 
     private void initBitmap() {
@@ -154,6 +156,8 @@ public class SketchView extends View {
         dst = new Rect(0, 0, getWidth(), getHeight());
     }
 
+    Bezier bezier = new Bezier();
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         float eventX = event.getX() / scaleFactor;
@@ -163,27 +167,31 @@ public class SketchView extends View {
                 if (isFill) {
                     int pixel = bitmap.getPixel((int) eventX, (int) eventY);
                     QueueLinearFloodFiller filler = new QueueLinearFloodFiller(bitmap, pixel, color);
-                    filler.setTolerance(50);
+                    filler.setTolerance(COLOR_DELTA);
                     filler.floodFill((int) eventX, (int) eventY);
                 } else {
                     prevPoint = null;
                     setRadius(baseRadius / scaleFactor);
                     path.moveTo(eventX, eventY);
                 }
+                points.add(new Point(eventX, eventY));
                 break;
             }
             case MotionEvent.ACTION_UP: {
                 if (!isFill) {
-                    if (path.get(DRAW).isEmpty()) {
+                    if (path.isEmpty()) {
                         path.moveTo(prevX, prevY);
                     }
                     path.lineTo(eventX + 1, eventY);
-                    canvas.drawPath(path.get(DRAW), paint);
+                    points.add(new Point(eventX + 1, eventY));
 
-                    Stroke stroke = new Stroke(new Path(path.get(BACK)), new Paint(paint));
-                    stack.add(stroke);
+                    canvas.drawPath(path, paint);
 
-                    path.get(BACK).reset();
+                    History history = new History(new Paint(paint), points);
+                    stack.add(history);
+
+                    path.reset();
+                    points.clear();
                 }
 
                 invalidate();
@@ -194,10 +202,11 @@ public class SketchView extends View {
             }
             case MotionEvent.ACTION_MOVE: {
                 if (!isFill) {
-                    if (path.get(DRAW).isEmpty()) {
+                    if (path.isEmpty()) {
                         path.moveTo(prevX, prevY);
                     }
                     path.lineTo(eventX, eventY);
+                    points.add(new Point(eventX, eventY));
 
                     if (isVarRadius) {
                         float absLength = (baseRadius / scaleFactor) - (Math.abs(eventX - prevX) + Math.abs(eventY - prevY));
@@ -212,7 +221,7 @@ public class SketchView extends View {
                         }
                     }
 
-                    canvas.drawPath(path.get(DRAW), paint);
+                    canvas.drawPath(path, paint);
 
                     prevX = eventX;
                     prevY = eventY;
@@ -268,55 +277,15 @@ public class SketchView extends View {
         return paint.getStrokeWidth();
     }
 
-    private void floodFill(Bitmap bmp, Point pt, int targetColor, int replacementColor)
-    {
-        Queue<Point> q = new LinkedList<>();
-        q.add(pt);
-        while (q.size() > 0) {
-            Point n = q.poll();
-            if (bmp.getPixel((int) n.getX(), (int) n.getY()) != targetColor)
-                continue;
-
-            Point w = n, e = new Point(n.getX() + 1, n.getY());
-            while ((w.getX() > 0) && (bmp.getPixel((int) w.getX(), (int) w.getY()) == targetColor)) {
-                bmp.setPixel((int) w.getX(), (int) w.getY(), replacementColor);
-                if ((w.getY() > 0) && (bmp.getPixel((int) w.getX(), (int) w.getY() - 1) == targetColor))
-                    q.add(new Point(w.getX(), w.getY() - 1));
-                if ((w.getY() < bmp.getHeight() - 1)
-                        && (bmp.getPixel((int) w.getX(), (int) w.getY() + 1) == targetColor))
-                    q.add(new Point(w.getX(), w.getY() + 1));
-                w.setX(w.getX()-1);
-            }
-            while ((e.getX() < bmp.getWidth() - 1)
-                    && (bmp.getPixel((int) e.getX(), (int) e.getY()) == targetColor)) {
-                bmp.setPixel((int) e.getX(), (int) e.getY(), replacementColor);
-
-                if ((e.getY() > 0) && (bmp.getPixel((int) e.getX(), (int) e.getY() - 1) == targetColor))
-                    q.add(new Point(e.getX(), e.getY() - 1));
-                if ((e.getY() < bmp.getHeight() - 1)
-                        && (bmp.getPixel((int) e.getX(), (int) e.getY() + 1) == targetColor))
-                    q.add(new Point(e.getX(), e.getY() + 1));
-                e.setX(e.getX()+1);
-            }
-        }
-    }
-
-    private boolean matchColors(int one, int two) {
-        return matchComponent(Color.red(one), Color.red(two)) &&
-                matchComponent(Color.green(one), Color.green(two)) &&
-                matchComponent(Color.blue(one), Color.blue(two));
-    }
-
-    private boolean matchComponent(int one, int two) {
-        return two > one - COLOR_DELTA && one + COLOR_DELTA > two;
-    }
-
     private void applyStack() {
         Canvas canvas = new Canvas(bitmap);
         canvas.save();
         canvas.drawColor(Color.WHITE);
-        for (Stroke stroke : stack) {
-            canvas.drawPath(stroke.getPath(), stroke.getPaint());
+        for (History history : stack) {
+            List<Point> points = history.getPoints();
+            path.reset();
+//            path.moveTo(history.get(0));
+//            canvas.drawPath(history.getPath(), history.getPaint());
         }
         canvas.restore();
     }
