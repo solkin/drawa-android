@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.setListener(new PaletteAdapter.PaletteClickListener() {
             @Override
             public void onColorClicked(int color) {
-                sketchView.setColor(color);
+                sketchView.setToolColor(color);
             }
         });
         paletteRecycler.setAdapter(adapter);

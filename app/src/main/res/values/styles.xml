@@ -13,9 +13,9 @@
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
 
-        <!--item name="colorControlNormal">@setColor/color_gray</item-->
-        <!--item name="colorControlActivated">@setColor/color_secondary</item-->
-        <!--item name="colorControlHighlight">@setColor/color_gray</item-->
+        <!--item name="colorControlNormal">@setToolColor/color_gray</item-->
+        <!--item name="colorControlActivated">@setToolColor/color_secondary</item-->
+        <!--item name="colorControlHighlight">@setToolColor/color_gray</item-->
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
