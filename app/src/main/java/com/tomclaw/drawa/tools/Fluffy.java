@@ -5,7 +5,7 @@ import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.tomclaw.drawa.DrawCallback;
+import com.tomclaw.drawa.DrawHost;
 
 import java.util.Random;
 
@@ -21,7 +21,7 @@ public class Fluffy extends Radiusable {
     private Path path;
     private Random random;
 
-    public Fluffy(Canvas canvas, DrawCallback callback) {
+    public Fluffy(Canvas canvas, DrawHost callback) {
         super(canvas, callback);
         this.path = new Path();
         this.random = new Random(System.currentTimeMillis());

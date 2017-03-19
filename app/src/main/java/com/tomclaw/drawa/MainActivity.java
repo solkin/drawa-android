@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     @ViewById
-    SketchView sketchView;
+    DrawView drawView;
 
     @ViewById
     ImageView toolPencil;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.setListener(new PaletteAdapter.PaletteClickListener() {
             @Override
             public void onColorClicked(int color) {
-                sketchView.setToolColor(color);
+                drawView.setToolColor(color);
             }
         });
         paletteRecycler.setAdapter(adapter);
@@ -107,26 +107,29 @@ public class MainActivity extends AppCompatActivity {
 
         switch (selected.getId()) {
             case R.id.tool_pencil:
-                sketchView.initPencil();
+                drawView.initPencil();
                 break;
             case R.id.tool_brush:
-                sketchView.initBrush();
+                drawView.initBrush();
                 break;
             case R.id.tool_marker:
-                sketchView.initMarker();
+                drawView.initMarker();
                 break;
             case R.id.tool_broom:
-                sketchView.initFluffy();
+                drawView.initFluffy();
                 break;
             case R.id.tool_fill:
-                sketchView.initFill();
+                drawView.initFill();
+                break;
+            case R.id.tool_eraser:
+                drawView.initEraser();
                 break;
         }
     }
 
     @OptionsItem
     boolean menuUndo() {
-        sketchView.undo();
+        drawView.undo();
         return true;
     }
 
@@ -137,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OptionsItem
     boolean menuClean() {
-        sketchView.reset();
+        drawView.reset();
         return true;
     }
 

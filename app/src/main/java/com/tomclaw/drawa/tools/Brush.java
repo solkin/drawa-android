@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.tomclaw.drawa.DrawCallback;
+import com.tomclaw.drawa.DrawHost;
 
 /**
  * Created by solkin on 17.03.17.
@@ -13,10 +13,11 @@ public class Brush extends Radiusable {
 
     private static final float RADIUS_MULTIPLIER = 2;
 
+    private int startX, startY;
     private int prevX, prevY;
     private Path path;
 
-    public Brush(Canvas canvas, DrawCallback callback) {
+    public Brush(Canvas canvas, DrawHost callback) {
         super(canvas, callback);
         this.path = new Path();
     }
@@ -38,6 +39,8 @@ public class Brush extends Radiusable {
 
     @Override
     public void onTouchDown(int x, int y) {
+        startX = x;
+        startY = y;
         resetRadius();
 
         path.moveTo(x, y);
@@ -80,7 +83,11 @@ public class Brush extends Radiusable {
         if (path.isEmpty()) {
             path.moveTo(prevX, prevY);
         }
-        path.lineTo(x, y);
+        if (x == startX && y == startY) {
+            path.lineTo(x + 0.1f, y);
+        } else {
+            path.lineTo(x, y);
+        }
 
         drawPath(path);
 

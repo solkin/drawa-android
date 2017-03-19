@@ -4,17 +4,18 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.tomclaw.drawa.DrawCallback;
+import com.tomclaw.drawa.DrawHost;
 
 /**
  * Created by solkin on 17.03.17.
  */
 public class Pencil extends Radiusable {
 
+    private int startX, startY;
     private int prevX, prevY;
     private Path path;
 
-    public Pencil(Canvas canvas, DrawCallback callback) {
+    public Pencil(Canvas canvas, DrawHost callback) {
         super(canvas, callback);
         this.path = new Path();
     }
@@ -36,6 +37,8 @@ public class Pencil extends Radiusable {
 
     @Override
     public void onTouchDown(int x, int y) {
+        startX = x;
+        startY = y;
         path.moveTo(x, y);
         path.lineTo(x, y);
 
@@ -50,7 +53,11 @@ public class Pencil extends Radiusable {
         if (path.isEmpty()) {
             path.moveTo(prevX, prevY);
         }
-        path.lineTo(x, y);
+        if (x == startX && y == startY) {
+            path.lineTo(x + 0.1f, y);
+        } else {
+            path.lineTo(x, y);
+        }
 
         prevX = x;
         prevY = y;

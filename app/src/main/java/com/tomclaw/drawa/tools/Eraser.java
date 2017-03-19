@@ -1,45 +1,50 @@
 package com.tomclaw.drawa.tools;
 
 import android.graphics.Canvas;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 
 import com.tomclaw.drawa.DrawHost;
 
-import java.util.Random;
-
 /**
  * Created by solkin on 17.03.17.
  */
-public class Marker extends Radiusable {
-
-    private static final int DOT_RADIUS = 4;
+public class Eraser extends Radiusable {
 
     private int startX, startY;
     private int prevX, prevY;
     private Path path;
-    private Random random;
+    private int externalColor;
 
-    public Marker(Canvas canvas, DrawHost callback) {
+    public Eraser(Canvas canvas, DrawHost callback) {
         super(canvas, callback);
         this.path = new Path();
-        this.random = new Random(System.currentTimeMillis());
     }
 
     @Override
     Paint initPaint() {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeJoin(Paint.Join.MITER);
-        paint.setStrokeCap(Paint.Cap.BUTT);
-        paint.setPathEffect(new DashPathEffect(new float[]{2, 0}, 0));
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeCap(Paint.Cap.ROUND);
         return paint;
     }
 
     @Override
     int getAlpha() {
-        return 0x50;
+        return 0xff;
+    }
+
+    @Override
+    public void setColor(int color) {
+        externalColor = color;
+        super.setColor(0xffffffff);
+    }
+
+    @Override
+    public int getColor() {
+        return externalColor;
     }
 
     @Override
@@ -60,7 +65,11 @@ public class Marker extends Radiusable {
         if (path.isEmpty()) {
             path.moveTo(prevX, prevY);
         }
-        path.lineTo(x, y);
+        if (x == startX && y == startY) {
+            path.lineTo(x + 0.1f, y);
+        } else {
+            path.lineTo(x, y);
+        }
 
         prevX = x;
         prevY = y;
@@ -73,14 +82,7 @@ public class Marker extends Radiusable {
         if (path.isEmpty()) {
             path.moveTo(prevX, prevY);
         }
-        if (x == startX && y == startY) {
-            for (int c = 0; c < 3; c++) {
-                path.lineTo(randomizeCoordinate(x), randomizeCoordinate(y));
-                drawPath(path);
-            }
-        } else {
-            path.lineTo(x, y);
-        }
+        path.lineTo(x, y);
 
         drawPath(path);
 
@@ -93,7 +95,4 @@ public class Marker extends Radiusable {
         path.reset();
     }
 
-    private int randomizeCoordinate(int value) {
-        return value + random.nextInt(DOT_RADIUS + 1) - DOT_RADIUS / 2;
-    }
 }
