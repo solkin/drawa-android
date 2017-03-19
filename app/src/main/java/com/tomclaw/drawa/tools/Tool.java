@@ -5,13 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Parcelable;
 
 import com.tomclaw.drawa.DrawHost;
 
 /**
  * Created by solkin on 17.03.17.
  */
-public abstract class Tool {
+public abstract class Tool implements Parcelable {
 
     private Canvas canvas;
     private DrawHost callback;
@@ -22,6 +23,10 @@ public abstract class Tool {
         this.callback = callback;
         this.paint = initPaint();
         onInitialize();
+    }
+
+    public boolean isInitialized() {
+        return canvas != null && callback != null;
     }
 
     abstract void onInitialize();

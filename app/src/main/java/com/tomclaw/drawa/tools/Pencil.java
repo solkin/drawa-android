@@ -1,10 +1,9 @@
 package com.tomclaw.drawa.tools;
 
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Parcel;
 
-import com.tomclaw.drawa.DrawHost;
 
 /**
  * Created by solkin on 17.03.17.
@@ -17,6 +16,30 @@ public class Pencil extends Radiusable {
 
     public Pencil() {
     }
+
+    protected Pencil(Parcel in) {
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Pencil> CREATOR = new Creator<Pencil>() {
+        @Override
+        public Pencil createFromParcel(Parcel in) {
+            return new Pencil(in);
+        }
+
+        @Override
+        public Pencil[] newArray(int size) {
+            return new Pencil[size];
+        }
+    };
 
     @Override
     public void onInitialize() {

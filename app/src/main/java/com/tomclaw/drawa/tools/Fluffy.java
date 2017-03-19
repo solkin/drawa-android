@@ -1,11 +1,9 @@
 package com.tomclaw.drawa.tools;
 
-import android.graphics.Canvas;
 import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-
-import com.tomclaw.drawa.DrawHost;
+import android.os.Parcel;
 
 import java.util.Random;
 
@@ -23,6 +21,30 @@ public class Fluffy extends Radiusable {
 
     public Fluffy() {
     }
+
+    protected Fluffy(Parcel in) {
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Fluffy> CREATOR = new Creator<Fluffy>() {
+        @Override
+        public Fluffy createFromParcel(Parcel in) {
+            return new Fluffy(in);
+        }
+
+        @Override
+        public Fluffy[] newArray(int size) {
+            return new Fluffy[size];
+        }
+    };
 
     @Override
     public void onInitialize() {

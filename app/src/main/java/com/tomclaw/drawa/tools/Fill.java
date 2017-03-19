@@ -1,10 +1,9 @@
 package com.tomclaw.drawa.tools;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Parcel;
 
-import com.tomclaw.drawa.DrawHost;
 import com.tomclaw.drawa.QueueLinearFloodFiller;
 
 /**
@@ -16,6 +15,30 @@ public class Fill extends Tool {
 
     public Fill() {
     }
+
+    protected Fill(Parcel in) {
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Fill> CREATOR = new Creator<Fill>() {
+        @Override
+        public Fill createFromParcel(Parcel in) {
+            return new Fill(in);
+        }
+
+        @Override
+        public Fill[] newArray(int size) {
+            return new Fill[size];
+        }
+    };
 
     @Override
     void onInitialize() {
