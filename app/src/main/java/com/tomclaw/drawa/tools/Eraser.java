@@ -2,7 +2,6 @@ package com.tomclaw.drawa.tools;
 
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Parcel;
 
 /**
  * Created by solkin on 17.03.17.
@@ -16,30 +15,6 @@ public class Eraser extends Radiusable {
 
     public Eraser() {
     }
-
-    protected Eraser(Parcel in) {
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Eraser> CREATOR = new Creator<Eraser>() {
-        @Override
-        public Eraser createFromParcel(Parcel in) {
-            return new Eraser(in);
-        }
-
-        @Override
-        public Eraser[] newArray(int size) {
-            return new Eraser[size];
-        }
-    };
 
     @Override
     public void onInitialize() {
@@ -118,6 +93,11 @@ public class Eraser extends Radiusable {
     @Override
     public void onDraw() {
         path.reset();
+    }
+
+    @Override
+    public byte getType() {
+        return TYPE_ERASER;
     }
 
 }

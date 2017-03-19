@@ -2,7 +2,6 @@ package com.tomclaw.drawa.tools;
 
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Parcel;
 
 /**
  * Created by solkin on 17.03.17.
@@ -17,30 +16,6 @@ public class Brush extends Radiusable {
 
     public Brush() {
     }
-
-    protected Brush(Parcel in) {
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Brush> CREATOR = new Creator<Brush>() {
-        @Override
-        public Brush createFromParcel(Parcel in) {
-            return new Brush(in);
-        }
-
-        @Override
-        public Brush[] newArray(int size) {
-            return new Brush[size];
-        }
-    };
 
     @Override
     public void onInitialize() {
@@ -123,5 +98,10 @@ public class Brush extends Radiusable {
     @Override
     public void onDraw() {
         path.reset();
+    }
+
+    @Override
+    public byte getType() {
+        return TYPE_BRUSH;
     }
 }

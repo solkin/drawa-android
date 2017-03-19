@@ -1,20 +1,15 @@
 package com.tomclaw.drawa;
 
-import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -181,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OptionsItem
     boolean menuSave() {
+        saveDrawStack();
         return true;
     }
 
@@ -190,12 +186,8 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public static Bitmap loadBitmapFromView(View v, int width, int height) {
-        Bitmap b = Bitmap.createBitmap(width , height, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
-        v.draw(c);
-        return b;
+    void saveDrawStack() {
+        drawView.saveHistory();
     }
 
 }

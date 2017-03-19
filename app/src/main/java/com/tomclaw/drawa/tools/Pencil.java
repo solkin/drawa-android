@@ -2,7 +2,6 @@ package com.tomclaw.drawa.tools;
 
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Parcel;
 
 
 /**
@@ -17,32 +16,8 @@ public class Pencil extends Radiusable {
     public Pencil() {
     }
 
-    protected Pencil(Parcel in) {
-    }
-
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Pencil> CREATOR = new Creator<Pencil>() {
-        @Override
-        public Pencil createFromParcel(Parcel in) {
-            return new Pencil(in);
-        }
-
-        @Override
-        public Pencil[] newArray(int size) {
-            return new Pencil[size];
-        }
-    };
-
-    @Override
-    public void onInitialize() {
+    void onInitialize() {
         this.path = new Path();
     }
 
@@ -107,6 +82,11 @@ public class Pencil extends Radiusable {
     @Override
     public void onDraw() {
         path.reset();
+    }
+
+    @Override
+    public byte getType() {
+        return TYPE_PENCIL;
     }
 
 }

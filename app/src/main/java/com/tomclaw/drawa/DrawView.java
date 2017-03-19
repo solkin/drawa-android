@@ -19,9 +19,10 @@ import com.tomclaw.drawa.tools.Marker;
 import com.tomclaw.drawa.tools.Pencil;
 import com.tomclaw.drawa.tools.Tool;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EView;
 
-import java.util.Stack;
+import java.io.File;
 
 /**
  * Created by Solkin on 24.12.2014.
@@ -37,12 +38,12 @@ public class DrawView extends View implements DrawHost {
     private final float scaleFactor = 1.5f;
     private Rect src, dst;
     private int baseRadius = 60;
-    private Stack<Event> events = new Stack<>();
-    private int eventIndex = 0;
+    private History history;
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        history = new History();
         simplePaint = new Paint();
         simplePaint.setAntiAlias(true);
         simplePaint.setFilterBitmap(true);
@@ -114,17 +115,15 @@ public class DrawView extends View implements DrawHost {
         dst = new Rect(0, 0, getWidth(), getHeight());
 
         initPencil();
+
+        loadHistory();
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         int eventX = (int) (event.getX() / scaleFactor);
         int eventY = (int) (event.getY() / scaleFactor);
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            eventIndex++;
-        }
-        Event e = new Event(eventIndex, tool, tool.getColor(), eventX, eventY, event.getAction());
-        events.push(e);
+        Event e = history.add(tool, eventX, eventY, event.getAction());
         processToolEvent(e);
         invalidate();
         return true;
@@ -161,16 +160,17 @@ public class DrawView extends View implements DrawHost {
 
     public void undo() {
         long time = System.currentTimeMillis();
-        while (!events.empty() && events.peek().getIndex() == eventIndex) {
-            events.pop();
-        }
-        eventIndex--;
-        canvas.drawColor(Color.WHITE);
-        for (Event event : events) {
-            processToolEvent(event);
-        }
+        history.undo();
+        applyHistory();
         time = System.currentTimeMillis() - time;
         Log.d("Drawa", String.format("Undo time: %d msec.", time));
+    }
+
+    private void applyHistory() {
+        canvas.drawColor(Color.WHITE);
+        for (Event event : history.getEvents()) {
+            processToolEvent(event);
+        }
     }
 
     @Override
@@ -179,8 +179,7 @@ public class DrawView extends View implements DrawHost {
     }
 
     public void reset() {
-        eventIndex = 0;
-        events.clear();
+        history.clear();
         clear();
         invalidate();
     }
@@ -216,5 +215,30 @@ public class DrawView extends View implements DrawHost {
     @Override
     public Bitmap getBitmap() {
         return bitmap;
+    }
+
+    File getBackupFile() {
+        return new File(getContext().getFilesDir(), "backup.dat");
+    }
+
+    @Background
+    public void loadHistory() {
+        File backup = getBackupFile();
+        loadHistory(backup);
+    }
+
+    private void loadHistory(File file) {
+        history.load(file, canvas, this);
+        applyHistory();
+    }
+
+    @Background
+    public void saveHistory() {
+        File backup = getBackupFile();
+        saveHistory(backup);
+    }
+
+    private void saveHistory(File file) {
+        history.save(file);
     }
 }

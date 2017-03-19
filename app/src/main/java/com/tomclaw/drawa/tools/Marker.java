@@ -3,7 +3,6 @@ package com.tomclaw.drawa.tools;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Parcel;
 
 import java.util.Random;
 
@@ -21,30 +20,6 @@ public class Marker extends Radiusable {
 
     public Marker() {
     }
-
-    protected Marker(Parcel in) {
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Marker> CREATOR = new Creator<Marker>() {
-        @Override
-        public Marker createFromParcel(Parcel in) {
-            return new Marker(in);
-        }
-
-        @Override
-        public Marker[] newArray(int size) {
-            return new Marker[size];
-        }
-    };
 
     @Override
     public void onInitialize() {
@@ -116,6 +91,11 @@ public class Marker extends Radiusable {
     @Override
     public void onDraw() {
         path.reset();
+    }
+
+    @Override
+    public byte getType() {
+        return TYPE_MARKER;
     }
 
     private int randomizeCoordinate(int value) {

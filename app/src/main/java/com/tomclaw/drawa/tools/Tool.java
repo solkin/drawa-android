@@ -5,14 +5,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Parcelable;
 
 import com.tomclaw.drawa.DrawHost;
 
 /**
  * Created by solkin on 17.03.17.
  */
-public abstract class Tool implements Parcelable {
+public abstract class Tool {
+
+    public static final byte TYPE_PENCIL = 0x01;
+    public static final byte TYPE_BRUSH = 0x02;
+    public static final byte TYPE_MARKER = 0x03;
+    public static final byte TYPE_FLUFFY = 0x04;
+    public static final byte TYPE_FILL = 0x05;
+    public static final byte TYPE_ERASER = 0x06;
 
     private Canvas canvas;
     private DrawHost callback;
@@ -64,5 +70,7 @@ public abstract class Tool implements Parcelable {
     }
 
     public abstract void onDraw();
+
+    public abstract byte getType();
 
 }
