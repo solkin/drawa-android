@@ -17,8 +17,11 @@ public class Brush extends Radiusable {
     private int prevX, prevY;
     private Path path;
 
-    public Brush(Canvas canvas, DrawHost callback) {
-        super(canvas, callback);
+    public Brush() {
+    }
+
+    @Override
+    public void onInitialize() {
         this.path = new Path();
     }
 

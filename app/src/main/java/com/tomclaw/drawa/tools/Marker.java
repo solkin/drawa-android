@@ -21,8 +21,11 @@ public class Marker extends Radiusable {
     private Path path;
     private Random random;
 
-    public Marker(Canvas canvas, DrawHost callback) {
-        super(canvas, callback);
+    public Marker() {
+    }
+
+    @Override
+    public void onInitialize() {
         this.path = new Path();
         this.random = new Random(System.currentTimeMillis());
     }

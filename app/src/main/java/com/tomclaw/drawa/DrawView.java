@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -18,11 +19,17 @@ import com.tomclaw.drawa.tools.Marker;
 import com.tomclaw.drawa.tools.Pencil;
 import com.tomclaw.drawa.tools.Tool;
 
+import org.androidannotations.annotations.EView;
+
+import java.util.Stack;
+
 /**
  * Created by Solkin on 24.12.2014.
  */
+@EView
 public class DrawView extends View implements DrawHost {
 
+    private Bitmap stub;
     private Bitmap bitmap;
     private Canvas canvas;
     private Paint simplePaint;
@@ -30,6 +37,8 @@ public class DrawView extends View implements DrawHost {
     private final float scaleFactor = 1.5f;
     private Rect src, dst;
     private int baseRadius = 60;
+    private Stack<Event> events = new Stack<>();
+    private int eventIndex = 0;
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -41,48 +50,57 @@ public class DrawView extends View implements DrawHost {
     }
 
     public void initPencil() {
-        Pencil pencil = new Pencil(canvas, this);
+        Pencil pencil = new Pencil();
+        pencil.initialize(canvas, this);
         pencil.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(pencil);
     }
 
     public void initBrush() {
-        Brush brush = new Brush(canvas, this);
+        Brush brush = new Brush();
+        brush.initialize(canvas, this);
         brush.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(brush);
     }
 
     public void initMarker() {
-        Marker marker = new Marker(canvas, this);
+        Marker marker = new Marker();
+        marker.initialize(canvas, this);
         marker.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(marker);
     }
 
     public void initFluffy() {
-        Fluffy fluffy = new Fluffy(canvas, this);
+        Fluffy fluffy = new Fluffy();
+        fluffy.initialize(canvas, this);
         fluffy.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(fluffy);
     }
 
     public void initFill() {
-        Fill fill = new Fill(canvas, this);
+        Fill fill = new Fill();
+        fill.initialize(canvas, this);
         setTool(fill);
     }
 
     public void initEraser() {
-        Eraser eraser = new Eraser(canvas, this);
+        Eraser eraser = new Eraser();
+        eraser.initialize(canvas, this);
         eraser.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(eraser);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (bitmap == null) {
-            initBitmap();
+        if (stub != null) {
+            canvas.drawBitmap(stub, src, dst, simplePaint);
+        } else {
+            if (bitmap == null) {
+                initBitmap();
+            }
+            canvas.drawBitmap(bitmap, src, dst, simplePaint);
+            tool.onDraw();
         }
-
-        canvas.drawBitmap(bitmap, src, dst, simplePaint);
-        tool.onDraw();
     }
 
     private void initBitmap() {
@@ -102,22 +120,38 @@ public class DrawView extends View implements DrawHost {
     public boolean dispatchTouchEvent(MotionEvent event) {
         int eventX = (int) (event.getX() / scaleFactor);
         int eventY = (int) (event.getY() / scaleFactor);
-        switch (event.getAction()) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            eventIndex++;
+        }
+        Event e = new Event(eventIndex, tool, tool.getColor(), eventX, eventY, event.getAction());
+        events.push(e);
+        processToolEvent(e);
+        invalidate();
+        return true;
+    }
+
+    private static void processToolEvent(Event event) {
+        Tool tool = event.getTool();
+        int color = event.getColor();
+        int action = event.getAction();
+        int x = event.getX();
+        int y = event.getY();
+        tool.setColor(color);
+        switch (action) {
             case MotionEvent.ACTION_DOWN: {
-                tool.onTouchDown(eventX, eventY);
-                break;
-            }
-            case MotionEvent.ACTION_UP: {
-                tool.onTouchUp(eventX, eventY);
+                tool.onTouchDown(x, y);
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                tool.onTouchMove(eventX, eventY);
+                tool.onTouchMove(x, y);
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                tool.onTouchUp(x, y);
                 break;
             }
         }
-        invalidate();
-        return true;
+        tool.onDraw();
     }
 
     @Override
@@ -126,11 +160,38 @@ public class DrawView extends View implements DrawHost {
     }
 
     public void undo() {
+        long time = System.currentTimeMillis();
+        while (!events.empty() && events.peek().getIndex() == eventIndex) {
+            events.pop();
+        }
+        eventIndex--;
+        canvas.drawColor(Color.WHITE);
+        for (Event event : events) {
+            processToolEvent(event);
+        }
+        time = System.currentTimeMillis() - time;
+        Log.d("Drawa", String.format("Undo time: %d msec.", time));
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
     }
 
     public void reset() {
+        eventIndex = 0;
+        events.clear();
         clear();
         invalidate();
+    }
+
+    public void setupStub() {
+        stub = Bitmap.createBitmap(bitmap);
+    }
+
+    public void removeStub() {
+        stub.recycle();
+        stub = null;
     }
 
     public void setTool(Tool tool) {

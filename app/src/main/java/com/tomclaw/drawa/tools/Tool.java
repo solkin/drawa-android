@@ -17,11 +17,14 @@ public abstract class Tool {
     private DrawHost callback;
     private Paint paint;
 
-    public Tool(Canvas canvas, DrawHost callback) {
+    public final void initialize(Canvas canvas, DrawHost callback) {
         this.canvas = canvas;
         this.callback = callback;
         this.paint = initPaint();
+        onInitialize();
     }
+
+    abstract void onInitialize();
 
     abstract Paint initPaint();
 
@@ -53,7 +56,6 @@ public abstract class Tool {
 
     void drawPath(Path path) {
         canvas.drawPath(path, paint);
-        callback.invalidate();
     }
 
     public abstract void onDraw();

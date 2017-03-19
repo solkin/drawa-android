@@ -1,18 +1,27 @@
 package com.tomclaw.drawa;
 
+import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -48,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
     @ViewById
     RecyclerView paletteRecycler;
+
+    private Animation toAlpha;
+    private Animation fromAlpha;
 
     private PaletteAdapter adapter;
     private ImageView[] toolViews;
@@ -93,6 +105,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setSelectedTool(toolPencil);
+
+        AlphaAnimation animation;
+
+        animation = new AlphaAnimation(1.0f, 0.0f);
+        animation.setDuration(200);
+        animation.setStartOffset(0);
+        animation.setFillAfter(true);
+        toAlpha = animation;
+
+        animation = new AlphaAnimation(0.0f, 1.0f);
+        animation.setDuration(200);
+        animation.setStartOffset(0);
+        animation.setFillAfter(true);
+        fromAlpha = animation;
     }
 
     private void setSelectedTool(ImageView selected) {
@@ -129,8 +155,28 @@ public class MainActivity extends AppCompatActivity {
 
     @OptionsItem
     boolean menuUndo() {
-        drawView.undo();
+        undo();
         return true;
+    }
+
+    @Background
+    void undo() {
+        drawView.setupStub();
+        hideDrawView();
+        drawView.undo();
+        drawView.removeStub();
+        showDrawView();
+    }
+
+    @UiThread(propagation = UiThread.Propagation.REUSE)
+    void hideDrawView() {
+        drawView.startAnimation(toAlpha);
+    }
+
+    @UiThread(propagation = UiThread.Propagation.REUSE)
+    void showDrawView() {
+        drawView.invalidate();
+        drawView.startAnimation(fromAlpha);
     }
 
     @OptionsItem
@@ -142,6 +188,14 @@ public class MainActivity extends AppCompatActivity {
     boolean menuClean() {
         drawView.reset();
         return true;
+    }
+
+    public static Bitmap loadBitmapFromView(View v, int width, int height) {
+        Bitmap b = Bitmap.createBitmap(width , height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
+        v.draw(c);
+        return b;
     }
 
 }

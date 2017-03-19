@@ -15,8 +15,11 @@ public class Pencil extends Radiusable {
     private int prevX, prevY;
     private Path path;
 
-    public Pencil(Canvas canvas, DrawHost callback) {
-        super(canvas, callback);
+    public Pencil() {
+    }
+
+    @Override
+    public void onInitialize() {
         this.path = new Path();
     }
 

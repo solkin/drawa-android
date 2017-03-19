@@ -14,8 +14,11 @@ public class Fill extends Tool {
 
     private static final int COLOR_DELTA = 0x32;
 
-    public Fill(Canvas canvas, DrawHost callback) {
-        super(canvas, callback);
+    public Fill() {
+    }
+
+    @Override
+    void onInitialize() {
     }
 
     @Override

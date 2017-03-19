@@ -16,8 +16,11 @@ public class Eraser extends Radiusable {
     private Path path;
     private int externalColor;
 
-    public Eraser(Canvas canvas, DrawHost callback) {
-        super(canvas, callback);
+    public Eraser() {
+    }
+
+    @Override
+    public void onInitialize() {
         this.path = new Path();
     }
 

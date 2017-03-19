@@ -1,9 +1,5 @@
 package com.tomclaw.drawa.tools;
 
-import android.graphics.Canvas;
-
-import com.tomclaw.drawa.DrawHost;
-
 /**
  * Created by solkin on 18.03.17.
  */
@@ -11,10 +7,6 @@ import com.tomclaw.drawa.DrawHost;
 public abstract class Radiusable extends Tool {
 
     private int baseRadius;
-
-    public Radiusable(Canvas canvas, DrawHost callback) {
-        super(canvas, callback);
-    }
 
     public int getBaseRadius() {
         return baseRadius;

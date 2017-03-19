@@ -21,8 +21,11 @@ public class Fluffy extends Radiusable {
     private Path path;
     private Random random;
 
-    public Fluffy(Canvas canvas, DrawHost callback) {
-        super(canvas, callback);
+    public Fluffy() {
+    }
+
+    @Override
+    public void onInitialize() {
         this.path = new Path();
         this.random = new Random(System.currentTimeMillis());
     }
