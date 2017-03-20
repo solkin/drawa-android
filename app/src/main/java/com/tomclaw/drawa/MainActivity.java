@@ -128,50 +128,30 @@ public class MainActivity extends AppCompatActivity {
 
         switch (selected.getId()) {
             case R.id.tool_pencil:
-                drawView.initPencil();
+                drawView.selectPencil();
                 break;
             case R.id.tool_brush:
-                drawView.initBrush();
+                drawView.selectBrush();
                 break;
             case R.id.tool_marker:
-                drawView.initMarker();
+                drawView.selectMarker();
                 break;
             case R.id.tool_broom:
-                drawView.initFluffy();
+                drawView.selectFluffy();
                 break;
             case R.id.tool_fill:
-                drawView.initFill();
+                drawView.selectFill();
                 break;
             case R.id.tool_eraser:
-                drawView.initEraser();
+                drawView.selectEraser();
                 break;
         }
     }
 
     @OptionsItem
     boolean menuUndo() {
-        undo();
-        return true;
-    }
-
-    @Background
-    void undo() {
-        drawView.setupStub();
-        hideDrawView();
         drawView.undo();
-        drawView.removeStub();
-        showDrawView();
-    }
-
-    @UiThread(propagation = UiThread.Propagation.REUSE)
-    void hideDrawView() {
-        drawView.startAnimation(toAlpha);
-    }
-
-    @UiThread(propagation = UiThread.Propagation.REUSE)
-    void showDrawView() {
-        drawView.invalidate();
-        drawView.startAnimation(fromAlpha);
+        return true;
     }
 
     @OptionsItem

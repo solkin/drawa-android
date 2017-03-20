@@ -8,16 +8,18 @@ import com.tomclaw.drawa.tools.Tool;
 public class Event {
 
     private int index;
-    private Tool tool;
+    private int toolType;
     private int color;
+    private int radius;
     private int x;
     private int y;
     private int action;
 
-    public Event(int index, Tool tool, int color, int x, int y, int action) {
+    public Event(int index, int toolType, int color, int radius, int x, int y, int action) {
         this.index = index;
-        this.tool = tool;
+        this.toolType = toolType;
         this.color = color;
+        this.radius = radius;
         this.x = x;
         this.y = y;
         this.action = action;
@@ -27,12 +29,16 @@ public class Event {
         return index;
     }
 
-    public Tool getTool() {
-        return tool;
+    public int getToolType() {
+        return toolType;
     }
 
     public int getColor() {
         return color;
+    }
+
+    public int getRadius() {
+        return radius;
     }
 
     public int getX() {

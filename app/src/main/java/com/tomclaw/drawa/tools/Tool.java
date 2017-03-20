@@ -23,12 +23,15 @@ public abstract class Tool {
     private Canvas canvas;
     private DrawHost callback;
     private Paint paint;
+    private int baseRadius;
 
     public final void initialize(Canvas canvas, DrawHost callback) {
-        this.canvas = canvas;
-        this.callback = callback;
-        this.paint = initPaint();
-        onInitialize();
+        if (!isInitialized()) {
+            this.canvas = canvas;
+            this.callback = callback;
+            this.paint = initPaint();
+            onInitialize();
+        }
     }
 
     public boolean isInitialized() {
@@ -72,5 +75,29 @@ public abstract class Tool {
     public abstract void onDraw();
 
     public abstract byte getType();
+
+    public int getBaseRadius() {
+        return baseRadius;
+    }
+
+    public int getRadius() {
+        return (int) getPaint().getStrokeWidth();
+    }
+
+    public void setBaseRadius(int radius) {
+        if (baseRadius != radius) {
+            this.baseRadius = radius;
+            setRadius(radius);
+        }
+    }
+
+    public void setRadius(int radius) {
+        getPaint().setStrokeWidth(radius);
+    }
+
+    public void resetRadius() {
+        int baseRadius = getBaseRadius();
+        setRadius(baseRadius);
+    }
 
 }

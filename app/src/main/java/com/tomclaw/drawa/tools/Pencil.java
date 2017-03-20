@@ -3,17 +3,20 @@ package com.tomclaw.drawa.tools;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import org.androidannotations.annotations.EBean;
+
 
 /**
  * Created by solkin on 17.03.17.
  */
-public class Pencil extends Radiusable {
+@EBean
+public class Pencil extends Tool {
 
     private int startX, startY;
     private int prevX, prevY;
     private Path path;
 
-    public Pencil() {
+    Pencil() {
     }
 
     @Override

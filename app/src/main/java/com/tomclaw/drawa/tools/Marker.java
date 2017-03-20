@@ -4,12 +4,15 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import org.androidannotations.annotations.EBean;
+
 import java.util.Random;
 
 /**
  * Created by solkin on 17.03.17.
  */
-public class Marker extends Radiusable {
+@EBean
+public class Marker extends Tool {
 
     private static final int DOT_RADIUS = 4;
 
@@ -18,7 +21,7 @@ public class Marker extends Radiusable {
     private Path path;
     private Random random;
 
-    public Marker() {
+    Marker() {
     }
 
     @Override

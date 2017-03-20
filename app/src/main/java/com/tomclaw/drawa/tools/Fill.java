@@ -5,14 +5,17 @@ import android.graphics.Paint;
 
 import com.tomclaw.drawa.QueueLinearFloodFiller;
 
+import org.androidannotations.annotations.EBean;
+
 /**
  * Created by solkin on 17.03.17.
  */
+@EBean
 public class Fill extends Tool {
 
     private static final int COLOR_DELTA = 0x32;
 
-    public Fill() {
+    Fill() {
     }
 
     @Override

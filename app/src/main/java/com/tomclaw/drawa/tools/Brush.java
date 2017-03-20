@@ -3,10 +3,13 @@ package com.tomclaw.drawa.tools;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import org.androidannotations.annotations.EBean;
+
 /**
  * Created by solkin on 17.03.17.
  */
-public class Brush extends Radiusable {
+@EBean
+public class Brush extends Tool {
 
     private static final float RADIUS_MULTIPLIER = 2;
 
@@ -14,7 +17,7 @@ public class Brush extends Radiusable {
     private int prevX, prevY;
     private Path path;
 
-    public Brush() {
+    Brush() {
     }
 
     @Override

@@ -4,12 +4,15 @@ import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import org.androidannotations.annotations.EBean;
+
 import java.util.Random;
 
 /**
  * Created by solkin on 17.03.17.
  */
-public class Fluffy extends Radiusable {
+@EBean
+public class Fluffy extends Tool {
 
     private static final int DOT_RADIUS = 6;
 
@@ -18,7 +21,7 @@ public class Fluffy extends Radiusable {
     private Path path;
     private Random random;
 
-    public Fluffy() {
+    Fluffy() {
     }
 
     @Override

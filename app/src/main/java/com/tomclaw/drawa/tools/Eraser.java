@@ -3,17 +3,20 @@ package com.tomclaw.drawa.tools;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import org.androidannotations.annotations.EBean;
+
 /**
  * Created by solkin on 17.03.17.
  */
-public class Eraser extends Radiusable {
+@EBean
+public class Eraser extends Tool {
 
     private int startX, startY;
     private int prevX, prevY;
     private Path path;
     private int externalColor;
 
-    public Eraser() {
+    Eraser() {
     }
 
     @Override

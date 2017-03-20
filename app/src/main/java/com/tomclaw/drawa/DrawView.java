@@ -19,10 +19,20 @@ import com.tomclaw.drawa.tools.Marker;
 import com.tomclaw.drawa.tools.Pencil;
 import com.tomclaw.drawa.tools.Tool;
 
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EView;
+import org.androidannotations.annotations.UiThread;
 
 import java.io.File;
+
+import static com.tomclaw.drawa.tools.Tool.TYPE_BRUSH;
+import static com.tomclaw.drawa.tools.Tool.TYPE_ERASER;
+import static com.tomclaw.drawa.tools.Tool.TYPE_FILL;
+import static com.tomclaw.drawa.tools.Tool.TYPE_FLUFFY;
+import static com.tomclaw.drawa.tools.Tool.TYPE_MARKER;
+import static com.tomclaw.drawa.tools.Tool.TYPE_PENCIL;
 
 /**
  * Created by Solkin on 24.12.2014.
@@ -30,7 +40,6 @@ import java.io.File;
 @EView
 public class DrawView extends View implements DrawHost {
 
-    private Bitmap stub;
     private Bitmap bitmap;
     private Canvas canvas;
     private Paint simplePaint;
@@ -38,10 +47,36 @@ public class DrawView extends View implements DrawHost {
     private final float scaleFactor = 1.5f;
     private Rect src, dst;
     private int baseRadius = 60;
-    private History history;
+
+    private int selectedRadius;
+    private int selectedColor;
+
+    @Bean
+    History history;
+
+    @Bean
+    Pencil pencil;
+
+    @Bean
+    Brush brush;
+
+    @Bean
+    Marker marker;
+
+    @Bean
+    Fluffy fluffy;
+
+    @Bean
+    Fill fill;
+
+    @Bean
+    Eraser eraser;
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        selectedColor = 0xcd0219;
+        selectedRadius = (int) (baseRadius / scaleFactor);
 
         history = new History();
         simplePaint = new Paint();
@@ -50,58 +85,68 @@ public class DrawView extends View implements DrawHost {
         simplePaint.setDither(true);
     }
 
-    public void initPencil() {
-        Pencil pencil = new Pencil();
+    public Tool selectPencil() {
         pencil.initialize(canvas, this);
-        pencil.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(pencil);
+        return tool;
     }
 
-    public void initBrush() {
-        Brush brush = new Brush();
+    public Tool selectBrush() {
         brush.initialize(canvas, this);
-        brush.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(brush);
+        return tool;
     }
 
-    public void initMarker() {
-        Marker marker = new Marker();
+    public Tool selectMarker() {
         marker.initialize(canvas, this);
-        marker.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(marker);
+        return tool;
     }
 
-    public void initFluffy() {
-        Fluffy fluffy = new Fluffy();
+    public Tool selectFluffy() {
         fluffy.initialize(canvas, this);
-        fluffy.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(fluffy);
+        return tool;
     }
 
-    public void initFill() {
-        Fill fill = new Fill();
+    public Tool selectFill() {
         fill.initialize(canvas, this);
         setTool(fill);
+        return tool;
     }
 
-    public void initEraser() {
-        Eraser eraser = new Eraser();
+    public Tool selectEraser() {
         eraser.initialize(canvas, this);
-        eraser.setBaseRadius((int) (baseRadius / scaleFactor));
         setTool(eraser);
+        return tool;
+    }
+
+    public Tool getTool(int toolType) {
+        switch (toolType) {
+            case TYPE_PENCIL:
+                return pencil;
+            case TYPE_BRUSH:
+                return brush;
+            case TYPE_MARKER:
+                return marker;
+            case TYPE_FLUFFY:
+                return fluffy;
+            case TYPE_FILL:
+                return fill;
+            case TYPE_ERASER:
+                return eraser;
+            default:
+                throw new IllegalArgumentException("unknown tool type");
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (stub != null) {
-            canvas.drawBitmap(stub, src, dst, simplePaint);
-        } else {
-            if (bitmap == null) {
-                initBitmap();
-            }
-            canvas.drawBitmap(bitmap, src, dst, simplePaint);
-            tool.onDraw();
+        if (bitmap == null) {
+            initBitmap();
         }
+        canvas.drawBitmap(bitmap, src, dst, simplePaint);
+        tool.onDraw();
     }
 
     private void initBitmap() {
@@ -114,7 +159,7 @@ public class DrawView extends View implements DrawHost {
         src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         dst = new Rect(0, 0, getWidth(), getHeight());
 
-        initPencil();
+        selectPencil();
 
         loadHistory();
     }
@@ -129,13 +174,16 @@ public class DrawView extends View implements DrawHost {
         return true;
     }
 
-    private static void processToolEvent(Event event) {
-        Tool tool = event.getTool();
+    private void processToolEvent(Event event) {
+        Tool tool = getTool(event.getToolType());
+        tool.initialize(canvas, this);
         int color = event.getColor();
+        int radius = event.getRadius();
         int action = event.getAction();
         int x = event.getX();
         int y = event.getY();
         tool.setColor(color);
+        tool.setBaseRadius(radius);
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
                 tool.onTouchDown(x, y);
@@ -162,11 +210,12 @@ public class DrawView extends View implements DrawHost {
         long time = System.currentTimeMillis();
         history.undo();
         applyHistory();
+        invalidate();
         time = System.currentTimeMillis() - time;
         Log.d("Drawa", String.format("Undo time: %d msec.", time));
     }
 
-    private void applyHistory() {
+    void applyHistory() {
         canvas.drawColor(Color.WHITE);
         for (Event event : history.getEvents()) {
             processToolEvent(event);
@@ -184,27 +233,32 @@ public class DrawView extends View implements DrawHost {
         invalidate();
     }
 
-    public void setupStub() {
-        stub = Bitmap.createBitmap(bitmap);
-    }
-
-    public void removeStub() {
-        stub.recycle();
-        stub = null;
-    }
-
     public void setTool(Tool tool) {
         int color = getToolColor();
+        int radius = getToolRadius();
         tool.setColor(color);
+        tool.setBaseRadius(radius);
+        tool.resetRadius();
         this.tool = tool;
     }
 
     public void setToolColor(int color) {
+        selectedColor = color;
         tool.setColor(color);
     }
 
+    public void setToolRadius(int radius) {
+        selectedRadius = radius;
+        tool.setBaseRadius(radius);
+        tool.resetRadius();
+    }
+
     private int getToolColor() {
-        return tool == null ? 0xcd0219 : tool.getColor();
+        return selectedColor;
+    }
+
+    private int getToolRadius() {
+        return selectedRadius;
     }
 
     private void clear() {
@@ -221,18 +275,17 @@ public class DrawView extends View implements DrawHost {
         return new File(getContext().getFilesDir(), "backup.dat");
     }
 
-    @Background
     public void loadHistory() {
         File backup = getBackupFile();
         loadHistory(backup);
     }
 
     private void loadHistory(File file) {
-        history.load(file, canvas, this);
+        history.load(file);
         applyHistory();
+        invalidate();
     }
 
-    @Background
     public void saveHistory() {
         File backup = getBackupFile();
         saveHistory(backup);
