@@ -6,6 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -18,14 +20,15 @@ import com.tomclaw.drawa.tools.Fluffy;
 import com.tomclaw.drawa.tools.Marker;
 import com.tomclaw.drawa.tools.Pencil;
 import com.tomclaw.drawa.tools.Tool;
+import com.waynejo.androidndkgif.GifEncoder;
 
-import org.androidannotations.annotations.AfterInject;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EView;
-import org.androidannotations.annotations.UiThread;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import static com.tomclaw.drawa.tools.Tool.TYPE_BRUSH;
 import static com.tomclaw.drawa.tools.Tool.TYPE_ERASER;
@@ -44,7 +47,7 @@ public class DrawView extends View implements DrawHost {
     private Canvas canvas;
     private Paint simplePaint;
     private Tool tool;
-    private final float scaleFactor = 1.5f;
+    private final float scaleFactor = 2f;
     private Rect src, dst;
     private int baseRadius = 60;
 
@@ -284,6 +287,54 @@ public class DrawView extends View implements DrawHost {
         history.load(file);
         applyHistory();
         invalidate();
+    }
+
+    public Uri exportGif() {
+        File dir = new File(getContext().getFilesDir(), "images");
+        dir.mkdirs();
+        File file = new File(dir, "drawa.gif");
+        OutputStream stream = null;
+        try {
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            long time = System.currentTimeMillis();
+            stream = new FileOutputStream(file);
+            GifEncoder gifEncoder = new GifEncoder();
+            gifEncoder.init(width, height, file.getAbsolutePath(),
+                    GifEncoder.EncodingType.ENCODING_TYPE_SIMPLE_FAST);
+            gifEncoder.setDither(true);
+
+            int index = -1;
+            int c = 0;
+            canvas.drawColor(Color.WHITE);
+            for (Event event : history.getEvents()) {
+                if (index == -1) {
+                    index = event.getIndex();
+                } else if (event.getIndex() != index) {
+                    gifEncoder.encodeFrame(bitmap, 250);
+                    index = event.getIndex();
+                    Log.d("Drawa", String.format("Written %1$d/%2$d frames", c, history.getEvents().size()));
+                }
+                processToolEvent(event);
+                c++;
+            }
+            gifEncoder.encodeFrame(bitmap, 250);
+
+            gifEncoder.close();
+            time = System.currentTimeMillis() - time;
+            Log.d("Drawa", String.format("GIF export completed in %d msec.", time));
+            return FileProvider.getUriForFile(getContext(), "com.tomclaw.drawa.fileprovider", file);
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        return null;
     }
 
     public void saveHistory() {

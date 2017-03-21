@@ -1,6 +1,11 @@
 package com.tomclaw.drawa;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,11 +17,9 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -168,6 +171,26 @@ public class MainActivity extends AppCompatActivity {
 
     void saveDrawStack() {
         drawView.saveHistory();
+        Uri uri = drawView.exportGif();
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, "Drawa GIF");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.setType("image/gif");
+
+        grantUriPermission(this, uri, intent);
+
+        startActivity(Intent.createChooser(intent, "Send to..."));
+
+    }
+
+    private static void grantUriPermission(Context context, Uri uri, Intent intent) {
+        List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            context.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
     }
 
 }
