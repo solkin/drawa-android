@@ -306,7 +306,9 @@ public class DrawView extends View implements DrawHost {
 
             int index = -1;
             int c = 0;
+
             canvas.drawColor(Color.WHITE);
+            gifEncoder.encodeFrame(bitmap, 100);
             for (Event event : history.getEvents()) {
                 if (index == -1) {
                     index = event.getIndex();

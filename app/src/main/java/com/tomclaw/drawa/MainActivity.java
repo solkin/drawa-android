@@ -12,8 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -55,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
     @ViewById
     RecyclerView paletteRecycler;
-
-    private Animation toAlpha;
-    private Animation fromAlpha;
 
     private PaletteAdapter adapter;
     private ImageView[] toolViews;
@@ -103,20 +98,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setSelectedTool(toolPencil);
-
-        AlphaAnimation animation;
-
-        animation = new AlphaAnimation(1.0f, 0.0f);
-        animation.setDuration(200);
-        animation.setStartOffset(0);
-        animation.setFillAfter(true);
-        toAlpha = animation;
-
-        animation = new AlphaAnimation(0.0f, 1.0f);
-        animation.setDuration(200);
-        animation.setStartOffset(0);
-        animation.setFillAfter(true);
-        fromAlpha = animation;
     }
 
     private void setSelectedTool(ImageView selected) {
@@ -175,13 +156,12 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, "Drawa GIF");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.setType("image/gif");
 
         grantUriPermission(this, uri, intent);
 
-        startActivity(Intent.createChooser(intent, "Send to..."));
+        startActivity(Intent.createChooser(intent, getString(R.string.send_to)));
 
     }
 
