@@ -347,4 +347,8 @@ public class DrawView extends View implements DrawHost {
     private void saveHistory(File file) {
         history.save(file);
     }
+
+    public float getScaleFactor() {
+        return scaleFactor;
+    }
 }

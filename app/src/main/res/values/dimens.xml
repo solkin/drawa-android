@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="toolbar_shadow_size">5dp</dimen>
+    <dimen name="popup_width">50dp</dimen>
+    <dimen name="popup_height">180dp</dimen>
 </resources>

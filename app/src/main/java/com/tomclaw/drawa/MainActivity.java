@@ -11,17 +11,24 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.view.View.GONE;
 
 @EActivity(R.layout.main)
 @OptionsMenu(R.menu.main_menu)
@@ -32,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
     @ViewById
     DrawView drawView;
+
+    @ViewById
+    ViewGroup toolsContainer;
 
     @ViewById
     ImageView toolPencil;
@@ -56,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
 
     private PaletteAdapter adapter;
     private ImageView[] toolViews;
+
+    private int popupWidth = 180;
+    private int popupHeight = 450;
+    private PopupWindow popup;
+    private PopupView popupView;
+    private int popupX;
+    private int popupY;
 
     @AfterViews
     void init() {
@@ -89,15 +106,59 @@ public class MainActivity extends AppCompatActivity {
         toolViews[5] = toolEraser;
 
         for (ImageView toolView : toolViews) {
-            toolView.setOnClickListener(new View.OnClickListener() {
+            toolView.setOnTouchListener(new View.OnTouchListener() {
+
                 @Override
-                public void onClick(View view) {
-                    setSelectedTool((ImageView) view);
+                public boolean onTouch(View view, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        setSelectedTool((ImageView) view);
+                        showPopup(view);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        dismissPopup();
+                    } else {
+                        if (popup != null) {
+                            int value = (int) (100 * (popupY + popupHeight - event.getRawY()) / popupHeight);
+                            if (value < 0) {
+                                value = 0;
+                            } else if (value > 100) {
+                                value = 100;
+                            }
+                            popupView.setSeekBarValue(value);
+                            drawView.setToolRadius((int) ((value + 20) / drawView.getScaleFactor()));
+                        }
+                    }
+                    return false;
                 }
             });
         }
 
         setSelectedTool(toolPencil);
+    }
+
+    void showPopup(View view) {
+        popupWidth = getResources().getDimensionPixelSize(R.dimen.popup_width);
+        popupHeight = getResources().getDimensionPixelSize(R.dimen.popup_height);
+        popupView = PopupView_.build(this);
+        popup = new PopupWindow(popupView, popupWidth, popupHeight, true);
+        popup.setTouchInterceptor(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        popupX = location[0] + view.getWidth() / 2 - popupWidth / 2;
+        popupY = location[1] + view.getHeight() / 2 - popupHeight / 2;
+        popup.showAtLocation(view, Gravity.START | Gravity.TOP, popupX, popupY);
+    }
+
+    @UiThread(delay = 100)
+    void dismissPopup() {
+        if (popup != null) {
+            popupView.setVisibility(GONE);
+            popup.dismiss();
+        }
     }
 
     private void setSelectedTool(ImageView selected) {

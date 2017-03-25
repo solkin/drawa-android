@@ -29,6 +29,7 @@
         <include layout="@layout/toolbar_shadow_view"/>
     </FrameLayout>
     <LinearLayout
+        android:id="@+id/tools_container"
         android:layout_width="match_parent"
         android:layout_height="64dp">
         <ImageView
