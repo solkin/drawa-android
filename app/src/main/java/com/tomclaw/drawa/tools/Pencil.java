@@ -60,7 +60,7 @@ public class Pencil extends Tool {
         if (x == startX && y == startY) {
             path.lineTo(x + 0.1f, y);
         } else {
-            path.lineTo(x, y);
+            path.quadTo(prevX, prevY, (x + prevX) / 2, (y + prevY) / 2);
         }
 
         prevX = x;
@@ -74,7 +74,9 @@ public class Pencil extends Tool {
         if (path.isEmpty()) {
             path.moveTo(prevX, prevY);
         }
-        path.lineTo(x, y);
+        path.quadTo(prevX, prevY, x, y);
+
+        path.reset();
 
         drawPath(path);
 
@@ -84,7 +86,6 @@ public class Pencil extends Tool {
 
     @Override
     public void onDraw() {
-        path.reset();
     }
 
     @Override

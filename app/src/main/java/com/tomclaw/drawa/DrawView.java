@@ -47,7 +47,7 @@ public class DrawView extends View implements DrawHost {
     private Canvas canvas;
     private Paint simplePaint;
     private Tool tool;
-    private final float scaleFactor = 2f;
+    private final float scaleFactor = 1f;
     private Rect src, dst;
     private int baseRadius = 60;
 

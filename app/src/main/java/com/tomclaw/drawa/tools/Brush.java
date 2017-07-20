@@ -60,7 +60,7 @@ public class Brush extends Tool {
         if (path.isEmpty()) {
             path.moveTo(prevX, prevY);
         }
-        path.lineTo(x, y);
+        path.quadTo(prevX, prevY, (x + prevX) / 2, (y + prevY) / 2);
 
         int deltaX = Math.abs(x - prevX);
         int deltaY = Math.abs(y - prevY);
@@ -68,6 +68,10 @@ public class Brush extends Tool {
         int radius = getRadius();
         if (length < getBaseRadius() / 5) {
             radius += 2;
+
+            path.reset();
+            path.moveTo(prevX, prevY);
+            path.lineTo(x, y);
         } else {
             radius -= 2;
         }
@@ -96,11 +100,12 @@ public class Brush extends Tool {
 
         prevX = 0;
         prevY = 0;
+
+        path.reset();
     }
 
     @Override
     public void onDraw() {
-        path.reset();
     }
 
     @Override
