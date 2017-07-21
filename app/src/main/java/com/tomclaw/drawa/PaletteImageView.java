@@ -1,13 +1,13 @@
 package com.tomclaw.drawa;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 /**
  * Created by Solkin on 25.12.2014.
  */
-public class PaletteImageView extends ImageView {
+public class PaletteImageView extends AppCompatImageView {
     public PaletteImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
