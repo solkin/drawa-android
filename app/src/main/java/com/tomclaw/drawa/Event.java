@@ -1,7 +1,5 @@
 package com.tomclaw.drawa;
 
-import com.tomclaw.drawa.tools.Tool;
-
 /**
  * Created by solkin on 19.03.17.
  */
