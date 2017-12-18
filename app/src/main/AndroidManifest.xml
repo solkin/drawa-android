@@ -9,23 +9,39 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name="com.tomclaw.drawa.MainActivity_"
+            android:name="com.tomclaw.drawa.DrawActivity_"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".StockActivity_"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
+
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
+
         </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.tomclaw.drawa.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
+
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
+
         </provider>
+
     </application>
+
 </manifest>

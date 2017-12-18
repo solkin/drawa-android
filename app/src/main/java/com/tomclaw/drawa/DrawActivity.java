@@ -1,5 +1,6 @@
 package com.tomclaw.drawa;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,9 +31,10 @@ import java.util.List;
 
 import static android.view.View.GONE;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.main)
 @OptionsMenu(R.menu.main_menu)
-public class MainActivity extends AppCompatActivity {
+public class DrawActivity extends AppCompatActivity {
 
     @ViewById
     Toolbar toolbar;
