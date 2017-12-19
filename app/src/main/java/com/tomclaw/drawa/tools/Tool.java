@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.tomclaw.drawa.DrawHost;
+import com.tomclaw.drawa.draw.DrawHost;
 
 /**
  * Created by solkin on 17.03.17.

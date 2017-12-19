@@ -1,4 +1,4 @@
-package com.tomclaw.drawa;
+package com.tomclaw.drawa.draw;
 
 /**
  * Created by solkin on 19.03.17.

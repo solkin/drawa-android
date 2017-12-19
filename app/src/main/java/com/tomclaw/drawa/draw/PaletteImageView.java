@@ -1,4 +1,4 @@
-package com.tomclaw.drawa;
+package com.tomclaw.drawa.draw;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatImageView;

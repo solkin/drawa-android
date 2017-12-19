@@ -3,7 +3,7 @@ package com.tomclaw.drawa.tools;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 
-import com.tomclaw.drawa.QueueLinearFloodFiller;
+import com.tomclaw.drawa.draw.QueueLinearFloodFiller;
 
 import org.androidannotations.annotations.EBean;
 

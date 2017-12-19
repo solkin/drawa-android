@@ -1,10 +1,11 @@
-package com.tomclaw.drawa;
+package com.tomclaw.drawa.draw;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.FrameLayout;
 
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar;
+import com.tomclaw.drawa.R;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;

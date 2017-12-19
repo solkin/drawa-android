@@ -1,4 +1,4 @@
-package com.tomclaw.drawa;
+package com.tomclaw.drawa.tools;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

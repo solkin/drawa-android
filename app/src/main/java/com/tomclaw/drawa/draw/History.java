@@ -1,4 +1,4 @@
-package com.tomclaw.drawa;
+package com.tomclaw.drawa.draw;
 
 import android.util.Log;
 import android.view.MotionEvent;
