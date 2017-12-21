@@ -1,6 +1,6 @@
-package com.tomclaw.drawa.tools;
+package com.tomclaw.drawa.draw.tools;
 
-import android.graphics.DiscretePathEffect;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 
@@ -12,16 +12,16 @@ import java.util.Random;
  * Created by solkin on 17.03.17.
  */
 @EBean
-public class Fluffy extends Tool {
+public class Marker extends Tool {
 
-    private static final int DOT_RADIUS = 6;
+    private static final int DOT_RADIUS = 4;
 
     private int startX, startY;
     private int prevX, prevY;
     private Path path;
     private Random random;
 
-    Fluffy() {
+    Marker() {
     }
 
     @Override
@@ -33,18 +33,16 @@ public class Fluffy extends Tool {
     @Override
     Paint initPaint() {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.MITER);
-        paint.setStrokeCap(Paint.Cap.SQUARE);
-        paint.setStrokeMiter(0.2f);
-        paint.setPathEffect(new DiscretePathEffect(2, 2));
+        paint.setStrokeCap(Paint.Cap.BUTT);
+        paint.setPathEffect(new DashPathEffect(new float[]{2, 0}, 0));
         return paint;
     }
 
     @Override
     int getAlpha() {
-        return 0x20;
+        return 0x50;
     }
 
     @Override
@@ -100,7 +98,7 @@ public class Fluffy extends Tool {
 
     @Override
     public byte getType() {
-        return TYPE_FLUFFY;
+        return TYPE_MARKER;
     }
 
     private int randomizeCoordinate(int value) {

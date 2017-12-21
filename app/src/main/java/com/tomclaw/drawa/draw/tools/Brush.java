@@ -1,4 +1,4 @@
-package com.tomclaw.drawa.tools;
+package com.tomclaw.drawa.draw.tools;
 
 import android.graphics.Paint;
 import android.graphics.Path;

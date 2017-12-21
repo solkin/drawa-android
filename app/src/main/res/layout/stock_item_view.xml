@@ -16,7 +16,7 @@
     app:cardCornerRadius="2dp"
     app:cardElevation="@dimen/cardview_default_elevation">
 
-    <com.tomclaw.drawa.tools.AspectRatioImageView
+    <com.tomclaw.drawa.util.AspectRatioImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

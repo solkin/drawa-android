@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.widget.FrameLayout;
 
 import com.tomclaw.drawa.core.GlideApp;
-import com.tomclaw.drawa.tools.AspectRatioImageView;
+import com.tomclaw.drawa.util.AspectRatioImageView;
 import com.tomclaw.drawa.R;
 import com.tomclaw.drawa.dto.Image;
 import com.tomclaw.drawa.dto.Size;
@@ -35,7 +35,6 @@ public class StockItemView extends FrameLayout {
 
         GlideApp.with(getContext())
                 .load(path)
-                .placeholder(R.drawable.placeholder)
                 .override(remoteImageSize.getWidth(), remoteImageSize.getHeight())
                 .centerCrop()
                 .into(imageView);

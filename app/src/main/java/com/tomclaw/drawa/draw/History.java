@@ -3,7 +3,7 @@ package com.tomclaw.drawa.draw;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.tomclaw.drawa.tools.Tool;
+import com.tomclaw.drawa.draw.tools.Tool;
 
 import org.androidannotations.annotations.EBean;
 

@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.tomclaw.drawa"
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 27
     }
 
     buildTypes {
@@ -28,7 +28,9 @@ dependencies {
     implementation 'com.waynejo:androidndkgif:0.3.2'
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
     annotationProcessor "org.androidannotations:androidannotations:4.3.1"
-    implementation "org.androidannotations:androidannotations-api:4.3.1"
+    implementation 'org.androidannotations:androidannotations-api:4.3.1'
     implementation 'com.github.bumptech.glide:glide:4.4.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.6'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 }

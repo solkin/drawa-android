@@ -13,13 +13,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.tomclaw.drawa.tools.Brush;
-import com.tomclaw.drawa.tools.Eraser;
-import com.tomclaw.drawa.tools.Fill;
-import com.tomclaw.drawa.tools.Fluffy;
-import com.tomclaw.drawa.tools.Marker;
-import com.tomclaw.drawa.tools.Pencil;
-import com.tomclaw.drawa.tools.Tool;
+import com.tomclaw.drawa.draw.tools.Brush;
+import com.tomclaw.drawa.draw.tools.Eraser;
+import com.tomclaw.drawa.draw.tools.Fill;
+import com.tomclaw.drawa.draw.tools.Fluffy;
+import com.tomclaw.drawa.draw.tools.Marker;
+import com.tomclaw.drawa.draw.tools.Pencil;
+import com.tomclaw.drawa.draw.tools.Tool;
 import com.waynejo.androidndkgif.GifEncoder;
 
 import org.androidannotations.annotations.Bean;
@@ -30,12 +30,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static com.tomclaw.drawa.tools.Tool.TYPE_BRUSH;
-import static com.tomclaw.drawa.tools.Tool.TYPE_ERASER;
-import static com.tomclaw.drawa.tools.Tool.TYPE_FILL;
-import static com.tomclaw.drawa.tools.Tool.TYPE_FLUFFY;
-import static com.tomclaw.drawa.tools.Tool.TYPE_MARKER;
-import static com.tomclaw.drawa.tools.Tool.TYPE_PENCIL;
+import static com.tomclaw.drawa.draw.tools.Tool.TYPE_BRUSH;
+import static com.tomclaw.drawa.draw.tools.Tool.TYPE_ERASER;
+import static com.tomclaw.drawa.draw.tools.Tool.TYPE_FILL;
+import static com.tomclaw.drawa.draw.tools.Tool.TYPE_FLUFFY;
+import static com.tomclaw.drawa.draw.tools.Tool.TYPE_MARKER;
+import static com.tomclaw.drawa.draw.tools.Tool.TYPE_PENCIL;
 
 /**
  * Created by Solkin on 24.12.2014.

@@ -21,6 +21,11 @@ public class StockAdapter extends RecyclerView.Adapter<StockItemHolder> {
         setHasStableIds(true);
     }
 
+    public void setItems(List<StockItem> items) {
+        this.items.clear();
+        this.items.addAll(items);
+    }
+
     @Override
     public StockItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         StockItemView stockView = StockItemView_.build(context);
