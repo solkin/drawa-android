@@ -2,7 +2,9 @@ package com.tomclaw.drawa.stock;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.tomclaw.drawa.core.GlideApp;
 import com.tomclaw.drawa.util.AspectRatioImageView;
@@ -27,16 +29,22 @@ public class StockItemView extends FrameLayout {
     }
 
     public void showImage(Image image) {
-        Size remoteImageSize = image.getSize();
-        float aspectRatio = (float) remoteImageSize.getHeight() / (float) remoteImageSize.getWidth();
-        imageView.setAspectRatio(aspectRatio);
+        if (TextUtils.isEmpty(image.getName())) {
+            imageView.setImageResource(R.drawable.plus);
+            imageView.setScaleType(ImageView.ScaleType.CENTER);
+        } else {
+            Size remoteImageSize = image.getSize();
+            float aspectRatio = (float) remoteImageSize.getHeight() / (float) remoteImageSize.getWidth();
+            imageView.setAspectRatio(aspectRatio);
 
-        String path = image.getName();
+            String path = image.getName();
 
-        GlideApp.with(getContext())
-                .load(path)
-                .override(remoteImageSize.getWidth(), remoteImageSize.getHeight())
-                .centerCrop()
-                .into(imageView);
+            GlideApp.with(getContext())
+                    .load(path)
+                    .centerCrop()
+                    .override(remoteImageSize.getWidth(), remoteImageSize.getHeight())
+                    .centerCrop()
+                    .into(imageView);
+        }
     }
 }
