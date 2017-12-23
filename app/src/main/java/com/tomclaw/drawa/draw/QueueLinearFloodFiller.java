@@ -159,7 +159,7 @@ public class QueueLinearFloodFiller {
     // on a given y coordinate, starting from a given x coordinate, filling as
     // it goes.
     // Adds the resulting horizontal range to the queue of floodfill ranges,
-    // to be processed in the main loop.
+    // to be processed in the draw loop.
 
     // int x, int y: The starting coords
     protected void LinearFill(int x, int y) {

@@ -2,6 +2,7 @@ package com.tomclaw.drawa.dto;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * Created by solkin on 27.02.17.
@@ -10,6 +11,11 @@ public class Image implements Parcelable {
 
     private String name;
     private Size size;
+
+    public Image(Size size) {
+        this.name = "";
+        this.size = size;
+    }
 
     public Image(String name, Size size) {
         this.name = name;
@@ -23,6 +29,10 @@ public class Image implements Parcelable {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isEmpty() {
+        return TextUtils.isEmpty(name);
     }
 
     public Size getSize() {

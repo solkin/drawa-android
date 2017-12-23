@@ -34,7 +34,7 @@ import java.util.List;
 import static android.view.View.GONE;
 
 @SuppressLint("Registered")
-@EActivity(R.layout.main)
+@EActivity(R.layout.draw)
 @OptionsMenu(R.menu.main_menu)
 public class DrawActivity extends AppCompatActivity {
 

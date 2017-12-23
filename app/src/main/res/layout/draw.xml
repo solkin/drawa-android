@@ -24,13 +24,15 @@
             app:cardCornerRadius="@dimen/cardview_default_radius"
             android:layout_gravity="center">
 
-            <com.tomclaw.drawa.DrawView_
+            <com.tomclaw.drawa.draw.DrawView_
                 android:id="@+id/draw_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
         </android.support.v7.widget.CardView>
 
         <include layout="@layout/toolbar_shadow_view" />
+
     </FrameLayout>
 
     <LinearLayout
@@ -67,6 +69,7 @@
             android:id="@+id/tool_eraser"
             style="@style/ToolItem"
             android:src="@drawable/eraser" />
+
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -75,5 +78,6 @@
         android:layout_height="wrap_content"
         android:paddingLeft="4dp"
         android:paddingRight="4dp" />
+
 </LinearLayout>
 

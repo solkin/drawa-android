@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.tomclaw.drawa.R;
+import com.tomclaw.drawa.draw.DrawActivity_;
 import com.tomclaw.drawa.dto.Image;
 import com.tomclaw.drawa.dto.Size;
 
@@ -16,7 +17,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -55,6 +55,12 @@ public class StockActivity extends AppCompatActivity {
         recycler.setHasFixedSize(true);
 
         adapter = new StockAdapter(this);
+        adapter.setClickListener(new StockItemClickListener() {
+            @Override
+            public void onClick(StockItem item) {
+                startDrawActivity();
+            }
+        });
 
         recycler.setAdapter(adapter);
 
@@ -75,6 +81,12 @@ public class StockActivity extends AppCompatActivity {
             public void onError(Throwable e) {
             }
         });
+    }
+
+    private void startDrawActivity() {
+        DrawActivity_
+                .intent(this)
+                .start();
     }
 
     private SingleOnSubscribe<List<StockItem>> loadStockItems() {

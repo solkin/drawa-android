@@ -15,7 +15,15 @@ public class StockItemHolder extends RecyclerView.ViewHolder {
         this.itemView = itemView;
     }
 
-    public void bind(StockItem item) {
+    public void bind(final StockItem item, final StockItemClickListener listener) {
         itemView.showImage(item.getImage());
+        itemView.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener != null) {
+                    listener.onClick(item);
+                }
+            }
+        });
     }
 }

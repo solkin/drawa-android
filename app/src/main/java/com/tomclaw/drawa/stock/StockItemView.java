@@ -6,11 +6,11 @@ import android.text.TextUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.tomclaw.drawa.core.GlideApp;
-import com.tomclaw.drawa.util.AspectRatioImageView;
 import com.tomclaw.drawa.R;
+import com.tomclaw.drawa.core.GlideApp;
 import com.tomclaw.drawa.dto.Image;
 import com.tomclaw.drawa.dto.Size;
+import com.tomclaw.drawa.util.AspectRatioImageView;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
@@ -29,7 +29,7 @@ public class StockItemView extends FrameLayout {
     }
 
     public void showImage(Image image) {
-        if (TextUtils.isEmpty(image.getName())) {
+        if (image.isEmpty()) {
             imageView.setImageResource(R.drawable.plus);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
         } else {
@@ -46,5 +46,9 @@ public class StockItemView extends FrameLayout {
                     .centerCrop()
                     .into(imageView);
         }
+    }
+
+    public void setClickListener(OnClickListener listener) {
+        imageView.setOnClickListener(listener);
     }
 }

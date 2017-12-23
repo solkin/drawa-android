@@ -14,6 +14,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockItemHolder> {
 
     private Context context;
     private final List<StockItem> items;
+    private StockItemClickListener listener;
 
     public StockAdapter(Context context) {
         this.context = context;
@@ -26,6 +27,10 @@ public class StockAdapter extends RecyclerView.Adapter<StockItemHolder> {
         this.items.addAll(items);
     }
 
+    public void setClickListener(StockItemClickListener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public StockItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         StockItemView stockView = StockItemView_.build(context);
@@ -36,7 +41,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockItemHolder> {
     @Override
     public void onBindViewHolder(StockItemHolder holder, int position) {
         StockItem item = items.get(position);
-        holder.bind(item);
+        holder.bind(item, listener);
     }
 
     @Override
