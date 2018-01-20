@@ -95,7 +95,8 @@ public class StockActivity extends AppCompatActivity {
             public void subscribe(SingleEmitter<List<StockItem>> e) throws Exception {
                 List<StockItem> items = Arrays.asList(
                         new StockItem(new Image("", new Size(10, 10))),
-                        new StockItem(new Image("image2", new Size(10, 10)))
+                        new StockItem(new Image("image2", new Size(10, 10))),
+                        new StockItem(new Image("image3", new Size(10, 10)))
                 );
                 e.onSuccess(items);
             }

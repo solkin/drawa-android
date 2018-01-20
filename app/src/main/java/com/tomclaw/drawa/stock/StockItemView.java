@@ -2,7 +2,7 @@ package com.tomclaw.drawa.stock;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
+import android.support.v7.widget.CardView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -20,6 +20,9 @@ import org.androidannotations.annotations.ViewById;
  */
 @EViewGroup(R.layout.stock_item_view)
 public class StockItemView extends FrameLayout {
+
+    @ViewById
+    CardView cardView;
 
     @ViewById
     AspectRatioImageView imageView;
@@ -49,6 +52,6 @@ public class StockItemView extends FrameLayout {
     }
 
     public void setClickListener(OnClickListener listener) {
-        imageView.setOnClickListener(listener);
+        cardView.setOnClickListener(listener);
     }
 }
