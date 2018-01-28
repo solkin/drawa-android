@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            if (project.hasProperty("storeFile")) storeFile file("$rootDir/" + project.storeFile)
+            if (project.hasProperty("storePassword")) storePassword project.storePassword
+            if (project.hasProperty("keyAlias")) keyAlias project.keyAlias
+            if (project.hasProperty("keyPassword")) keyPassword project.keyPassword
+        }
+    }
+    
     compileSdkVersion 27
     buildToolsVersion '27.0.2'
 
@@ -8,11 +17,15 @@ android {
         applicationId "com.tomclaw.drawa"
         minSdkVersion 14
         targetSdkVersion 27
+        versionCode project.hasProperty("versionCode") ? Integer.parseInt(project.versionCode) : 1
+        versionName "1.0"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
