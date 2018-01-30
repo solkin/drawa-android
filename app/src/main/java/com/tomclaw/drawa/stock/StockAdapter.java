@@ -33,7 +33,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockItemHolder> {
 
     @Override
     public StockItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        StockItemView stockView = StockItemView_.build(context);
+        StockItemView stockView = null; // StockItemView_.build(context);
         return new StockItemHolder(stockView);
 
     }

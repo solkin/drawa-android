@@ -7,16 +7,13 @@ import android.widget.FrameLayout;
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar;
 import com.tomclaw.drawa.R;
 
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
-
 /**
  * Created by solkin on 25.03.17.
  */
-@EViewGroup(R.layout.popup_view)
+//@EViewGroup(R.layout.popup_view)
 public class PopupView extends FrameLayout {
 
-    @ViewById
+//    @ViewById
     VerticalSeekBar seekBar;
 
     public PopupView(@NonNull Context context) {

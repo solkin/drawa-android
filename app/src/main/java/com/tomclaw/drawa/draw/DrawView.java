@@ -22,9 +22,6 @@ import com.tomclaw.drawa.draw.tools.Pencil;
 import com.tomclaw.drawa.draw.tools.Tool;
 import com.waynejo.androidndkgif.GifEncoder;
 
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EView;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,7 +37,7 @@ import static com.tomclaw.drawa.draw.tools.Tool.TYPE_PENCIL;
 /**
  * Created by Solkin on 24.12.2014.
  */
-@EView
+//@EView
 public class DrawView extends View implements DrawHost {
 
     private Bitmap bitmap;
@@ -54,25 +51,25 @@ public class DrawView extends View implements DrawHost {
     private int selectedRadius;
     private int selectedColor;
 
-    @Bean
+    //    @Bean
     History history;
 
-    @Bean
+    //    @Bean
     Pencil pencil;
 
-    @Bean
+    //    @Bean
     Brush brush;
 
-    @Bean
+    //    @Bean
     Marker marker;
 
-    @Bean
+    //    @Bean
     Fluffy fluffy;
 
-    @Bean
+    //    @Bean
     Fill fill;
 
-    @Bean
+    //    @Bean
     Eraser eraser;
 
     public DrawView(Context context, AttributeSet attrs) {

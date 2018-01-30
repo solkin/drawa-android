@@ -4,14 +4,12 @@ import android.graphics.DiscretePathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import org.androidannotations.annotations.EBean;
-
 import java.util.Random;
 
 /**
  * Created by solkin on 17.03.17.
  */
-@EBean
+//@EBean
 public class Fluffy extends Tool {
 
     private static final int DOT_RADIUS = 6;

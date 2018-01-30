@@ -5,8 +5,6 @@ import android.view.MotionEvent;
 
 import com.tomclaw.drawa.draw.tools.Tool;
 
-import org.androidannotations.annotations.EBean;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -21,7 +19,7 @@ import java.util.Stack;
 /**
  * Created by solkin on 20.03.17.
  */
-@EBean
+//@EBean
 public class History {
 
     private static final int BACKUP_VERSION = 0x01;

@@ -7,24 +7,20 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.tomclaw.drawa.R;
-import com.tomclaw.drawa.core.GlideApp;
 import com.tomclaw.drawa.dto.Image;
 import com.tomclaw.drawa.dto.Size;
 import com.tomclaw.drawa.util.AspectRatioImageView;
 
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
-
 /**
  * Created by solkin on 19/12/2017.
  */
-@EViewGroup(R.layout.stock_item_view)
+//@EViewGroup(R.layout.stock_item_view)
 public class StockItemView extends FrameLayout {
 
-    @ViewById
+//    @ViewById
     CardView cardView;
 
-    @ViewById
+//    @ViewById
     AspectRatioImageView imageView;
 
     public StockItemView(@NonNull Context context) {
@@ -42,12 +38,12 @@ public class StockItemView extends FrameLayout {
 
             String path = image.getName();
 
-            GlideApp.with(getContext())
-                    .load(path)
-                    .centerCrop()
-                    .override(remoteImageSize.getWidth(), remoteImageSize.getHeight())
-                    .centerCrop()
-                    .into(imageView);
+//            GlideApp.with(getContext())
+//                    .load(path)
+//                    .centerCrop()
+//                    .override(remoteImageSize.getWidth(), remoteImageSize.getHeight())
+//                    .centerCrop()
+//                    .into(imageView);
         }
     }
 
