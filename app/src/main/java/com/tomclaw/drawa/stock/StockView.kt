@@ -15,7 +15,7 @@ interface StockView {
 
 }
 
-class StockItemImpl(view: View) : StockView {
+class StockViewImpl(view: View) : StockView {
 
     override fun showProgress() {
 

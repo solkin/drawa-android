@@ -6,19 +6,20 @@ import com.tomclaw.drawa.di.DaggerAppComponent
 
 class App : Application() {
 
-    private var component: AppComponent? = null
+    lateinit var component: AppComponent
+        private set
 
     override fun onCreate() {
         super.onCreate()
         component = buildComponent()
     }
 
-    fun getComponent(): AppComponent? {
-        return component
-    }
-
     private fun buildComponent(): AppComponent {
         return DaggerAppComponent.builder().build()
     }
 
+}
+
+fun Application.getComponent(): AppComponent {
+    return (this as App).component
 }

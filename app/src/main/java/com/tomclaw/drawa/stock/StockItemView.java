@@ -17,10 +17,10 @@ import com.tomclaw.drawa.util.AspectRatioImageView;
 //@EViewGroup(R.layout.stock_item_view)
 public class StockItemView extends FrameLayout {
 
-//    @ViewById
+    //    @ViewById
     CardView cardView;
 
-//    @ViewById
+    //    @ViewById
     AspectRatioImageView imageView;
 
     public StockItemView(@NonNull Context context) {
@@ -45,9 +45,5 @@ public class StockItemView extends FrameLayout {
 //                    .centerCrop()
 //                    .into(imageView);
         }
-    }
-
-    public void setClickListener(OnClickListener listener) {
-        cardView.setOnClickListener(listener);
     }
 }
