@@ -24,5 +24,4 @@ class StockItem(val image: Image) : Parcelable {
         }
     }
 
-
 }

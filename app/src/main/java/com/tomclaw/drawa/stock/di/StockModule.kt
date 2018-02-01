@@ -1,10 +1,9 @@
 package com.tomclaw.drawa.stock.di
 
 import android.os.Bundle
-import com.tomclaw.drawa.stock.StockInteractor
-import com.tomclaw.drawa.stock.StockInteractorImpl
-import com.tomclaw.drawa.stock.StockPresenter
-import com.tomclaw.drawa.stock.StockPresenterImpl
+import com.tomclaw.drawa.stock.*
+import com.tomclaw.drawa.util.DataProvider
+import com.tomclaw.drawa.util.SchedulersFactory
 import dagger.Module
 import dagger.Provides
 
@@ -12,13 +11,20 @@ import dagger.Provides
 class StockModule(private val presenterState: Bundle?) {
 
     @Provides
-    fun provideStockPresenter(): StockPresenter {
-        return StockPresenterImpl(presenterState)
+    fun provideStockPresenter(interactor: StockInteractor,
+                              dataProvider: DataProvider<StockItem>,
+                              schedulers: SchedulersFactory): StockPresenter {
+        return StockPresenterImpl(interactor, dataProvider, schedulers, presenterState)
     }
 
     @Provides
     fun provideStockInteractor(): StockInteractor {
         return StockInteractorImpl()
+    }
+
+    @Provides
+    fun provideStockItemDataProvider(): DataProvider<StockItem> {
+        return DataProvider()
     }
 
 }

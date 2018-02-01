@@ -4,13 +4,13 @@ import io.reactivex.Observable
 
 interface StockInteractor {
 
-    fun loadStockItems(): Observable<StockItem>
+    fun loadStockItems(): Observable<List<StockItem>>
 
 }
 
 class StockInteractorImpl() : StockInteractor {
 
-    override fun loadStockItems(): Observable<StockItem> {
+    override fun loadStockItems(): Observable<List<StockItem>> {
         return Observable.empty()
     }
 

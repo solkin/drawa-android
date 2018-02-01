@@ -5,12 +5,16 @@ import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.stock.di.StockModule
+import com.tomclaw.drawa.util.DataProvider
 import javax.inject.Inject
 
 class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
 
     @Inject
     lateinit var presenter: StockPresenter
+
+    @Inject
+    lateinit var dataProvider: DataProvider<StockItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
@@ -21,7 +25,8 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.stock)
 
-        val view = StockViewImpl(window.decorView)
+        val adapter = StockAdapter(this, dataProvider)
+        val view = StockViewImpl(window.decorView, adapter)
 
         presenter.attachView(view)
     }
@@ -46,7 +51,7 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
         outState?.putBundle(KEY_PRESENTER_STATE, presenter.saveState())
     }
 
-    override fun openDrawingScreen() {
+    override fun openDrawingScreen(item: StockItem) {
     }
 
 }
