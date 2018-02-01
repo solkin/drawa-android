@@ -12,10 +12,6 @@ class StockAdapter(
         private val dataProvider: DataProvider<StockItem>
 ) : RecyclerView.Adapter<StockItemHolder>() {
 
-    init {
-        setHasStableIds(true)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StockItemHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.stock_item_view, parent, false)
         return StockItemHolder(view)
@@ -30,4 +26,5 @@ class StockAdapter(
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getItemCount(): Int = dataProvider.size()
+
 }
