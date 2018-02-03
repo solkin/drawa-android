@@ -1,7 +1,8 @@
 package com.tomclaw.drawa.stock
 
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.ViewFlipper
 import com.tomclaw.drawa.R
@@ -23,18 +24,22 @@ class StockViewImpl(view: View,
                     val adapter: StockAdapter) : StockView {
 
     private val context = view.context
+    private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
     private val recycler: RecyclerView = view.findViewById(R.id.recycler)
 
     init {
-        val layoutManager = LinearLayoutManager(
+        val layoutManager = GridLayoutManager(
                 context,
-                LinearLayoutManager.VERTICAL,
+                2,
+                GridLayoutManager.VERTICAL,
                 false
         )
         adapter.setHasStableIds(true)
         recycler.adapter = adapter
         recycler.layoutManager = layoutManager
+
+        toolbar.setTitle(R.string.stock)
     }
 
     override fun showProgress() {
