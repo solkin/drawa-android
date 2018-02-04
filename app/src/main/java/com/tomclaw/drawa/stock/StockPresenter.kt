@@ -19,7 +19,9 @@ interface StockPresenter {
 
     interface StockRouter {
 
-        fun openDrawingScreen(item: StockItem)
+        fun showDrawingScreen()
+
+        fun showDrawingScreen(item: StockItem)
 
     }
 
@@ -44,7 +46,15 @@ class StockPresenterImpl(private val interactor: StockInteractor,
                 view.itemClicks()
                         .subscribeOn(schedulers.mainThread())
                         .subscribe { item ->
-                            router?.openDrawingScreen(item)
+                            router?.showDrawingScreen(item)
+                        }
+        )
+
+        subscriptions.add(
+                view.createClicks()
+                        .subscribeOn(schedulers.mainThread())
+                        .subscribe { item ->
+                            router?.showDrawingScreen()
                         }
         )
 
@@ -61,7 +71,7 @@ class StockPresenterImpl(private val interactor: StockInteractor,
                 interactor.loadStockItems()
                         .observeOn(schedulers.mainThread())
                         .doOnSubscribe { view?.showProgress() }
-                        .doOnTerminate { view?.showContent() }
+                        .doAfterTerminate { view?.showContent() }
                         .subscribe({ items ->
                             bindStockItems(items)
                         }, {})
@@ -88,7 +98,7 @@ class StockPresenterImpl(private val interactor: StockInteractor,
     }
 
     override fun saveState() = Bundle().apply {
-
+        putParcelableArrayList(KEY_ITEMS, ArrayList(items ?: emptyList()))
     }
 
 }

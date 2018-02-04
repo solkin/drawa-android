@@ -51,7 +51,10 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
         outState?.putBundle(KEY_PRESENTER_STATE, presenter.saveState())
     }
 
-    override fun openDrawingScreen(item: StockItem) {
+    override fun showDrawingScreen() {
+    }
+
+    override fun showDrawingScreen(item: StockItem) {
     }
 
 }
