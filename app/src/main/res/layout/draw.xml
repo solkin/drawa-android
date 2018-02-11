@@ -1,83 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:background="@color/color_back">
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/ToolbarTheme" />
+    <include layout="@layout/toolbar" />
 
     <FrameLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize">
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            app:elevation="@dimen/cardview_default_elevation"
-            app:cardCornerRadius="@dimen/cardview_default_radius"
-            android:layout_gravity="center">
-
-            <com.tomclaw.drawa.draw.DrawView_
-                android:id="@+id/draw_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </android.support.v7.widget.CardView>
-
-        <include layout="@layout/toolbar_shadow_view" />
+        <!-- TODO -->
 
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/tools_container"
-        android:layout_width="match_parent"
-        android:layout_height="64dp">
-
-        <ImageView
-            android:id="@+id/tool_pencil"
-            style="@style/ToolItem"
-            android:src="@drawable/lead_pencil" />
-
-        <ImageView
-            android:id="@+id/tool_brush"
-            style="@style/ToolItem"
-            android:src="@drawable/brush" />
-
-        <ImageView
-            android:id="@+id/tool_marker"
-            style="@style/ToolItem"
-            android:src="@drawable/marker" />
-
-        <ImageView
-            android:id="@+id/tool_broom"
-            style="@style/ToolItem"
-            android:src="@drawable/broom" />
-
-        <ImageView
-            android:id="@+id/tool_fill"
-            style="@style/ToolItem"
-            android:src="@drawable/format_color_fill" />
-
-        <ImageView
-            android:id="@+id/tool_eraser"
-            style="@style/ToolItem"
-            android:src="@drawable/eraser" />
-
-    </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/palette_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp" />
-
-</LinearLayout>
-
+</FrameLayout>

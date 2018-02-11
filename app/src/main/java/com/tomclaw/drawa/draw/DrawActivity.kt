@@ -1,33 +1,29 @@
-package com.tomclaw.drawa.stock
+package com.tomclaw.drawa.draw
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
-import com.tomclaw.drawa.draw.createDrawActivityIntent
 import com.tomclaw.drawa.main.getComponent
-import com.tomclaw.drawa.stock.di.StockModule
-import com.tomclaw.drawa.util.DataProvider
+import com.tomclaw.drawa.stock.di.DrawModule
 import javax.inject.Inject
 
-class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
+class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
 
     @Inject
-    lateinit var presenter: StockPresenter
-
-    @Inject
-    lateinit var dataProvider: DataProvider<StockItem>
+    lateinit var presenter: DrawPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
         application.getComponent()
-                .stockComponent(StockModule(presenterState))
+                .drawComponent(DrawModule(presenterState))
                 .inject(activity = this)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.stock)
+        setContentView(R.layout.draw)
 
-        val adapter = StockAdapter(this, dataProvider)
-        val view = StockViewImpl(window.decorView, adapter)
+        val view = DrawViewImpl(window.decorView)
 
         presenter.attachView(view)
     }
@@ -52,14 +48,11 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
         outState?.putBundle(KEY_PRESENTER_STATE, presenter.saveState())
     }
 
-    override fun showDrawingScreen() {
-        val intent = createDrawActivityIntent(context = this)
-        startActivity(intent)
-    }
-
-    override fun showDrawingScreen(item: StockItem) {
+    override fun showStockScreen() {
     }
 
 }
+
+fun createDrawActivityIntent(context: Context) = Intent(context, DrawActivity::class.java)
 
 private const val KEY_PRESENTER_STATE = "presenter_state"
