@@ -6,4 +6,5 @@
     <string name="clean">Очистить</string>
     <string name="send_to">Поделиться изображением</string>
     <string name="stock">Мои рисунки</string>
+    <string name="draw">Рисунок</string>
 </resources>
