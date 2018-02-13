@@ -3,15 +3,33 @@ package com.tomclaw.drawa.draw
 import android.util.Log
 import android.view.MotionEvent
 import com.tomclaw.drawa.draw.tools.Tool
+import io.reactivex.Single
 import java.io.*
 import java.util.*
+import kotlin.collections.ArrayList
 
-class History {
+interface History {
+
+    fun add(tool: Tool, x: Int, y: Int, action: Int): Event
+
+    fun undo()
+
+    fun clear()
+
+    fun getEvents(): Collection<Event>
+
+    fun save(file: File): Single<Unit>
+
+    fun load(file: File): Single<Unit>
+
+}
+
+class HistoryImpl : History {
 
     private val events = Stack<Event>()
     private var eventIndex = 0
 
-    fun add(tool: Tool, x: Int, y: Int, action: Int): Event {
+    override fun add(tool: Tool, x: Int, y: Int, action: Int): Event {
         if (action == MotionEvent.ACTION_DOWN) {
             eventIndex++
         }
@@ -19,28 +37,26 @@ class History {
         return events.push(e)
     }
 
-    fun undo() {
+    override fun undo() {
         while (!events.empty() && events.peek().index == eventIndex) {
             events.pop()
         }
         eventIndex--
     }
 
-    fun clear() {
+    override fun clear() {
         eventIndex = 0
         events.clear()
     }
 
-    fun getEvents(): Collection<Event> {
-        return events
-    }
+    override fun getEvents(): Collection<Event> = events
 
-    fun save(file: File) {
+    override fun save(file: File): Single<Unit> = Single.create<Unit> {
         var output: DataOutputStream? = null
         try {
             output = DataOutputStream(FileOutputStream(file))
             with(output) {
-                writeInt(BACKUP_VERSION)
+                writeInt(com.tomclaw.drawa.draw.BACKUP_VERSION)
                 writeInt(eventIndex)
                 writeInt(events.size)
                 for ((index, toolType, color, radius, x, y, action) in events) {
@@ -53,15 +69,13 @@ class History {
                     writeInt(action)
                 }
             }
-        } catch (ex: IOException) {
-            Log.d("Drawa", "Exception on history saving " + ex.message)
         } finally {
             output.safeClose()
         }
         Log.d("Drawa", String.format("total %d bytes written", file.length()))
     }
 
-    fun load(file: File) {
+    override fun load(file: File): Single<Unit> = Single.create<Unit> {
         clear()
         var input: DataInputStream? = null
         try {
@@ -89,8 +103,6 @@ class History {
             } else {
                 throw IOException("backup format of unknown version")
             }
-        } catch (ex: IOException) {
-            Log.d("Drawa", "Exception on history loading " + ex.message)
         } finally {
             input.safeClose()
         }

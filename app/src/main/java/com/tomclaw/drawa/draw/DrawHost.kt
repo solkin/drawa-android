@@ -4,6 +4,6 @@ import android.graphics.Bitmap
 
 interface DrawHost {
 
-    val bitmap: Bitmap
+    val bitmap: Bitmap?
 
 }

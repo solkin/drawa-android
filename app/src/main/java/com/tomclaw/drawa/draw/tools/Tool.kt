@@ -31,7 +31,7 @@ abstract class Tool {
             paint.color = Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
         }
 
-    val bitmap: Bitmap
+    val bitmap: Bitmap?
         get() = callback.bitmap
 
     abstract val type: Int

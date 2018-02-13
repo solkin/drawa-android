@@ -16,8 +16,8 @@ class Fill : Tool() {
     }
 
     override fun onTouchDown(x: Int, y: Int) {
+        val bitmap = bitmap ?: return
         val color = color
-        val bitmap = bitmap
         val pixel = bitmap.getPixel(x, y)
         val filler = QueueLinearFloodFiller(bitmap, pixel, color)
         filler.setTolerance(COLOR_DELTA)
