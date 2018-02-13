@@ -9,7 +9,7 @@ machine:
         version: oraclejdk8
 
 dependencies:
-    override:
+    pre:
         - ANDROID_HOME=/usr/local/android-sdk-linux
         - (./gradlew dependencies || true)
 
