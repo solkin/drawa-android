@@ -13,7 +13,7 @@ class RecordConverterImpl(private val filesDir: File) : RecordConverter {
 
     override fun convert(record: Record): StockItem {
         return StockItem(
-                File(filesDir, record.name).absolutePath,
+                record.name,
                 File(filesDir, record.image.name).absolutePath,
                 record.image.size.width,
                 record.image.size.height
