@@ -25,7 +25,7 @@ class StockAdapter(
         holder.bind(item)
     }
 
-    override fun getItemId(position: Int): Long = position.toLong()
+    override fun getItemId(position: Int): Long = dataProvider.getItem(position).id.toLong()
 
     override fun getItemCount(): Int = dataProvider.size()
 

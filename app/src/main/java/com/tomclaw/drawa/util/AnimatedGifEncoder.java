@@ -508,7 +508,7 @@ class NeuQuant {
 	/* minimum size for input image */
 
 	/*
-	 * Program Skeleton ---------------- [select samplefac in range 1..30] [read
+     * Program Skeleton ---------------- [select samplefac in range 1..30] [read
 	 * image from input file] pic = (unsigned char*) malloc(3*width*height);
 	 * initnet(pic,3*width*height,samplefac); learn(); unbiasnet(); [write
 	 * output image header, using writecolourmap(f)] inxbuild(); write output

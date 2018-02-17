@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.util.SchedulersFactory
+import com.tomclaw.drawa.util.historyFile
+import com.tomclaw.drawa.util.imageFile
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Observable
 import java.io.*
@@ -22,8 +24,8 @@ class DrawInteractorImpl(record: Record,
                          private val bitmapHolder: BitmapHolder,
                          private val schedulers: SchedulersFactory) : DrawInteractor {
 
-    private val historyFile = File(filesDir, record.name)
-    private val imageFile = File(filesDir, record.image.name)
+    private val historyFile = record.historyFile(filesDir)
+    private val imageFile = record.imageFile(filesDir)
 
     override fun loadHistory(): Observable<Unit> {
         return history.load(historyFile)

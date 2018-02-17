@@ -3,21 +3,24 @@ package com.tomclaw.drawa.dto
 import android.os.Parcel
 import android.os.Parcelable
 
-class Record(val name: String,
-             val image: Image) : Parcelable {
+class Record(val id: Int,
+             val size: Size,
+             val time: Long) : Parcelable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeString(name)
-        writeParcelable(image, flags)
+        writeInt(id)
+        writeParcelable(size, flags)
+        writeLong(time)
     }
 
     override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<Record> {
         override fun createFromParcel(parcel: Parcel): Record {
-            val name = parcel.readString()
-            val image = parcel.readParcelable<Image>(Image::class.java.classLoader)
-            return Record(name, image)
+            val id = parcel.readInt()
+            val size = parcel.readParcelable<Size>(Size::class.java.classLoader)
+            val time = parcel.readLong()
+            return Record(id, size, time)
         }
 
         override fun newArray(size: Int): Array<Record?> {

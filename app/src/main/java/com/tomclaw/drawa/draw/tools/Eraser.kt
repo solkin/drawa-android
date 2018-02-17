@@ -10,7 +10,7 @@ class Eraser : Tool() {
     private var prevX: Int = 0
     private var prevY: Int = 0
     private var path = Path()
-    
+
     override var color = -0x1
     override val alpha = 0xff
     override val type = TYPE_ERASER

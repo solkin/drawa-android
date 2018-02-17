@@ -1,7 +1,6 @@
 package com.tomclaw.drawa.stock
 
 import android.util.Log
-import com.tomclaw.drawa.dto.Image
 import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.dto.Size
 import com.tomclaw.drawa.util.SchedulersFactory
@@ -40,10 +39,10 @@ class StockInteractorImpl(private val journalFile: File,
                 writeInt(JOURNAL_VERSION)
                 writeInt(records.size)
                 for (record in records) {
-                    writeUTF(record.name)
-                    writeUTF(record.image.name)
-                    writeInt(record.image.size.width)
-                    writeInt(record.image.size.height)
+                    writeInt(record.id)
+                    writeInt(record.size.width)
+                    writeInt(record.size.height)
+                    writeLong(record.time)
                 }
             }
             Log.d("Drawa", String.format("journal %d bytes written", file.length()))
@@ -63,22 +62,12 @@ class StockInteractorImpl(private val journalFile: File,
                 val recordsCount = input.readInt()
                 with(input) {
                     for (c in 0 until recordsCount) {
-                        val name = readUTF()
-                        val imageName = readUTF()
-                        val imageWidth = readInt()
-                        val imageHeight = readInt()
-                        val size = Size(
-                                imageWidth,
-                                imageHeight
-                        )
-                        val image = Image(
-                                imageName,
-                                size
-                        )
-                        val record = Record(
-                                name,
-                                image
-                        )
+                        val id = readInt()
+                        val width = readInt()
+                        val height = readInt()
+                        val time = readLong()
+                        val size = Size(width, height)
+                        val record = Record(id, size, time)
                         records.add(record)
                     }
                 }

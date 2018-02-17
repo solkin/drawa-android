@@ -3,7 +3,6 @@ package com.tomclaw.drawa.stock
 import android.os.Bundle
 import com.tomclaw.drawa.draw.view.BITMAP_HEIGHT
 import com.tomclaw.drawa.draw.view.BITMAP_WIDTH
-import com.tomclaw.drawa.dto.Image
 import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.dto.Size
 import com.tomclaw.drawa.util.DataProvider
@@ -51,7 +50,7 @@ class StockPresenterImpl(private val interactor: StockInteractor,
                 view.itemClicks()
                         .subscribeOn(schedulers.mainThread())
                         .subscribe { item ->
-                            records?.find { it.name == item.name }?.let { record ->
+                            records?.find { it.id == item.id }?.let { record ->
                                 router?.showDrawingScreen(record)
                             }
                         }
@@ -75,9 +74,10 @@ class StockPresenterImpl(private val interactor: StockInteractor,
 
     private fun createStockItem() {
         val records = LinkedList(records ?: emptyList())
-        val prefix = "draw-" + records.size
-        val image = Image(prefix + ".png", Size(BITMAP_WIDTH, BITMAP_HEIGHT))
-        val record = Record(prefix + ".dat", image)
+        val id = records.size
+        val time = System.currentTimeMillis()
+        val size = Size(BITMAP_WIDTH, BITMAP_HEIGHT)
+        val record = Record(id, size, time)
         records.add(record)
         subscriptions.add(
                 interactor.saveJournal(records)
@@ -105,7 +105,10 @@ class StockPresenterImpl(private val interactor: StockInteractor,
 
     private fun bindRecords(records: List<Record>) {
         this.records = records
-        val items = records.map { recordConverter.convert(it) }
+        val items = records
+                .sortedBy { it.time }
+                .reversed()
+                .map { recordConverter.convert(it) }
         dataProvider.setData(items)
         view?.updateList()
     }
