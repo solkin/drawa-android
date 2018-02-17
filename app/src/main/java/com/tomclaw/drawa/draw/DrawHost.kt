@@ -5,8 +5,8 @@ import android.graphics.Canvas
 
 interface DrawHost {
 
-    val bitmap: Bitmap?
+    val bitmap: Bitmap
 
-    val canvas: Canvas?
+    val canvas: Canvas
 
 }

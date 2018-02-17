@@ -30,10 +30,10 @@ abstract class Tool {
             paint.color = Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
         }
 
-    val bitmap: Bitmap?
+    val bitmap: Bitmap
         get() = callback.bitmap
 
-    val canvas: Canvas?
+    val canvas: Canvas
         get() = callback.canvas
 
     abstract val type: Int
@@ -60,7 +60,7 @@ abstract class Tool {
     abstract fun onDraw()
 
     fun drawPath(path: Path) {
-        canvas?.drawPath(path, paint)
+        canvas.drawPath(path, paint)
     }
 
     fun resetRadius() {

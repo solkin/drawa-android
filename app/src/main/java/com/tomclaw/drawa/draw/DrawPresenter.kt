@@ -1,8 +1,7 @@
 package com.tomclaw.drawa.draw
 
 import android.os.Bundle
-import android.view.MotionEvent
-import com.tomclaw.drawa.draw.tools.Pencil
+import android.view.MotionEvent.*
 import com.tomclaw.drawa.draw.tools.TYPE_PENCIL
 import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.draw.view.DrawingListener
@@ -40,7 +39,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
 
     private val subscriptions = CompositeDisposable()
 
-    private var tool: Tool? = toolProvider.getTool(TYPE_PENCIL)
+    private var tool: Tool? = null
 
     override fun attachView(view: DrawView) {
         this.view = view
@@ -51,6 +50,9 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                 tool?.let { tool ->
                     val e = history.add(tool, eventX, eventY, action)
                     processToolEvent(e)
+                    if (action == ACTION_UP) {
+                        saveHistory()
+                    }
                 }
             }
 
@@ -59,6 +61,19 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
             }
 
         })
+        tool = toolProvider.getTool(TYPE_PENCIL)?.apply {
+            color = 0xff0000
+            radius = 10
+        }
+        loadHistory()
+    }
+
+    private fun saveHistory() {
+        subscriptions.add(
+                interactor.saveHistory()
+                        .observeOn(schedulers.mainThread())
+                        .subscribe()
+        )
     }
 
     override fun detachView() {
@@ -77,6 +92,30 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     override fun saveState() = Bundle().apply {
     }
 
+    private fun loadHistory() {
+        subscriptions.add(
+                interactor.loadHistory()
+                        .observeOn(schedulers.mainThread())
+                        .doOnSubscribe { view?.showProgress() }
+                        .doAfterTerminate { view?.showContent() }
+                        .map {
+                            history.getEvents().forEach { processToolEvent(it) }
+                        }
+                        .subscribe({
+                            onHistoryLoaded()
+                        }, {
+                            onError()
+                        }))
+    }
+
+    private fun onHistoryLoaded() {
+
+    }
+
+    private fun onError() {
+
+    }
+
     private fun processToolEvent(event: Event) {
         val tool = toolProvider.getTool(event.toolType) ?: return
         val x = event.x
@@ -85,9 +124,9 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
             color = event.color
             baseRadius = event.radius
             when (event.action) {
-                MotionEvent.ACTION_DOWN -> onTouchDown(x, y)
-                MotionEvent.ACTION_MOVE -> onTouchMove(x, y)
-                MotionEvent.ACTION_UP -> onTouchUp(x, y)
+                ACTION_DOWN -> onTouchDown(x, y)
+                ACTION_MOVE -> onTouchMove(x, y)
+                ACTION_UP -> onTouchUp(x, y)
             }
             onDraw()
         }

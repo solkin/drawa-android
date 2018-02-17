@@ -11,8 +11,21 @@ class DrawingView(context: Context,
                   attributeSet: AttributeSet)
     : View(context, attributeSet), DrawHost {
 
-    override var bitmap: Bitmap? = null
-    override var canvas: Canvas? = null
+    override val bitmap: Bitmap = Bitmap.createBitmap(
+            BITMAP_WIDTH,
+            BITMAP_HEIGHT,
+            Bitmap.Config.ARGB_8888
+    )
+    override val canvas: Canvas
+
+    private var src: Rect
+    private var dst: Rect? = null
+
+    init {
+        canvas = Canvas(bitmap)
+        canvas.drawColor(Color.WHITE)
+        src = Rect(0, 0, bitmap.width, bitmap.height)
+    }
 
     private val paint: Paint = Paint().apply {
         isAntiAlias = true
@@ -20,35 +33,19 @@ class DrawingView(context: Context,
         isDither = true
     }
 
-    private var src: Rect? = null
-    private var dst: Rect? = null
-
     var drawingListener: DrawingListener? = null
 
     override fun onDraw(canvas: Canvas) {
-        if (bitmap == null) {
-            initBitmap()
+        if (dst == null) {
+            dst = Rect(0, 0, width, height)
         }
         canvas.drawBitmap(bitmap, src, dst, paint)
         drawingListener?.onDraw()
     }
 
-    private fun initBitmap() {
-        val bitmap = Bitmap.createBitmap(
-                (width / SCALE_FACTOR).toInt(),
-                (height / SCALE_FACTOR).toInt(),
-                Bitmap.Config.ARGB_8888
-        )
-        canvas = Canvas(bitmap)
-        canvas?.drawColor(Color.WHITE)
-        src = Rect(0, 0, bitmap.width, bitmap.height)
-        dst = Rect(0, 0, width, height)
-        this.bitmap = bitmap
-    }
-
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        val eventX = (event.x / SCALE_FACTOR).toInt()
-        val eventY = (event.y / SCALE_FACTOR).toInt()
+        val eventX = (BITMAP_WIDTH * event.x / width).toInt()
+        val eventY = (BITMAP_HEIGHT * event.y / height).toInt()
         drawingListener?.onTouchEvent(eventX, eventY, event.action)
         invalidate()
         return true
@@ -59,4 +56,5 @@ class DrawingView(context: Context,
 
 }
 
-const val SCALE_FACTOR = 1.0f
+const val BITMAP_WIDTH = 640
+const val BITMAP_HEIGHT = 640

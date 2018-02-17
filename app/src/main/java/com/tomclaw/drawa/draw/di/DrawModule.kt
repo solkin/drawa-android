@@ -1,5 +1,6 @@
 package com.tomclaw.drawa.stock.di
 
+import android.content.Context
 import android.os.Bundle
 import com.tomclaw.drawa.draw.*
 import com.tomclaw.drawa.draw.tools.*
@@ -8,9 +9,12 @@ import com.tomclaw.drawa.util.SchedulersFactory
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
+import java.io.File
 
 @Module
-class DrawModule(private val presenterState: Bundle?) {
+class DrawModule(private val context: Context,
+                 private val drawId: String,
+                 private val presenterState: Bundle?) {
 
     @Provides
     @PerActivity
@@ -23,8 +27,10 @@ class DrawModule(private val presenterState: Bundle?) {
 
     @Provides
     @PerActivity
-    fun provideDrawInteractor(): DrawInteractor {
-        return DrawInteractorImpl()
+    fun provideDrawInteractor(historyFile: File,
+                              history: History,
+                              schedulers: SchedulersFactory): DrawInteractor {
+        return DrawInteractorImpl(historyFile, history, schedulers)
     }
 
     @Provides
@@ -68,5 +74,9 @@ class DrawModule(private val presenterState: Bundle?) {
     @Provides
     @PerActivity
     fun provideEraser(): Tool = Eraser()
+
+    @Provides
+    @PerActivity
+    fun provideHistoryFile(): File = File(context.filesDir, drawId + ".dat")
 
 }

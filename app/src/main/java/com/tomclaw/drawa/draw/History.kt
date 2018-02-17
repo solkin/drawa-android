@@ -18,9 +18,9 @@ interface History {
 
     fun getEvents(): Collection<Event>
 
-    fun save(file: File): Single<Unit>
-
     fun load(file: File): Single<Unit>
+
+    fun save(file: File): Single<Unit>
 
 }
 
@@ -51,12 +51,13 @@ class HistoryImpl : History {
 
     override fun getEvents(): Collection<Event> = events
 
-    override fun save(file: File): Single<Unit> = Single.create<Unit> {
+    override fun save(file: File): Single<Unit> = Single.create<Unit> { emitter ->
+        val events = LinkedList(events)
         var output: DataOutputStream? = null
         try {
             output = DataOutputStream(FileOutputStream(file))
             with(output) {
-                writeInt(com.tomclaw.drawa.draw.BACKUP_VERSION)
+                writeInt(BACKUP_VERSION)
                 writeInt(eventIndex)
                 writeInt(events.size)
                 for ((index, toolType, color, radius, x, y, action) in events) {
@@ -69,13 +70,14 @@ class HistoryImpl : History {
                     writeInt(action)
                 }
             }
+            emitter.onSuccess(Unit)
         } finally {
             output.safeClose()
         }
         Log.d("Drawa", String.format("total %d bytes written", file.length()))
     }
 
-    override fun load(file: File): Single<Unit> = Single.create<Unit> {
+    override fun load(file: File): Single<Unit> = Single.create<Unit> { emitter ->
         clear()
         var input: DataInputStream? = null
         try {
@@ -100,8 +102,9 @@ class HistoryImpl : History {
                 }
                 this.eventIndex = eventIndex
                 this.events.addAll(eventList)
+                emitter.onSuccess(Unit)
             } else {
-                throw IOException("backup format of unknown version")
+                emitter.onError(IOException("backup format of unknown version"))
             }
         } finally {
             input.safeClose()

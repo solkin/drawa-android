@@ -53,7 +53,8 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
     }
 
     override fun showDrawingScreen() {
-        val intent = createDrawActivityIntent(context = this)
+        val drawId = "draw-example"
+        val intent = createDrawActivityIntent(context = this, drawId = drawId)
         startActivity(intent)
     }
 
