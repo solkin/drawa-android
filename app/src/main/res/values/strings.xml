@@ -2,9 +2,8 @@
 <resources>
     <string name="app_name">Drawa</string>
     <string name="undo">Отмена</string>
-    <string name="save">Сохранить</string>
-    <string name="clean">Очистить</string>
-    <string name="send_to">Поделиться изображением</string>
+    <string name="delete">Удалить</string>
+    <string name="send">Поделиться</string>
     <string name="stock">Мои рисунки</string>
     <string name="draw">Рисунок</string>
 </resources>
