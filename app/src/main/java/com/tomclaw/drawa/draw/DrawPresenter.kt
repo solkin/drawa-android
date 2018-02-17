@@ -2,10 +2,11 @@ package com.tomclaw.drawa.draw
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.MotionEvent.*
 import com.jakewharton.rxrelay2.PublishRelay
-import com.tomclaw.drawa.draw.tools.*
-import com.tomclaw.drawa.draw.view.DrawingListener
+import com.tomclaw.drawa.draw.tools.TYPE_BRUSH
+import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
@@ -25,6 +26,8 @@ interface DrawPresenter {
     interface DrawRouter {
 
         fun showStockScreen()
+
+        fun leaveScreen()
 
     }
 
@@ -48,26 +51,27 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     override fun attachView(view: DrawView) {
         this.view = view
         toolProvider.listTools().forEach { view.acceptTool(it) }
-        view.setDrawingListener(object : DrawingListener {
-
-            override fun onTouchEvent(eventX: Int, eventY: Int, action: Int) {
-                tool?.let { tool ->
-                    val e = history.add(tool, eventX, eventY, action)
-                    processToolEvent(e)
-                    if (action == ACTION_UP) {
-                        saveRelay.accept(Unit)
+        subscriptions.add(
+                view.touchEvents().subscribe { event ->
+                    tool?.let { tool ->
+                        val e = history.add(tool, event.eventX, event.eventY, event.action)
+                        processToolEvent(e)
+                        if (event.action == MotionEvent.ACTION_UP) {
+                            saveRelay.accept(Unit)
+                        }
                     }
                 }
-            }
-
-            override fun onDraw() {
-                tool?.onDraw()
-            }
-
-        })
-        tool = toolProvider.getTool(TYPE_BRUSH)?.apply {
-            color = 0x2C82C9
-        }
+        )
+        subscriptions.add(
+                view.drawEvents().subscribe {
+                    tool?.onDraw()
+                }
+        )
+        subscriptions.add(
+                view.navigationClicks().subscribe {
+                    router?.leaveScreen()
+                }
+        )
         subscriptions.add(
                 saveRelay.debounce(1, TimeUnit.SECONDS)
                         .subscribe {
@@ -75,6 +79,10 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                         }
         )
         loadHistory()
+
+        tool = toolProvider.getTool(TYPE_BRUSH)?.apply {
+            color = 0x2C82C9
+        }
     }
 
     private fun saveHistory() {

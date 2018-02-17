@@ -58,6 +58,10 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
     override fun showStockScreen() {
     }
 
+    override fun leaveScreen() {
+        finish()
+    }
+
 }
 
 fun createDrawActivityIntent(context: Context,

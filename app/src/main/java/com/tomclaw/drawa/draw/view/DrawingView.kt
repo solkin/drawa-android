@@ -46,7 +46,7 @@ class DrawingView(context: Context,
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         val eventX = (BITMAP_WIDTH * event.x / width).toInt()
         val eventY = (BITMAP_HEIGHT * event.y / height).toInt()
-        drawingListener?.onTouchEvent(eventX, eventY, event.action)
+        drawingListener?.onTouchEvent(TouchEvent(eventX, eventY, event.action))
         invalidate()
         return true
     }
