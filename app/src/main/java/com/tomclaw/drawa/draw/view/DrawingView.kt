@@ -6,10 +6,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import com.tomclaw.drawa.draw.DrawHost
-import com.tomclaw.drawa.draw.Event
-import com.tomclaw.drawa.draw.History
-import com.tomclaw.drawa.draw.ToolProvider
-import com.tomclaw.drawa.draw.tools.Tool
 
 class DrawingView(context: Context,
                   attributeSet: AttributeSet)
@@ -23,28 +19,17 @@ class DrawingView(context: Context,
         isDither = true
     }
 
-    private lateinit var history: History
-    private lateinit var toolProvider: ToolProvider
-
-    private var tool: Tool? = null
     private var src: Rect? = null
     private var dst: Rect? = null
 
-    private var selectedColor = 0xcd0219
-    private var selectedRadius = BASE_RADIUS / SCALE_FACTOR
-
-    fun init(history: History,
-             toolProvider: ToolProvider) {
-        this.history = history
-        this.toolProvider = toolProvider
-    }
+    var drawingListener: DrawingListener? = null
 
     override fun onDraw(canvas: Canvas) {
         if (bitmap == null) {
             initBitmap()
         }
         canvas.drawBitmap(bitmap, src, dst, paint)
-        tool?.onDraw()
+        drawingListener?.onDraw()
     }
 
     private fun initBitmap() {
@@ -61,37 +46,16 @@ class DrawingView(context: Context,
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        val tool = this.tool ?: return false
         val eventX = (event.x / SCALE_FACTOR).toInt()
         val eventY = (event.y / SCALE_FACTOR).toInt()
-        val e = history.add(tool, eventX, eventY, event.action)
-        processToolEvent(e)
+        drawingListener?.onTouchEvent(eventX, eventY, event.action)
         invalidate()
         return true
     }
 
-    private fun processToolEvent(event: Event) {
-        val tool = toolProvider.getTool(event.toolType)
-        tool.initialize(canvas, this)
-        val x = event.x
-        val y = event.y
-        with(tool) {
-            color = event.color
-            baseRadius = event.radius
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> onTouchDown(x, y)
-                MotionEvent.ACTION_MOVE -> onTouchMove(x, y)
-                MotionEvent.ACTION_UP -> onTouchUp(x, y)
-            }
-            onDraw()
-        }
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, widthMeasureSpec)
-    }
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) =
+            super.onMeasure(widthMeasureSpec, widthMeasureSpec)
 
 }
 
-private const val BASE_RADIUS = 60
-private const val SCALE_FACTOR = 1.0f
+const val SCALE_FACTOR = 1.0f
