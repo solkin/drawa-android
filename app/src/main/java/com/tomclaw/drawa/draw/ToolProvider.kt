@@ -1,24 +1,27 @@
 package com.tomclaw.drawa.draw
 
-import android.util.SparseArray
 import com.tomclaw.drawa.draw.tools.Tool
 
 interface ToolProvider {
 
-    fun getTool(type: Int): Tool
+    fun getTool(type: Int): Tool?
+
+    fun listTools(): List<Tool>
 
 }
 
 class ToolProviderImpl(toolSet: Set<Tool>) : ToolProvider {
 
-    private val tools: SparseArray<Tool> = SparseArray()
+    private val tools = HashMap<Int, Tool>()
 
     init {
         toolSet.forEach { tool ->
-            tools.append(tool.type, tool)
+            tools[tool.type] = tool
         }
     }
 
-    override fun getTool(type: Int) = tools[type]
+    override fun getTool(type: Int): Tool? = tools[type]
+
+    override fun listTools(): List<Tool> = ArrayList(tools.values)
 
 }

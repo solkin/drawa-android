@@ -12,7 +12,8 @@ class DrawingView(context: Context,
     : View(context, attributeSet), DrawHost {
 
     override var bitmap: Bitmap? = null
-    private lateinit var canvas: Canvas
+    override var canvas: Canvas? = null
+
     private val paint: Paint = Paint().apply {
         isAntiAlias = true
         isFilterBitmap = true
@@ -39,7 +40,7 @@ class DrawingView(context: Context,
                 Bitmap.Config.ARGB_8888
         )
         canvas = Canvas(bitmap)
-        canvas.drawColor(Color.WHITE)
+        canvas?.drawColor(Color.WHITE)
         src = Rect(0, 0, bitmap.width, bitmap.height)
         dst = Rect(0, 0, width, height)
         this.bitmap = bitmap

@@ -2,6 +2,8 @@ package com.tomclaw.drawa.draw
 
 import android.os.Bundle
 import android.view.MotionEvent
+import com.tomclaw.drawa.draw.tools.Pencil
+import com.tomclaw.drawa.draw.tools.TYPE_PENCIL
 import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.draw.view.DrawingListener
 import com.tomclaw.drawa.util.SchedulersFactory
@@ -38,10 +40,11 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
 
     private val subscriptions = CompositeDisposable()
 
-    private var tool: Tool? = null
+    private var tool: Tool? = toolProvider.getTool(TYPE_PENCIL)
 
     override fun attachView(view: DrawView) {
         this.view = view
+        toolProvider.listTools().forEach { view.acceptTool(it) }
         view.setDrawingListener(object : DrawingListener {
 
             override fun onTouchEvent(eventX: Int, eventY: Int, action: Int) {
@@ -75,7 +78,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun processToolEvent(event: Event) {
-        val tool = toolProvider.getTool(event.toolType)
+        val tool = toolProvider.getTool(event.toolType) ?: return
         val x = event.x
         val y = event.y
         with(tool) {

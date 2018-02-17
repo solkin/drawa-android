@@ -5,7 +5,6 @@ import com.tomclaw.drawa.draw.DrawHost
 
 abstract class Tool {
 
-    private lateinit var canvas: Canvas
     private lateinit var callback: DrawHost
 
     lateinit var paint: Paint
@@ -34,6 +33,9 @@ abstract class Tool {
     val bitmap: Bitmap?
         get() = callback.bitmap
 
+    val canvas: Canvas?
+        get() = callback.canvas
+
     abstract val type: Int
 
     var radius: Int
@@ -42,8 +44,7 @@ abstract class Tool {
             paint.strokeWidth = radius.toFloat()
         }
 
-    fun initialize(canvas: Canvas, callback: DrawHost) {
-        this.canvas = canvas
+    fun initialize(callback: DrawHost) {
         this.callback = callback
         this.paint = initPaint()
     }
@@ -59,7 +60,7 @@ abstract class Tool {
     abstract fun onDraw()
 
     fun drawPath(path: Path) {
-        canvas.drawPath(path, paint)
+        canvas?.drawPath(path, paint)
     }
 
     fun resetRadius() {
