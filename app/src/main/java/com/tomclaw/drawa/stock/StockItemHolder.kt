@@ -5,11 +5,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
+import com.tomclaw.drawa.core.GlideApp
 import com.tomclaw.drawa.util.AspectRatioImageView
 
-/**
- * Created by solkin on 19/12/2017.
- */
 class StockItemHolder(view: View,
                       private val itemsRelay: PublishRelay<StockItem>?) : RecyclerView.ViewHolder(view) {
 
@@ -17,21 +15,18 @@ class StockItemHolder(view: View,
     private val imageView: AspectRatioImageView = view.findViewById(R.id.image_view)
 
     fun bind(item: StockItem) {
-        val remoteImageSize = item.image.size
-        val aspectRatio = remoteImageSize.height.toFloat() / remoteImageSize.width.toFloat()
+        val aspectRatio = item.height.toFloat() / item.width.toFloat()
         imageView.aspectRatio = aspectRatio
 
         cardView.setOnClickListener {
             itemsRelay?.accept(item)
         }
 
-        val path = item.image.name
-
-        //            GlideApp.with(getContext())
-        //                    .load(path)
-        //                    .centerCrop()
-        //                    .override(remoteImageSize.getWidth(), remoteImageSize.getHeight())
-        //                    .centerCrop()
-        //                    .into(imageView);
+        GlideApp.with(imageView)
+                .load(item.image)
+                .centerCrop()
+                .override(item.width, item.height)
+                .centerCrop()
+                .into(imageView)
     }
 }

@@ -1,7 +1,10 @@
 package com.tomclaw.drawa.stock
 
 import android.os.Bundle
+import com.tomclaw.drawa.draw.view.BITMAP_HEIGHT
+import com.tomclaw.drawa.draw.view.BITMAP_WIDTH
 import com.tomclaw.drawa.dto.Image
+import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.dto.Size
 import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.SchedulersFactory
@@ -22,9 +25,7 @@ interface StockPresenter {
 
     interface StockRouter {
 
-        fun showDrawingScreen()
-
-        fun showDrawingScreen(item: StockItem)
+        fun showDrawingScreen(record: Record)
 
     }
 
@@ -32,13 +33,14 @@ interface StockPresenter {
 
 class StockPresenterImpl(private val interactor: StockInteractor,
                          private val dataProvider: DataProvider<StockItem>,
+                         private val recordConverter: RecordConverter,
                          private val schedulers: SchedulersFactory,
                          state: Bundle?) : StockPresenter {
 
     private var view: StockView? = null
     private var router: StockPresenter.StockRouter? = null
 
-    private var items: List<StockItem>? = state?.getParcelableArrayList(KEY_ITEMS)
+    private var records: List<Record>? = state?.getParcelableArrayList(KEY_RECORDS)
 
     private val subscriptions = CompositeDisposable()
 
@@ -49,7 +51,9 @@ class StockPresenterImpl(private val interactor: StockInteractor,
                 view.itemClicks()
                         .subscribeOn(schedulers.mainThread())
                         .subscribe { item ->
-                            router?.showDrawingScreen(item)
+                            records?.find { it.name == item.name }?.let { record ->
+                                router?.showDrawingScreen(record)
+                            }
                         }
         )
 
@@ -61,46 +65,47 @@ class StockPresenterImpl(private val interactor: StockInteractor,
                         }
         )
 
-        val items = items
-        if (items == null) {
+        val records = records
+        if (records == null) {
             loadStockItems()
         } else {
-            bindStockItems(items)
+            bindRecords(records)
         }
     }
 
     private fun createStockItem() {
-        val items = LinkedList(items ?: emptyList())
-        val prefix = "draw-" + items.size
-        val image = Image(prefix + ".png", Size(10, 10))
-        val item = StockItem(prefix + ".dat", image)
-        items.add(item)
+        val records = LinkedList(records ?: emptyList())
+        val prefix = "draw-" + records.size
+        val image = Image(prefix + ".png", Size(BITMAP_WIDTH, BITMAP_HEIGHT))
+        val record = Record(prefix + ".dat", image)
+        records.add(record)
         subscriptions.add(
-                interactor.saveStockItems(items)
+                interactor.saveJournal(records)
                         .observeOn(schedulers.mainThread())
                         .doOnSubscribe { view?.showProgress() }
                         .doAfterTerminate { view?.showContent() }
                         .subscribe({
-                            bindStockItems(items)
-                            router?.showDrawingScreen(item)
+                            bindRecords(records)
+                            router?.showDrawingScreen(record)
                         }, {})
         )
     }
 
     private fun loadStockItems() {
         subscriptions.add(
-                interactor.loadStockItems()
+                interactor.loadJournal()
                         .observeOn(schedulers.mainThread())
                         .doOnSubscribe { view?.showProgress() }
                         .doAfterTerminate { view?.showContent() }
-                        .subscribe({ items ->
-                            bindStockItems(items)
+                        .subscribe({ records ->
+                            bindRecords(records)
                         }, {})
         )
     }
 
-    private fun bindStockItems(items: List<StockItem>) {
-        this.items = items
+    private fun bindRecords(records: List<Record>) {
+        this.records = records
+        val items = records.map { recordConverter.convert(it) }
         dataProvider.setData(items)
         view?.updateList()
     }
@@ -119,9 +124,9 @@ class StockPresenterImpl(private val interactor: StockInteractor,
     }
 
     override fun saveState() = Bundle().apply {
-        putParcelableArrayList(KEY_ITEMS, ArrayList(items ?: emptyList()))
+        putParcelableArrayList(KEY_RECORDS, ArrayList(records ?: emptyList()))
     }
 
 }
 
-private const val KEY_ITEMS = "items"
+private const val KEY_RECORDS = "records"

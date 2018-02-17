@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.createDrawActivityIntent
+import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.stock.di.StockModule
 import com.tomclaw.drawa.util.DataProvider
@@ -52,14 +53,8 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
         outState?.putBundle(KEY_PRESENTER_STATE, presenter.saveState())
     }
 
-    override fun showDrawingScreen() {
-        val name = "draw-" + System.currentTimeMillis() + ".dat"
-        val intent = createDrawActivityIntent(context = this, name = name)
-        startActivity(intent)
-    }
-
-    override fun showDrawingScreen(item: StockItem) {
-        val intent = createDrawActivityIntent(context = this, name = item.image.name)
+    override fun showDrawingScreen(record: Record) {
+        val intent = createDrawActivityIntent(context = this, record = record)
         startActivity(intent)
     }
 

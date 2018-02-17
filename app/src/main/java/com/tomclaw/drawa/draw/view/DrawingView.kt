@@ -54,6 +54,12 @@ class DrawingView(context: Context,
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) =
             super.onMeasure(widthMeasureSpec, widthMeasureSpec)
 
+    override fun applyBitmap(bitmap: Bitmap) {
+        val src = Rect(0, 0, bitmap.width, bitmap.height)
+        val dst = Rect(0, 0, this.bitmap.width, this.bitmap.height)
+        canvas.drawBitmap(bitmap, src, dst, paint)
+    }
+
 }
 
 const val BITMAP_WIDTH = 720

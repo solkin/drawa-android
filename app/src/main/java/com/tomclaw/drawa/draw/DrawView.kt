@@ -1,8 +1,6 @@
 package com.tomclaw.drawa.draw
 
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.view.MotionEvent
 import android.view.View
 import android.widget.ViewFlipper
 import com.jakewharton.rxrelay2.PublishRelay
@@ -33,7 +31,8 @@ interface DrawView {
 
 }
 
-class DrawViewImpl(view: View) : DrawView {
+class DrawViewImpl(view: View,
+                   bitmapHolder: BitmapHolder) : DrawView {
 
     private val context = view.context
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
@@ -45,6 +44,7 @@ class DrawViewImpl(view: View) : DrawView {
     private val navigationRelay = PublishRelay.create<Unit>()
 
     init {
+        bitmapHolder.drawHost = drawingView
         toolbar.setTitle(R.string.draw)
         toolbar.setNavigationOnClickListener {
             navigationRelay.accept(Unit)

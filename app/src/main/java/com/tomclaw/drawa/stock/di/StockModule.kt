@@ -18,14 +18,16 @@ class StockModule(private val context: Context,
     @PerActivity
     fun provideStockPresenter(interactor: StockInteractor,
                               dataProvider: DataProvider<StockItem>,
+                              recordConverter: RecordConverter,
                               schedulers: SchedulersFactory): StockPresenter {
-        return StockPresenterImpl(interactor, dataProvider, schedulers, presenterState)
+        return StockPresenterImpl(interactor, dataProvider, recordConverter, schedulers, presenterState)
     }
 
     @Provides
     @PerActivity
-    fun provideStockInteractor(journalFile: File,
+    fun provideStockInteractor(filesDir: File,
                                schedulers: SchedulersFactory): StockInteractor {
+        val journalFile = File(filesDir, "journal.dat")
         return StockInteractorImpl(journalFile, schedulers)
     }
 
@@ -37,6 +39,12 @@ class StockModule(private val context: Context,
 
     @Provides
     @PerActivity
-    fun provideJournalFile(): File = File(context.filesDir, "journal.dat")
+    fun provideRecordConverter(filesDir: File): RecordConverter {
+        return RecordConverterImpl(filesDir)
+    }
+
+    @Provides
+    @PerActivity
+    fun provideFilesDir(): File = context.filesDir
 
 }

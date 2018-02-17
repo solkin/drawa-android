@@ -117,9 +117,6 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                         .observeOn(schedulers.mainThread())
                         .doOnSubscribe { view?.showProgress() }
                         .doAfterTerminate { view?.showContent() }
-                        .map {
-                            history.getEvents().forEach { processToolEvent(it) }
-                        }
                         .subscribe({
                             onHistoryLoaded()
                         }, {
@@ -133,6 +130,10 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
 
     private fun onError() {
 
+    }
+
+    private fun applyHistory() {
+        history.getEvents().forEach { processToolEvent(it) }
     }
 
     private fun processToolEvent(event: Event) {

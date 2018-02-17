@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
+import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.stock.di.DrawModule
 import javax.inject.Inject
@@ -15,14 +16,16 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
     lateinit var presenter: DrawPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val name = intent.getStringExtra(EXTRA_NAME)
+        val record = intent.getParcelableExtra<Record>(EXTRA_RECORD)
                 ?: throw IllegalArgumentException("name must be specified")
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
+        val bitmapHolder = BitmapHolder()
         application.getComponent()
                 .drawComponent(
                         DrawModule(
                                 context = this,
-                                name = name,
+                                record = record,
+                                bitmapHolder = bitmapHolder,
                                 presenterState = presenterState)
                 )
                 .inject(activity = this)
@@ -30,7 +33,7 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.draw)
 
-        val view = DrawViewImpl(window.decorView)
+        val view = DrawViewImpl(window.decorView, bitmapHolder)
 
         presenter.attachView(view)
     }
@@ -65,10 +68,10 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
 }
 
 fun createDrawActivityIntent(context: Context,
-                             name: String): Intent =
+                             record: Record): Intent =
         Intent(context, DrawActivity::class.java)
-                .putExtra(EXTRA_NAME, name)
+                .putExtra(EXTRA_RECORD, record)
 
 private const val KEY_PRESENTER_STATE = "presenter_state"
 
-private const val EXTRA_NAME = "name"
+private const val EXTRA_RECORD = "record"

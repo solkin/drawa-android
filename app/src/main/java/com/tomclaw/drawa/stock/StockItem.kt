@@ -3,14 +3,16 @@ package com.tomclaw.drawa.stock
 import android.os.Parcel
 import android.os.Parcelable
 
-import com.tomclaw.drawa.dto.Image
-
 class StockItem(val name: String,
-                val image: Image) : Parcelable {
+                val image: String,
+                val width: Int,
+                val height: Int) : Parcelable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(name)
-        writeParcelable(image, flags)
+        writeString(image)
+        writeInt(width)
+        writeInt(height)
     }
 
     override fun describeContents(): Int = 0
@@ -18,8 +20,10 @@ class StockItem(val name: String,
     companion object CREATOR : Parcelable.Creator<StockItem> {
         override fun createFromParcel(parcel: Parcel): StockItem {
             val name = parcel.readString()
-            val image = parcel.readParcelable<Image>(Image::class.java.classLoader)
-            return StockItem(name, image)
+            val image = parcel.readString()
+            val width = parcel.readInt()
+            val height = parcel.readInt()
+            return StockItem(name, image, width, height)
         }
 
         override fun newArray(size: Int): Array<StockItem?> {

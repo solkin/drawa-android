@@ -9,4 +9,6 @@ interface DrawHost {
 
     val canvas: Canvas
 
+    fun applyBitmap(bitmap: Bitmap)
+
 }

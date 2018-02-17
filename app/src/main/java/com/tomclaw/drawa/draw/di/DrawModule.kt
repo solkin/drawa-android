@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import com.tomclaw.drawa.draw.*
 import com.tomclaw.drawa.draw.tools.*
+import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
 import dagger.Module
@@ -13,7 +14,8 @@ import java.io.File
 
 @Module
 class DrawModule(private val context: Context,
-                 private val name: String,
+                 private val record: Record,
+                 private val bitmapHolder: BitmapHolder,
                  private val presenterState: Bundle?) {
 
     @Provides
@@ -27,10 +29,10 @@ class DrawModule(private val context: Context,
 
     @Provides
     @PerActivity
-    fun provideDrawInteractor(historyFile: File,
-                              history: History,
+    fun provideDrawInteractor(history: History,
+                              filesDir: File,
                               schedulers: SchedulersFactory): DrawInteractor {
-        return DrawInteractorImpl(historyFile, history, schedulers)
+        return DrawInteractorImpl(record, filesDir, history, bitmapHolder, schedulers)
     }
 
     @Provides
@@ -77,6 +79,6 @@ class DrawModule(private val context: Context,
 
     @Provides
     @PerActivity
-    fun provideHistoryFile(): File = File(context.filesDir, name)
+    fun provideFilesDir(): File = context.filesDir
 
 }
