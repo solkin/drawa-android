@@ -56,5 +56,5 @@ class DrawingView(context: Context,
 
 }
 
-const val BITMAP_WIDTH = 640
-const val BITMAP_HEIGHT = 640
+const val BITMAP_WIDTH = 720
+const val BITMAP_HEIGHT = 720

@@ -33,7 +33,7 @@ class HistoryImpl : History {
         if (action == MotionEvent.ACTION_DOWN) {
             eventIndex++
         }
-        val e = Event(eventIndex, tool.type, tool.color, tool.baseRadius, x, y, action)
+        val e = Event(eventIndex, tool.type, tool.color, tool.radius, x, y, action)
         return events.push(e)
     }
 
@@ -64,17 +64,17 @@ class HistoryImpl : History {
                     writeInt(index)
                     writeByte(toolType)
                     writeInt(color)
-                    writeInt(radius)
-                    writeInt(x)
-                    writeInt(y)
-                    writeInt(action)
+                    writeShort(radius)
+                    writeShort(x)
+                    writeShort(y)
+                    writeByte(action)
                 }
             }
+            Log.d("Drawa", String.format("total %d bytes written", file.length()))
             emitter.onSuccess(Unit)
         } finally {
             output.safeClose()
         }
-        Log.d("Drawa", String.format("total %d bytes written", file.length()))
     }
 
     override fun load(file: File): Single<Unit> = Single.create<Unit> { emitter ->
@@ -92,16 +92,25 @@ class HistoryImpl : History {
                         val index = readInt()
                         val toolType = readByte()
                         val color = readInt()
-                        val radius = readInt()
-                        val x = readInt()
-                        val y = readInt()
-                        val action = readInt()
-                        val event = Event(index, toolType.toInt(), color, radius, x, y, action)
+                        val radius = readShort()
+                        val x = readShort()
+                        val y = readShort()
+                        val action = readByte()
+                        val event = Event(
+                                index,
+                                toolType.toInt(),
+                                color,
+                                radius.toInt(),
+                                x.toInt(),
+                                y.toInt(),
+                                action.toInt()
+                        )
                         eventList.add(event)
                     }
                 }
                 this.eventIndex = eventIndex
                 this.events.addAll(eventList)
+                Log.d("Drawa", String.format("total %d bytes read", file.length()))
                 emitter.onSuccess(Unit)
             } else {
                 emitter.onError(IOException("backup format of unknown version"))

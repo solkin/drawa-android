@@ -1,12 +1,14 @@
 package com.tomclaw.drawa.draw
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent.*
-import com.tomclaw.drawa.draw.tools.TYPE_PENCIL
-import com.tomclaw.drawa.draw.tools.Tool
+import com.jakewharton.rxrelay2.PublishRelay
+import com.tomclaw.drawa.draw.tools.*
 import com.tomclaw.drawa.draw.view.DrawingListener
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
+import java.util.concurrent.TimeUnit
 
 interface DrawPresenter {
 
@@ -41,6 +43,8 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
 
     private var tool: Tool? = null
 
+    private val saveRelay = PublishRelay.create<Unit>()
+
     override fun attachView(view: DrawView) {
         this.view = view
         toolProvider.listTools().forEach { view.acceptTool(it) }
@@ -51,7 +55,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                     val e = history.add(tool, eventX, eventY, action)
                     processToolEvent(e)
                     if (action == ACTION_UP) {
-                        saveHistory()
+                        saveRelay.accept(Unit)
                     }
                 }
             }
@@ -61,10 +65,15 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
             }
 
         })
-        tool = toolProvider.getTool(TYPE_PENCIL)?.apply {
-            color = 0xff0000
-            radius = 10
+        tool = toolProvider.getTool(TYPE_BRUSH)?.apply {
+            color = 0x2C82C9
         }
+        subscriptions.add(
+                saveRelay.debounce(1, TimeUnit.SECONDS)
+                        .subscribe {
+                            saveHistory()
+                        }
+        )
         loadHistory()
     }
 
@@ -92,7 +101,9 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     override fun saveState() = Bundle().apply {
     }
 
+    var time: Long = 0
     private fun loadHistory() {
+        time = System.currentTimeMillis()
         subscriptions.add(
                 interactor.loadHistory()
                         .observeOn(schedulers.mainThread())
@@ -109,7 +120,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun onHistoryLoaded() {
-
+        Log.d("Drawa", "load time: " + (System.currentTimeMillis() - time))
     }
 
     private fun onError() {
@@ -122,7 +133,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         val y = event.y
         with(tool) {
             color = event.color
-            baseRadius = event.radius
+            radius = event.radius
             when (event.action) {
                 ACTION_DOWN -> onTouchDown(x, y)
                 ACTION_MOVE -> onTouchMove(x, y)

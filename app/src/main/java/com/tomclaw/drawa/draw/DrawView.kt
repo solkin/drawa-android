@@ -7,6 +7,7 @@ import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.draw.view.DrawingListener
 import com.tomclaw.drawa.draw.view.DrawingView
+import com.tomclaw.drawa.util.convertDpToPixel
 
 interface DrawView {
 
@@ -37,6 +38,7 @@ class DrawViewImpl(view: View) : DrawView {
 
     override fun acceptTool(tool: Tool) {
         tool.initialize(drawingView)
+        tool.baseRadius = context.resources.convertDpToPixel(8f).toInt()
     }
 
     override fun showProgress() {

@@ -40,7 +40,12 @@ class Pencil : Tool() {
         if (x == startX && y == startY) {
             path.lineTo(x + 0.1f, y.toFloat())
         } else {
-            path.quadTo(prevX.toFloat(), prevY.toFloat(), ((x + prevX) / 2).toFloat(), ((y + prevY) / 2).toFloat())
+            path.quadTo(
+                    prevX.toFloat(),
+                    prevY.toFloat(),
+                    ((x + prevX) / 2).toFloat(),
+                    ((y + prevY) / 2).toFloat()
+            )
         }
 
         prevX = x
