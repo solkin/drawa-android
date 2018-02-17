@@ -20,7 +20,7 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
     override fun onCreate(savedInstanceState: Bundle?) {
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
         application.getComponent()
-                .stockComponent(StockModule(presenterState))
+                .stockComponent(StockModule(this, presenterState))
                 .inject(activity = this)
 
         super.onCreate(savedInstanceState)
@@ -53,12 +53,14 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
     }
 
     override fun showDrawingScreen() {
-        val drawId = "draw-example"
-        val intent = createDrawActivityIntent(context = this, drawId = drawId)
+        val name = "draw-" + System.currentTimeMillis() + ".dat"
+        val intent = createDrawActivityIntent(context = this, name = name)
         startActivity(intent)
     }
 
     override fun showDrawingScreen(item: StockItem) {
+        val intent = createDrawActivityIntent(context = this, name = item.image.name)
+        startActivity(intent)
     }
 
 }

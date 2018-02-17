@@ -3,6 +3,7 @@ package com.tomclaw.drawa.draw
 import android.util.Log
 import android.view.MotionEvent
 import com.tomclaw.drawa.draw.tools.Tool
+import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
 import java.io.*
 import java.util.*
@@ -83,7 +84,7 @@ class HistoryImpl : History {
         try {
             input = DataInputStream(FileInputStream(file))
             val backupVersion = input.readInt()
-            if (backupVersion == 0x01) {
+            if (backupVersion == BACKUP_VERSION) {
                 val eventList = ArrayList<Event>()
                 val eventIndex = input.readInt()
                 val eventsCount = input.readInt()
@@ -117,13 +118,6 @@ class HistoryImpl : History {
             }
         } finally {
             input.safeClose()
-        }
-    }
-
-    private fun Closeable?.safeClose() {
-        try {
-            this?.close()
-        } catch (ignored: IOException) {
         }
     }
 

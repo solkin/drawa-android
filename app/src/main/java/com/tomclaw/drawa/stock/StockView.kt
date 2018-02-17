@@ -25,7 +25,7 @@ interface StockView {
 }
 
 class StockViewImpl(view: View,
-                    val adapter: StockAdapter) : StockView {
+                    private val adapter: StockAdapter) : StockView {
 
     private val context = view.context
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
@@ -33,6 +33,7 @@ class StockViewImpl(view: View,
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
     private val recycler: RecyclerView = view.findViewById(R.id.recycler)
 
+    private val itemsRelay = PublishRelay.create<StockItem>()
     private val createRelay = PublishRelay.create<Unit>()
 
     init {
@@ -43,6 +44,7 @@ class StockViewImpl(view: View,
                 false
         )
         adapter.setHasStableIds(true)
+        adapter.itemsRelay = itemsRelay
         recycler.adapter = adapter
         recycler.layoutManager = layoutManager
 
@@ -66,7 +68,7 @@ class StockViewImpl(view: View,
     }
 
     override fun itemClicks(): Observable<StockItem> {
-        return Observable.empty()
+        return itemsRelay
     }
 
     override fun createClicks(): Observable<Unit> {

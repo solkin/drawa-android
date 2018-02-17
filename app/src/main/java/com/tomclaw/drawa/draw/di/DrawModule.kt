@@ -13,7 +13,7 @@ import java.io.File
 
 @Module
 class DrawModule(private val context: Context,
-                 private val drawId: String,
+                 private val name: String,
                  private val presenterState: Bundle?) {
 
     @Provides
@@ -77,6 +77,6 @@ class DrawModule(private val context: Context,
 
     @Provides
     @PerActivity
-    fun provideHistoryFile(): File = File(context.filesDir, drawId + ".dat")
+    fun provideHistoryFile(): File = File(context.filesDir, name)
 
 }

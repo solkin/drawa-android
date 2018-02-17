@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.util.DataProvider
 
@@ -12,10 +13,11 @@ class StockAdapter(
         private val dataProvider: DataProvider<StockItem>
 ) : RecyclerView.Adapter<StockItemHolder>() {
 
+    var itemsRelay: PublishRelay<StockItem>? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StockItemHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.stock_item_view, parent, false)
-        return StockItemHolder(view)
-
+        return StockItemHolder(view, itemsRelay)
     }
 
     override fun onBindViewHolder(holder: StockItemHolder, position: Int) {

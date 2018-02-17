@@ -15,14 +15,14 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
     lateinit var presenter: DrawPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val drawId = intent.getStringExtra(EXTRA_DRAW_ID)
-                ?: throw IllegalArgumentException("drawId must be specified")
+        val name = intent.getStringExtra(EXTRA_NAME)
+                ?: throw IllegalArgumentException("name must be specified")
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
         application.getComponent()
                 .drawComponent(
                         DrawModule(
                                 context = this,
-                                drawId = drawId,
+                                name = name,
                                 presenterState = presenterState)
                 )
                 .inject(activity = this)
@@ -65,10 +65,10 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
 }
 
 fun createDrawActivityIntent(context: Context,
-                             drawId: String) =
+                             name: String): Intent =
         Intent(context, DrawActivity::class.java)
-                .putExtra(EXTRA_DRAW_ID, drawId)
+                .putExtra(EXTRA_NAME, name)
 
 private const val KEY_PRESENTER_STATE = "presenter_state"
 
-private const val EXTRA_DRAW_ID = "draw_id"
+private const val EXTRA_NAME = "name"

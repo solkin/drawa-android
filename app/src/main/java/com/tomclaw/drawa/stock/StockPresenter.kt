@@ -1,9 +1,12 @@
 package com.tomclaw.drawa.stock
 
 import android.os.Bundle
+import com.tomclaw.drawa.dto.Image
+import com.tomclaw.drawa.dto.Size
 import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
+import java.util.*
 
 interface StockPresenter {
 
@@ -53,8 +56,8 @@ class StockPresenterImpl(private val interactor: StockInteractor,
         subscriptions.add(
                 view.createClicks()
                         .subscribeOn(schedulers.mainThread())
-                        .subscribe { item ->
-                            router?.showDrawingScreen()
+                        .subscribe {
+                            createStockItem()
                         }
         )
 
@@ -64,6 +67,24 @@ class StockPresenterImpl(private val interactor: StockInteractor,
         } else {
             bindStockItems(items)
         }
+    }
+
+    private fun createStockItem() {
+        val items = LinkedList(items ?: emptyList())
+        val prefix = "draw-" + items.size
+        val image = Image(prefix + ".png", Size(10, 10))
+        val item = StockItem(prefix + ".dat", image)
+        items.add(item)
+        subscriptions.add(
+                interactor.saveStockItems(items)
+                        .observeOn(schedulers.mainThread())
+                        .doOnSubscribe { view?.showProgress() }
+                        .doAfterTerminate { view?.showContent() }
+                        .subscribe({
+                            bindStockItems(items)
+                            router?.showDrawingScreen(item)
+                        }, {})
+        )
     }
 
     private fun loadStockItems() {
