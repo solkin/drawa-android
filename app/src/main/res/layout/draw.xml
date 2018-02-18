@@ -5,54 +5,48 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.design.widget.AppBarLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/color_primary"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ViewFlipper
+        android:id="@+id/flipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/content"
+            style="@style/CardViewStyle.Light"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:layout_margin="8dp"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="@dimen/cardview_default_elevation">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <com.tomclaw.drawa.draw.view.DrawingView
+                android:id="@+id/drawing_view"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/color_primary"
-                app:navigationIcon="?attr/homeAsUpIndicator"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                android:layout_height="wrap_content" />
 
-        </android.support.design.widget.AppBarLayout>
+        </android.support.v7.widget.CardView>
 
-        <ViewFlipper
-            android:id="@+id/flipper"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?actionBarSize">
-
-            <ProgressBar
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center" />
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/content"
-                style="@style/CardViewStyle.Light"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="2dp"
-                app:cardElevation="@dimen/cardview_default_elevation">
-
-                <com.tomclaw.drawa.draw.view.DrawingView
-                    android:id="@+id/drawing_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </android.support.v7.widget.CardView>
-
-        </ViewFlipper>
-
-    </FrameLayout>
+    </ViewFlipper>
 
 </FrameLayout>

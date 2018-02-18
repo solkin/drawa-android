@@ -5,9 +5,17 @@ import android.view.MotionEvent
 import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
-import java.io.*
-import java.util.*
-import kotlin.collections.ArrayList
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.util.ArrayDeque
+import java.util.Deque
+import java.util.LinkedList
 
 interface History {
 
@@ -19,15 +27,15 @@ interface History {
 
     fun getEvents(): Collection<Event>
 
-    fun load(file: File): Single<Unit>
-
     fun save(file: File): Single<Unit>
+
+    fun load(file: File): Single<Unit>
 
 }
 
 class HistoryImpl : History {
 
-    private val events = Stack<Event>()
+    private val events: Deque<Event> = ArrayDeque<Event>()
     private var eventIndex = 0
 
     override fun add(tool: Tool, x: Int, y: Int, action: Int): Event {
@@ -35,11 +43,12 @@ class HistoryImpl : History {
             eventIndex++
         }
         val e = Event(eventIndex, tool.type, tool.color, tool.radius, x, y, action)
-        return events.push(e)
+        events.push(e)
+        return e
     }
 
     override fun undo() {
-        while (!events.empty() && events.peek().index == eventIndex) {
+        while (!events.isEmpty() && events.peek().index == eventIndex) {
             events.pop()
         }
         eventIndex--
@@ -56,7 +65,8 @@ class HistoryImpl : History {
         val events = LinkedList(events)
         var output: DataOutputStream? = null
         try {
-            output = DataOutputStream(FileOutputStream(file))
+            var time = System.currentTimeMillis()
+            output = DataOutputStream(BufferedOutputStream(FileOutputStream(file), BUFFER_SIZE))
             with(output) {
                 writeInt(BACKUP_VERSION)
                 writeInt(eventIndex)
@@ -70,8 +80,11 @@ class HistoryImpl : History {
                     writeShort(y)
                     writeByte(action)
                 }
+                flush()
             }
-            Log.d("Drawa", String.format("total %d bytes written", file.length()))
+            time = System.currentTimeMillis() - time
+            Log.d("Drawa", String.format("total %d events (%d bytes) written in %d ms",
+                    events.size, file.length(), time))
             emitter.onSuccess(Unit)
         } finally {
             output.safeClose()
@@ -82,10 +95,11 @@ class HistoryImpl : History {
         clear()
         var input: DataInputStream? = null
         try {
-            input = DataInputStream(FileInputStream(file))
+            var time = System.currentTimeMillis()
+            input = DataInputStream(BufferedInputStream(FileInputStream(file), BUFFER_SIZE))
             val backupVersion = input.readInt()
             if (backupVersion == BACKUP_VERSION) {
-                val eventList = ArrayList<Event>()
+                val eventList = LinkedList<Event>()
                 val eventIndex = input.readInt()
                 val eventsCount = input.readInt()
                 with(input) {
@@ -111,7 +125,9 @@ class HistoryImpl : History {
                 }
                 this.eventIndex = eventIndex
                 this.events.addAll(eventList)
-                Log.d("Drawa", String.format("total %d bytes read", file.length()))
+                time = System.currentTimeMillis() - time
+                Log.d("Drawa", String.format("total %d events (%d bytes read) in %d ms",
+                        eventsCount, file.length(), time))
                 emitter.onSuccess(Unit)
             } else {
                 emitter.onError(IOException("backup format of unknown version"))
@@ -124,3 +140,4 @@ class HistoryImpl : History {
 }
 
 private const val BACKUP_VERSION = 1
+private const val BUFFER_SIZE = 512 * 1024

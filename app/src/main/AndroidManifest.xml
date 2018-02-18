@@ -13,13 +13,11 @@
 
         <activity
             android:name=".draw.DrawActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
+            android:label="@string/app_name" />
 
         <activity
             android:name=".stock.StockActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name">
 
             <intent-filter>
 

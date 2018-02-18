@@ -1,9 +1,10 @@
 package com.tomclaw.drawa.draw
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
-import android.view.MotionEvent.*
+import android.view.MotionEvent.ACTION_DOWN
+import android.view.MotionEvent.ACTION_MOVE
+import android.view.MotionEvent.ACTION_UP
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.draw.tools.TYPE_BRUSH
 import com.tomclaw.drawa.draw.tools.Tool
@@ -109,9 +110,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     override fun saveState() = Bundle().apply {
     }
 
-    var time: Long = 0
     private fun loadHistory() {
-        time = System.currentTimeMillis()
         subscriptions.add(
                 interactor.loadHistory()
                         .observeOn(schedulers.mainThread())
@@ -125,11 +124,9 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun onHistoryLoaded() {
-        Log.d("Drawa", "load time: " + (System.currentTimeMillis() - time))
     }
 
     private fun onError() {
-
     }
 
     private fun applyHistory() {

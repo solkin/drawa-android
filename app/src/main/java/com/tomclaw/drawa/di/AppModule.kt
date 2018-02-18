@@ -2,12 +2,15 @@ package com.tomclaw.drawa.di
 
 import android.app.Application
 import android.content.Context
+import com.tomclaw.drawa.core.Journal
+import com.tomclaw.drawa.core.JournalImpl
 import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.LoggerImpl
 import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.SchedulersFactoryImpl
 import dagger.Module
 import dagger.Provides
+import java.io.File
 import javax.inject.Singleton
 
 @Module
@@ -20,6 +23,17 @@ class AppModule(private val app: Application) {
     @Provides
     @Singleton
     internal fun provideSchedulersFactory(): SchedulersFactory = SchedulersFactoryImpl()
+
+    @Provides
+    @Singleton
+    internal fun provideJournal(filesDir: File): Journal {
+        val journalFile = File(filesDir, "journal.dat")
+        return JournalImpl(journalFile)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFilesDir(): File = app.filesDir
 
     @Provides
     @Singleton

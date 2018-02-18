@@ -2,7 +2,14 @@ package com.tomclaw.drawa.stock.di
 
 import android.content.Context
 import android.os.Bundle
-import com.tomclaw.drawa.stock.*
+import com.tomclaw.drawa.core.Journal
+import com.tomclaw.drawa.stock.RecordConverter
+import com.tomclaw.drawa.stock.RecordConverterImpl
+import com.tomclaw.drawa.stock.StockInteractor
+import com.tomclaw.drawa.stock.StockInteractorImpl
+import com.tomclaw.drawa.stock.StockItem
+import com.tomclaw.drawa.stock.StockPresenter
+import com.tomclaw.drawa.stock.StockPresenterImpl
 import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
@@ -25,10 +32,9 @@ class StockModule(private val context: Context,
 
     @Provides
     @PerActivity
-    fun provideStockInteractor(filesDir: File,
+    fun provideStockInteractor(journal: Journal,
                                schedulers: SchedulersFactory): StockInteractor {
-        val journalFile = File(filesDir, "journal.dat")
-        return StockInteractorImpl(journalFile, schedulers)
+        return StockInteractorImpl(journal, schedulers)
     }
 
     @Provides
@@ -42,9 +48,5 @@ class StockModule(private val context: Context,
     fun provideRecordConverter(filesDir: File): RecordConverter {
         return RecordConverterImpl(filesDir)
     }
-
-    @Provides
-    @PerActivity
-    fun provideFilesDir(): File = context.filesDir
 
 }

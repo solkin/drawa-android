@@ -77,8 +77,4 @@ class DrawModule(private val context: Context,
     @PerActivity
     fun provideEraser(): Tool = Eraser()
 
-    @Provides
-    @PerActivity
-    fun provideFilesDir(): File = context.filesDir
-
 }
