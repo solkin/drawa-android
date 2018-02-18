@@ -11,4 +11,6 @@ interface DrawHost {
 
     fun applyBitmap(bitmap: Bitmap)
 
+    fun clearBitmap()
+
 }

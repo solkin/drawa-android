@@ -10,6 +10,7 @@ import com.tomclaw.drawa.draw.tools.TYPE_BRUSH
 import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import java.util.concurrent.TimeUnit
 
 interface DrawPresenter {
@@ -39,6 +40,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                         private val schedulers: SchedulersFactory,
                         private val toolProvider: ToolProvider,
                         private val history: History,
+                        private val bitmapHolder: BitmapHolder,
                         state: Bundle?) : DrawPresenter {
 
     private var view: DrawView? = null
@@ -56,34 +58,25 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     override fun attachView(view: DrawView) {
         this.view = view
         toolProvider.listTools().forEach { view.acceptTool(it) }
-        subscriptions.add(
-                view.touchEvents().subscribe { event ->
-                    tool?.let { tool ->
-                        val e = history.add(tool, event.eventX, event.eventY, event.action)
-                        processToolEvent(e)
-                        isSaved = false
-                        if (event.action == MotionEvent.ACTION_UP) {
-                            saveRelay.accept(Unit)
-                        }
-                    }
+        subscriptions += view.touchEvents().subscribe { event ->
+            tool?.let { tool ->
+                val e = history.add(tool, event.eventX, event.eventY, event.action)
+                processToolEvent(e)
+                isSaved = false
+                if (event.action == MotionEvent.ACTION_UP) {
+                    saveRelay.accept(Unit)
                 }
-        )
-        subscriptions.add(
-                view.drawEvents().subscribe {
-                    tool?.onDraw()
-                }
-        )
-        subscriptions.add(
-                view.navigationClicks().subscribe {
-                    onBackPressed()
-                }
-        )
-        subscriptions.add(
-                saveRelay.debounce(500, TimeUnit.MILLISECONDS)
-                        .subscribe {
-                            saveHistory()
-                        }
-        )
+            }
+        }
+        subscriptions += view.drawEvents().subscribe { tool?.onDraw() }
+        subscriptions += view.navigationClicks().subscribe { onBackPressed() }
+        subscriptions += view.undoClicks().subscribe {
+            onUndo()
+        }
+        subscriptions += view.deleteClicks().subscribe { onBackPressed() }
+        subscriptions += saveRelay.debounce(500, TimeUnit.MILLISECONDS).subscribe {
+            saveHistory()
+        }
         loadHistory()
 
         tool = toolProvider.getTool(TYPE_BRUSH)?.apply {
@@ -91,15 +84,21 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         }
     }
 
+    private fun onUndo() {
+        subscriptions += interactor.undo()
+                .observeOn(schedulers.mainThread())
+                .doOnSubscribe { view?.showProgress() }
+                .doAfterTerminate { view?.showContent() }
+                .subscribe({ applyHistory() }, { onError() })
+    }
+
     private fun saveHistory() {
-        subscriptions.add(
-                interactor.saveHistory()
-                        .observeOn(schedulers.mainThread())
-                        .subscribe(
-                                { onHistorySaved() },
-                                {}
-                        )
-        )
+        subscriptions += interactor.saveHistory()
+                .observeOn(schedulers.mainThread())
+                .subscribe(
+                        { onHistorySaved() },
+                        {}
+                )
     }
 
     private fun onHistorySaved() {
@@ -135,25 +134,26 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun loadHistory() {
-        subscriptions.add(
-                interactor.loadHistory()
-                        .observeOn(schedulers.mainThread())
-                        .doOnSubscribe { view?.showProgress() }
-                        .doAfterTerminate { view?.showContent() }
-                        .subscribe({
-                            onHistoryLoaded()
-                        }, {
-                            onError()
-                        }))
+        subscriptions += interactor.loadHistory()
+                .observeOn(schedulers.mainThread())
+                .doOnSubscribe { view?.showProgress() }
+                .doAfterTerminate { view?.showContent() }
+                .subscribe({
+                    onHistoryLoaded()
+                }, {
+                    onError()
+                })
     }
 
     private fun onHistoryLoaded() {
+        applyHistory()
     }
 
     private fun onError() {
     }
 
     private fun applyHistory() {
+        bitmapHolder.drawHost.clearBitmap()
         history.getEvents().forEach { processToolEvent(it) }
     }
 

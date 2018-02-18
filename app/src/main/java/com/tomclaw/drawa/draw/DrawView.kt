@@ -31,6 +31,10 @@ interface DrawView {
 
     fun navigationClicks(): Observable<Unit>
 
+    fun undoClicks(): Observable<Unit>
+
+    fun deleteClicks(): Observable<Unit>
+
 }
 
 class DrawViewImpl(view: View,
@@ -44,12 +48,22 @@ class DrawViewImpl(view: View,
     private val touchRelay = PublishRelay.create<TouchEvent>()
     private val drawRelay = PublishRelay.create<Unit>()
     private val navigationRelay = PublishRelay.create<Unit>()
+    private val undoRelay = PublishRelay.create<Unit>()
+    private val deleteRelay = PublishRelay.create<Unit>()
 
     init {
         bitmapHolder.drawHost = drawingView
         toolbar.setTitle(R.string.draw)
         toolbar.setNavigationOnClickListener {
             navigationRelay.accept(Unit)
+        }
+        toolbar.inflateMenu(R.menu.main_draw)
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menu_undo -> undoRelay.accept(Unit)
+                R.id.menu_delete -> deleteRelay.accept(Unit)
+            }
+            true
         }
         drawingView.drawingListener = object : DrawingListener {
             override fun onTouchEvent(event: TouchEvent) {
@@ -87,5 +101,9 @@ class DrawViewImpl(view: View,
     override fun drawEvents(): Observable<Unit> = drawRelay
 
     override fun navigationClicks(): Observable<Unit> = navigationRelay
+
+    override fun undoClicks(): Observable<Unit> = undoRelay
+
+    override fun deleteClicks(): Observable<Unit> = deleteRelay
 
 }

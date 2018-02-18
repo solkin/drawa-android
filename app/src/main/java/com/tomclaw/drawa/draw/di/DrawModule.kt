@@ -38,7 +38,14 @@ class DrawModule(private val record: Record,
                              toolProvider: ToolProvider,
                              history: History,
                              schedulers: SchedulersFactory): DrawPresenter {
-        return DrawPresenterImpl(interactor, schedulers, toolProvider, history, presenterState)
+        return DrawPresenterImpl(
+                interactor,
+                schedulers,
+                toolProvider,
+                history,
+                bitmapHolder,
+                presenterState
+        )
     }
 
     @Provides

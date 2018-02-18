@@ -1,7 +1,11 @@
 package com.tomclaw.drawa.draw.view
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -23,7 +27,7 @@ class DrawingView(context: Context,
 
     init {
         canvas = Canvas(bitmap)
-        canvas.drawColor(Color.WHITE)
+        clearBitmap()
         src = Rect(0, 0, bitmap.width, bitmap.height)
     }
 
@@ -60,6 +64,9 @@ class DrawingView(context: Context,
         canvas.drawBitmap(bitmap, src, dst, paint)
     }
 
+    override fun clearBitmap() {
+        canvas.drawColor(Color.WHITE)
+    }
 }
 
 const val BITMAP_WIDTH = 720

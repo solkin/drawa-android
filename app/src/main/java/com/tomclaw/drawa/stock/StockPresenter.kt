@@ -8,6 +8,7 @@ import com.tomclaw.drawa.dto.Size
 import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 
 interface StockPresenter {
 
@@ -45,23 +46,13 @@ class StockPresenterImpl(private val interactor: StockInteractor,
     override fun attachView(view: StockView) {
         this.view = view
 
-        subscriptions.add(
-                view.itemClicks()
-                        .subscribeOn(schedulers.mainThread())
-                        .subscribe { item ->
-                            interactor.get(item.id)?.let { record ->
-                                router?.showDrawingScreen(record)
-                            }
-                        }
-        )
+        subscriptions += view.itemClicks().subscribe { item ->
+            interactor.get(item.id)?.let { record ->
+                router?.showDrawingScreen(record)
+            }
+        }
 
-        subscriptions.add(
-                view.createClicks()
-                        .subscribeOn(schedulers.mainThread())
-                        .subscribe {
-                            createStockItem()
-                        }
-        )
+        subscriptions += view.createClicks().subscribe { createStockItem() }
 
         if (interactor.isLoaded()) {
             bindRecords(interactor.get())
@@ -75,28 +66,24 @@ class StockPresenterImpl(private val interactor: StockInteractor,
         val size = Size(BITMAP_WIDTH, BITMAP_HEIGHT)
         val record = Record(id, size)
         val records = interactor.add(record)
-        subscriptions.add(
-                interactor.saveJournal()
-                        .observeOn(schedulers.mainThread())
-                        .doOnSubscribe { view?.showProgress() }
-                        .doAfterTerminate { view?.showContent() }
-                        .subscribe({
-                            bindRecords(records)
-                            router?.showDrawingScreen(record)
-                        }, {})
-        )
+        subscriptions += interactor.saveJournal()
+                .observeOn(schedulers.mainThread())
+                .doOnSubscribe { view?.showProgress() }
+                .doAfterTerminate { view?.showContent() }
+                .subscribe({
+                    bindRecords(records)
+                    router?.showDrawingScreen(record)
+                }, {})
     }
 
     private fun loadStockItems() {
-        subscriptions.add(
-                interactor.loadJournal()
-                        .observeOn(schedulers.mainThread())
-                        .doOnSubscribe { view?.showProgress() }
-                        .doAfterTerminate { view?.showContent() }
-                        .subscribe({ records ->
-                            bindRecords(records)
-                        }, {})
-        )
+        subscriptions += interactor.loadJournal()
+                .observeOn(schedulers.mainThread())
+                .doOnSubscribe { view?.showProgress() }
+                .doAfterTerminate { view?.showContent() }
+                .subscribe({ records ->
+                    bindRecords(records)
+                }, {})
     }
 
     private fun bindRecords(records: List<Record>) {

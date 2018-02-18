@@ -8,6 +8,7 @@ import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.imageFile
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Observable
+import io.reactivex.Single
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -19,6 +20,8 @@ interface DrawInteractor {
     fun loadHistory(): Observable<Unit>
 
     fun saveHistory(): Observable<Unit>
+
+    fun undo(): Observable<Unit>
 
 }
 
@@ -71,5 +74,14 @@ class DrawInteractorImpl(private val record: Record, // TODO: may be replaced wi
                 .toObservable()
                 .subscribeOn(schedulers.io())
     }
+
+    override fun undo(): Observable<Unit> = Single
+            .create<Unit> { emitter ->
+                history.undo()
+                emitter.onSuccess(Unit)
+            }
+            .flatMap { history.save() }
+            .toObservable()
+            .subscribeOn(schedulers.io())
 
 }
