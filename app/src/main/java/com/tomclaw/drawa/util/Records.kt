@@ -5,6 +5,10 @@ import java.io.File
 
 fun Record.name(): String = "draw-" + id
 
+fun Record.touch() {
+    time = System.currentTimeMillis()
+}
+
 fun Record.historyFile(dir: File): File = File(dir, name() + ".bin")
 
-fun Record.imageFile(dir: File): File = File(dir, name() + ".png")
+fun Record.imageFile(dir: File): File = File(dir, name() + "-" + time + ".png")

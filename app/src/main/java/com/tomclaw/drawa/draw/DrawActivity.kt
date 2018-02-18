@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
+import com.tomclaw.drawa.draw.di.DrawModule
 import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.main.getComponent
-import com.tomclaw.drawa.stock.di.DrawModule
 import javax.inject.Inject
 
 class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
@@ -23,10 +23,10 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
         application.getComponent()
                 .drawComponent(
                         DrawModule(
-                                context = this,
                                 record = record,
                                 bitmapHolder = bitmapHolder,
-                                presenterState = presenterState)
+                                presenterState = presenterState
+                        )
                 )
                 .inject(activity = this)
 

@@ -2,13 +2,17 @@ package com.tomclaw.drawa.draw
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.tomclaw.drawa.core.Journal
 import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.util.SchedulersFactory
-import com.tomclaw.drawa.util.historyFile
 import com.tomclaw.drawa.util.imageFile
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Observable
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 
 interface DrawInteractor {
 
@@ -18,20 +22,19 @@ interface DrawInteractor {
 
 }
 
-class DrawInteractorImpl(record: Record,
-                         filesDir: File,
+class DrawInteractorImpl(private val record: Record, // TODO: may be replaced with id
+                         private val filesDir: File,
+                         private val journal: Journal,
                          private val history: History,
                          private val bitmapHolder: BitmapHolder,
                          private val schedulers: SchedulersFactory) : DrawInteractor {
 
-    private val historyFile = record.historyFile(filesDir)
-    private val imageFile = record.imageFile(filesDir)
-
     override fun loadHistory(): Observable<Unit> {
-        return history.load(historyFile)
+        return history.load()
                 .map {
                     var stream: InputStream? = null
                     try {
+                        val imageFile = record.imageFile(filesDir)
                         stream = FileInputStream(imageFile)
                         val bitmap = BitmapFactory.decodeStream(stream)
                         bitmapHolder.drawHost.applyBitmap(bitmap)
@@ -45,10 +48,16 @@ class DrawInteractorImpl(record: Record,
     }
 
     override fun saveHistory(): Observable<Unit> {
-        return history.save(historyFile)
-                .map {
+        val recordId = record.id
+        return history.save()
+                .flatMap {
+                    record.imageFile(filesDir).delete()
+                    journal.touch(recordId)
+                }
+                .map { record ->
                     var stream: OutputStream? = null
                     try {
+                        val imageFile = record.imageFile(filesDir)
                         stream = FileOutputStream(imageFile)
                         bitmapHolder.drawHost
                                 .bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)

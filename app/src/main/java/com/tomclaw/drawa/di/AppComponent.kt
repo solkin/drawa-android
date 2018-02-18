@@ -1,7 +1,7 @@
 package com.tomclaw.drawa.di
 
-import com.tomclaw.drawa.stock.di.DrawComponent
-import com.tomclaw.drawa.stock.di.DrawModule
+import com.tomclaw.drawa.draw.di.DrawComponent
+import com.tomclaw.drawa.draw.di.DrawModule
 import com.tomclaw.drawa.stock.di.StockComponent
 import com.tomclaw.drawa.stock.di.StockModule
 import dagger.Component

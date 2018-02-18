@@ -27,13 +27,13 @@ interface History {
 
     fun getEvents(): Collection<Event>
 
-    fun save(file: File): Single<Unit>
+    fun save(): Single<Unit>
 
-    fun load(file: File): Single<Unit>
+    fun load(): Single<Unit>
 
 }
 
-class HistoryImpl : History {
+class HistoryImpl(private val file: File) : History {
 
     private val events: Deque<Event> = ArrayDeque<Event>()
     private var eventIndex = 0
@@ -61,7 +61,7 @@ class HistoryImpl : History {
 
     override fun getEvents(): Collection<Event> = events
 
-    override fun save(file: File): Single<Unit> = Single.create<Unit> { emitter ->
+    override fun save(): Single<Unit> = Single.create<Unit> { emitter ->
         val events = LinkedList(events)
         var output: DataOutputStream? = null
         try {
@@ -91,7 +91,7 @@ class HistoryImpl : History {
         }
     }
 
-    override fun load(file: File): Single<Unit> = Single.create<Unit> { emitter ->
+    override fun load(): Single<Unit> = Single.create<Unit> { emitter ->
         clear()
         var input: DataInputStream? = null
         try {

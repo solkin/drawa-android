@@ -1,4 +1,4 @@
-package com.tomclaw.drawa.stock.di
+package com.tomclaw.drawa.draw.di
 
 import com.tomclaw.drawa.draw.DrawActivity
 import com.tomclaw.drawa.util.PerActivity

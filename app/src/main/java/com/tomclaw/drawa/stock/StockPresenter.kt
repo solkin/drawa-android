@@ -8,7 +8,6 @@ import com.tomclaw.drawa.dto.Size
 import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
-import java.util.*
 
 interface StockPresenter {
 
@@ -39,8 +38,6 @@ class StockPresenterImpl(private val interactor: StockInteractor,
     private var view: StockView? = null
     private var router: StockPresenter.StockRouter? = null
 
-    private var records: List<Record>? = state?.getParcelableArrayList(KEY_RECORDS)
-
     private val subscriptions = CompositeDisposable()
 
     override fun attachView(view: StockView) {
@@ -50,7 +47,7 @@ class StockPresenterImpl(private val interactor: StockInteractor,
                 view.itemClicks()
                         .subscribeOn(schedulers.mainThread())
                         .subscribe { item ->
-                            records?.find { it.id == item.id }?.let { record ->
+                            interactor.get(item.id)?.let { record ->
                                 router?.showDrawingScreen(record)
                             }
                         }
@@ -64,23 +61,20 @@ class StockPresenterImpl(private val interactor: StockInteractor,
                         }
         )
 
-        val records = records
-        if (records == null) {
-            loadStockItems()
+        if (interactor.isLoaded()) {
+            bindRecords(interactor.get())
         } else {
-            bindRecords(records)
+            loadStockItems()
         }
     }
 
     private fun createStockItem() {
-        val records = LinkedList(records ?: emptyList())
-        val id = records.size
-        val time = System.currentTimeMillis()
+        val id = interactor.nextId()
         val size = Size(BITMAP_WIDTH, BITMAP_HEIGHT)
-        val record = Record(id, size, time)
-        records.add(record)
+        val record = Record(id, size)
+        val records = interactor.add(record)
         subscriptions.add(
-                interactor.saveJournal(records)
+                interactor.saveJournal()
                         .observeOn(schedulers.mainThread())
                         .doOnSubscribe { view?.showProgress() }
                         .doAfterTerminate { view?.showContent() }
@@ -104,13 +98,13 @@ class StockPresenterImpl(private val interactor: StockInteractor,
     }
 
     private fun bindRecords(records: List<Record>) {
-        this.records = records
         val items = records
                 .sortedBy { it.time }
                 .reversed()
                 .map { recordConverter.convert(it) }
         dataProvider.setData(items)
         view?.updateList()
+        view?.showContent()
     }
 
     override fun detachView() {
@@ -126,10 +120,6 @@ class StockPresenterImpl(private val interactor: StockInteractor,
         this.router = null
     }
 
-    override fun saveState() = Bundle().apply {
-        putParcelableArrayList(KEY_RECORDS, ArrayList(records ?: emptyList()))
-    }
+    override fun saveState() = Bundle().apply {}
 
 }
-
-private const val KEY_RECORDS = "records"

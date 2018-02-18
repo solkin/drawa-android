@@ -1,20 +1,34 @@
-package com.tomclaw.drawa.stock.di
+package com.tomclaw.drawa.draw.di
 
-import android.content.Context
 import android.os.Bundle
-import com.tomclaw.drawa.draw.*
-import com.tomclaw.drawa.draw.tools.*
+import com.tomclaw.drawa.core.Journal
+import com.tomclaw.drawa.draw.BitmapHolder
+import com.tomclaw.drawa.draw.DrawInteractor
+import com.tomclaw.drawa.draw.DrawInteractorImpl
+import com.tomclaw.drawa.draw.DrawPresenter
+import com.tomclaw.drawa.draw.DrawPresenterImpl
+import com.tomclaw.drawa.draw.History
+import com.tomclaw.drawa.draw.HistoryImpl
+import com.tomclaw.drawa.draw.ToolProvider
+import com.tomclaw.drawa.draw.ToolProviderImpl
+import com.tomclaw.drawa.draw.tools.Brush
+import com.tomclaw.drawa.draw.tools.Eraser
+import com.tomclaw.drawa.draw.tools.Fill
+import com.tomclaw.drawa.draw.tools.Fluffy
+import com.tomclaw.drawa.draw.tools.Marker
+import com.tomclaw.drawa.draw.tools.Pencil
+import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
+import com.tomclaw.drawa.util.historyFile
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
 import java.io.File
 
 @Module
-class DrawModule(private val context: Context,
-                 private val record: Record,
+class DrawModule(private val record: Record,
                  private val bitmapHolder: BitmapHolder,
                  private val presenterState: Bundle?) {
 
@@ -30,9 +44,10 @@ class DrawModule(private val context: Context,
     @Provides
     @PerActivity
     fun provideDrawInteractor(history: History,
+                              journal: Journal,
                               filesDir: File,
                               schedulers: SchedulersFactory): DrawInteractor {
-        return DrawInteractorImpl(record, filesDir, history, bitmapHolder, schedulers)
+        return DrawInteractorImpl(record, filesDir, journal, history, bitmapHolder, schedulers)
     }
 
     @Provides
@@ -43,8 +58,9 @@ class DrawModule(private val context: Context,
 
     @Provides
     @PerActivity
-    fun provideHistory(): History {
-        return HistoryImpl()
+    fun provideHistory(filesDir: File): History {
+        val file = record.historyFile(filesDir)
+        return HistoryImpl(file)
     }
 
     @IntoSet
