@@ -13,8 +13,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.ArrayDeque
-import java.util.Deque
 import java.util.LinkedList
 import java.util.Stack
 
@@ -36,7 +34,7 @@ interface History {
 
 class HistoryImpl(private val file: File) : History {
 
-    private val events: Deque<Event> = ArrayDeque<Event>()
+    private val events = Stack<Event>()
     private var eventIndex = 0
 
     override fun add(tool: Tool, x: Int, y: Int, action: Int): Event {
@@ -49,10 +47,12 @@ class HistoryImpl(private val file: File) : History {
     }
 
     override fun undo() {
-        while (!events.isEmpty() && events.peek().index == eventIndex) {
-            events.pop()
+        if (eventIndex > 0) {
+            while (!events.isEmpty() && events.peek().index == eventIndex) {
+                events.pop()
+            }
+            eventIndex--
         }
-        eventIndex--
     }
 
     override fun clear() {

@@ -80,7 +80,6 @@ class DrawInteractorImpl(private val record: Record, // TODO: may be replaced wi
                 history.undo()
                 emitter.onSuccess(Unit)
             }
-            .flatMap { history.save() }
             .toObservable()
             .subscribeOn(schedulers.io())
 
