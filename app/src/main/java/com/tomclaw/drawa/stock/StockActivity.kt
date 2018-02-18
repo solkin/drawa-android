@@ -1,5 +1,7 @@
 package com.tomclaw.drawa.stock
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
@@ -53,11 +55,23 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
         outState?.putBundle(KEY_PRESENTER_STATE, presenter.saveState())
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_DRAW -> {
+                if (resultCode == RESULT_OK) {
+                    presenter.onUpdate()
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun showDrawingScreen(record: Record) {
         val intent = createDrawActivityIntent(context = this, record = record)
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_DRAW)
     }
 
 }
 
 private const val KEY_PRESENTER_STATE = "presenter_state"
+private const val REQUEST_DRAW = 1

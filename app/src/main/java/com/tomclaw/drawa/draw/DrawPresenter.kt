@@ -24,6 +24,8 @@ interface DrawPresenter {
 
     fun saveState(): Bundle
 
+    fun onBackPressed()
+
     interface DrawRouter {
 
         fun showStockScreen()
@@ -31,7 +33,6 @@ interface DrawPresenter {
         fun leaveScreen()
 
     }
-
 }
 
 class DrawPresenterImpl(private val interactor: DrawInteractor,
@@ -49,6 +50,9 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
 
     private val saveRelay = PublishRelay.create<Unit>()
 
+    private var isSaved = true
+    private var isClosing = false
+
     override fun attachView(view: DrawView) {
         this.view = view
         toolProvider.listTools().forEach { view.acceptTool(it) }
@@ -57,6 +61,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                     tool?.let { tool ->
                         val e = history.add(tool, event.eventX, event.eventY, event.action)
                         processToolEvent(e)
+                        isSaved = false
                         if (event.action == MotionEvent.ACTION_UP) {
                             saveRelay.accept(Unit)
                         }
@@ -70,11 +75,11 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         )
         subscriptions.add(
                 view.navigationClicks().subscribe {
-                    router?.leaveScreen()
+                    onBackPressed()
                 }
         )
         subscriptions.add(
-                saveRelay.debounce(1, TimeUnit.SECONDS)
+                saveRelay.debounce(500, TimeUnit.MILLISECONDS)
                         .subscribe {
                             saveHistory()
                         }
@@ -90,8 +95,18 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions.add(
                 interactor.saveHistory()
                         .observeOn(schedulers.mainThread())
-                        .subscribe()
+                        .subscribe(
+                                { onHistorySaved() },
+                                {}
+                        )
         )
+    }
+
+    private fun onHistorySaved() {
+        isSaved = true
+        if (isClosing) {
+            router?.leaveScreen()
+        }
     }
 
     override fun detachView() {
@@ -108,6 +123,15 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     override fun saveState() = Bundle().apply {
+    }
+
+    override fun onBackPressed() {
+        isClosing = true
+        if (isSaved) {
+            router?.leaveScreen()
+        } else {
+            view?.showSaveProgress()
+        }
     }
 
     private fun loadHistory() {

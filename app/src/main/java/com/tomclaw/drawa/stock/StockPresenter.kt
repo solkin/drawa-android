@@ -21,6 +21,8 @@ interface StockPresenter {
 
     fun saveState(): Bundle
 
+    fun onUpdate()
+
     interface StockRouter {
 
         fun showDrawingScreen(record: Record)
@@ -121,5 +123,9 @@ class StockPresenterImpl(private val interactor: StockInteractor,
     }
 
     override fun saveState() = Bundle().apply {}
+
+    override fun onUpdate() {
+        loadStockItems()
+    }
 
 }

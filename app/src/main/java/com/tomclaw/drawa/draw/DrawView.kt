@@ -21,6 +21,8 @@ interface DrawView {
 
     fun showProgress()
 
+    fun showSaveProgress()
+
     fun showContent()
 
     fun touchEvents(): Observable<TouchEvent>
@@ -71,6 +73,9 @@ class DrawViewImpl(view: View,
 
     override fun showProgress() {
         flipper.displayedChild = 0
+    }
+
+    override fun showSaveProgress() {
     }
 
     override fun showContent() {

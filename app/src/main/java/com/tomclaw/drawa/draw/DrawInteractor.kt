@@ -59,8 +59,10 @@ class DrawInteractorImpl(private val record: Record, // TODO: may be replaced wi
                     try {
                         val imageFile = record.imageFile(filesDir)
                         stream = FileOutputStream(imageFile)
-                        bitmapHolder.drawHost
-                                .bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                        bitmapHolder
+                                .drawHost
+                                .bitmap
+                                .compress(Bitmap.CompressFormat.PNG, 100, stream)
                     } finally {
                         stream.safeClose()
                     }

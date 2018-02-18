@@ -58,10 +58,15 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
         outState?.putBundle(KEY_PRESENTER_STATE, presenter.saveState())
     }
 
+    override fun onBackPressed() {
+        presenter.onBackPressed()
+    }
+
     override fun showStockScreen() {
     }
 
     override fun leaveScreen() {
+        setResult(RESULT_OK)
         finish()
     }
 
