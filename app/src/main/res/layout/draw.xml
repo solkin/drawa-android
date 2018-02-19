@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -26,33 +27,78 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize">
 
-        <ProgressBar
+        <!--ProgressBar
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_gravity="center" />
+            android:layout_gravity="center" /-->
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/color_back">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/content"
-                style="@style/CardViewStyle.Light"
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/tune_items"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/background_doodle">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/content"
+                    style="@style/CardViewStyle.Light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="2dp"
+                    app:cardElevation="@dimen/cardview_default_elevation">
+
+                    <com.tomclaw.drawa.draw.view.DrawingView
+                        android:id="@+id/drawing_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </android.support.v7.widget.CardView>
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_above="@id/tune_items"
+                android:background="@drawable/shadow_top" />
+
+            <LinearLayout
+                android:id="@+id/tune_items"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="2dp"
-                app:cardElevation="@dimen/cardview_default_elevation">
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:background="@color/color_back"
+                android:orientation="horizontal">
 
-                <com.tomclaw.drawa.draw.view.DrawingView
-                    android:id="@+id/drawing_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@+id/tune_tool"
+                    style="@style/TuneItem"
+                    android:src="@drawable/lead_pencil"
+                    tools:ignore="ContentDescription" />
 
-            </android.support.v7.widget.CardView>
+                <ImageView
+                    android:id="@+id/tune_color"
+                    style="@style/TuneItem"
+                    android:src="@drawable/circle"
+                    tools:ignore="ContentDescription" />
 
-        </FrameLayout>
+                <ImageView
+                    android:id="@+id/tune_size"
+                    style="@style/TuneItem"
+                    android:src="@drawable/marker"
+                    tools:ignore="ContentDescription" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </ViewFlipper>
 
