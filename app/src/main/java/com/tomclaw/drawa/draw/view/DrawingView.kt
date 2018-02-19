@@ -55,8 +55,10 @@ class DrawingView(context: Context,
         return true
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) =
-            super.onMeasure(widthMeasureSpec, widthMeasureSpec)
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val size = Math.min(widthMeasureSpec, heightMeasureSpec)
+        super.onMeasure(size, size)
+    }
 
     override fun applyBitmap(bitmap: Bitmap) {
         val src = Rect(0, 0, bitmap.width, bitmap.height)
