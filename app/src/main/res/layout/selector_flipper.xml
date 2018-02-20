@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <ImageView
+            android:id="@+id/tool_pencil"
+            style="@style/ToolItem"
+            android:src="@drawable/lead_pencil"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/tool_brush"
+            style="@style/ToolItem"
+            android:src="@drawable/brush"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/tool_marker"
+            style="@style/ToolItem"
+            android:src="@drawable/marker"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/tool_fluffy"
+            style="@style/ToolItem"
+            android:src="@drawable/spray"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/tool_fill"
+            style="@style/ToolItem"
+            android:src="@drawable/format_color_fill"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/tool_eraser"
+            style="@style/ToolItem"
+            android:src="@drawable/eraser"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
+
+</ViewFlipper>

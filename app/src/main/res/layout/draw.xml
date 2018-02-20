@@ -40,7 +40,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@id/tune_items"
+                android:layout_above="@id/tools_wrapper"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/background_doodle">
 
@@ -66,11 +66,37 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
-                android:layout_above="@id/tune_items"
+                android:layout_above="@id/tools_wrapper"
                 android:background="@drawable/shadow_top" />
 
+            <FrameLayout
+                android:id="@+id/tools_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/tune_container"
+                android:background="@color/color_light_gray">
+
+                <FrameLayout
+                    android:id="@+id/tools_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_gravity="bottom"
+                        android:background="@color/color_gray" />
+
+                    <include layout="@layout/selector_flipper" />
+
+                </FrameLayout>
+
+            </FrameLayout>
+
             <LinearLayout
-                android:id="@+id/tune_items"
+                android:id="@+id/tune_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
