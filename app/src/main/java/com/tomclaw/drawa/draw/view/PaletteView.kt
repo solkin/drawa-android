@@ -6,9 +6,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_DOWN
+import android.view.MotionEvent.ACTION_MOVE
+import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import com.tomclaw.drawa.R
-
 
 class PaletteView(context: Context, attributes: AttributeSet)
     : View(context, attributes) {
@@ -25,6 +28,11 @@ class PaletteView(context: Context, attributes: AttributeSet)
 
     private val palette = ArrayList<Int>()
     private var shadowAlpha: Int = 0x55
+
+    private var activeX: Float = -1f
+    private var activeY: Float = -1f
+
+    var colorClickListener: OnColorClickListener? = null
 
     init {
         var styledAttrs: TypedArray? = null
@@ -62,23 +70,21 @@ class PaletteView(context: Context, attributes: AttributeSet)
         var position = 0
         for (y in 1..rows) {
             for (x in 1..columns) {
-                val shadowColor = shadowAlpha shl 24 or (palette[position].darker() and 0x00ffffff)
+                val cellX = padding + (x - 1) * cellSize
+                val cellY = padding + (y - 1) * cellSize
+                val drawX = cellX + cellSize / 2
+                val drawY = cellY + cellSize / 2
+                val radius = cellSize * 3 / 8
+                val isActive = cellX <= activeX && cellY <= activeY
+                        && (cellX + cellSize) > activeX && (cellY + cellSize) > activeY
+                val color = if (isActive) palette[position].darker() else palette[position]
+                val shadowColor = shadowAlpha shl 24 or (color.darker() and 0x00ffffff)
                 shadowPaint.color = shadowColor
                 shadowPaint.setShadowLayer(padding / 2, 0f, padding / 2, shadowColor)
-                canvas.drawCircle(
-                        padding + x * cellSize - cellSize / 2,
-                        padding + y * cellSize - cellSize / 2,
-                        cellSize * 3 / 8,
-                        shadowPaint
-                )
-                fillPaint.color = palette[position]
+                canvas.drawCircle(drawX, drawY, radius, shadowPaint)
+                fillPaint.color = color
                 setLayerType(LAYER_TYPE_SOFTWARE, fillPaint)
-                canvas.drawCircle(
-                        padding + x * cellSize - cellSize / 2,
-                        padding + y * cellSize - cellSize / 2,
-                        cellSize * 3 / 8,
-                        fillPaint
-                )
+                canvas.drawCircle(drawX, drawY, radius, fillPaint)
                 position++
             }
         }
@@ -92,10 +98,51 @@ class PaletteView(context: Context, attributes: AttributeSet)
         setMeasuredDimension(width.toInt(), height.toInt())
     }
 
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            ACTION_DOWN -> onTouchDown(event.x, event.y)
+            ACTION_MOVE -> onTouchMove(event.x, event.y)
+            ACTION_UP -> onTouchUp(event.x, event.y)
+        }
+        return true
+    }
+
+    private fun onTouchDown(x: Float, y: Float) {
+        this.activeX = x
+        this.activeY = y
+        invalidate()
+    }
+
+    private fun onTouchMove(x: Float, y: Float) {
+        this.activeX = x
+        this.activeY = y
+        invalidate()
+    }
+
+    private fun onTouchUp(x: Float, y: Float) {
+        val column = ((x - padding) / cellSize).toInt()
+        val row = ((y - padding) / cellSize).toInt()
+        if (column < columns && row < rows) {
+            val color = palette[row * columns + column]
+            colorClickListener?.onColorClicked(color)
+        }
+        this.activeX = -1f
+        this.activeY = -1f
+        invalidate()
+    }
+
     private fun Int.darker(): Int {
         val hsv = FloatArray(3)
         Color.colorToHSV(this, hsv)
         hsv[2] *= 0.8f
         return Color.HSVToColor(hsv)
     }
+
+
+    interface OnColorClickListener {
+
+        fun onColorClicked(color: Int)
+
+    }
+
 }
