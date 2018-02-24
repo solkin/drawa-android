@@ -6,21 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/color_primary"
-            app:navigationIcon="?attr/homeAsUpIndicator"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
-
     <ViewFlipper
         android:id="@+id/flipper"
         android:layout_width="match_parent"
@@ -40,9 +25,8 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@id/tools_wrapper"
+                android:layout_above="@id/tune_container"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"
                 android:background="@drawable/background_doodle">
 
                 <android.support.v7.widget.CardView
@@ -128,5 +112,15 @@
         </RelativeLayout>
 
     </ViewFlipper>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ToolbarTheme"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+
+    <include layout="@layout/shadow_toolbar" />
 
 </FrameLayout>

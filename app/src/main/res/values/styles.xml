@@ -23,12 +23,19 @@
         <item name="android:windowBackground">@color/color_light_gray</item>
     </style>
 
-    <style name="ToolbarTheme">
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="CardViewStyle.Light" parent="CardView">
+        <item name="cardBackgroundColor">@color/cardview_light_background</item>
     </style>
 
     <style name="ToolItem">
@@ -53,15 +60,6 @@
         <item name="android:clickable">true</item>
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
         <item name="android:tint">@color/color_tint</item>
-    </style>
-
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
-
-    <style name="CardViewStyle.Light" parent="CardView">
-        <item name="cardBackgroundColor">@color/cardview_light_background</item>
     </style>
 
 </resources>

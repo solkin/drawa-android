@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar" />
-
     <ViewFlipper
         android:id="@+id/flipper"
         android:layout_width="match_parent"
@@ -22,6 +20,7 @@
             android:id="@+id/recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
             android:padding="4dp" />
 
     </ViewFlipper>
@@ -36,5 +35,14 @@
         android:focusable="true"
         android:src="@drawable/plus"
         app:fabSize="normal" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ToolbarTheme" />
+
+    <include layout="@layout/shadow_toolbar" />
 
 </FrameLayout>
