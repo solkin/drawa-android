@@ -71,32 +71,32 @@
 
         <ImageView
             android:id="@+id/size_s"
-            style="@style/ToolItem"
-            android:src="@drawable/circle"
+            style="@style/SizeItem"
+            android:src="@drawable/size_s"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/size_m"
-            style="@style/ToolItem"
-            android:src="@drawable/circle"
+            style="@style/SizeItem"
+            android:src="@drawable/size_m"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/size_l"
-            style="@style/ToolItem"
-            android:src="@drawable/circle"
+            style="@style/SizeItem"
+            android:src="@drawable/size_l"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/size_xl"
-            style="@style/ToolItem"
-            android:src="@drawable/circle"
+            style="@style/SizeItem"
+            android:src="@drawable/size_xl"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/size_xxl"
-            style="@style/ToolItem"
-            android:src="@drawable/circle"
+            style="@style/SizeItem"
+            android:src="@drawable/size_xxl"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>
