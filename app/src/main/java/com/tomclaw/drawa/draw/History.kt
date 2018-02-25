@@ -30,6 +30,8 @@ interface History {
 
     fun load(): Single<Unit>
 
+    fun delete(): Single<Unit>
+
 }
 
 class HistoryImpl(private val file: File) : History {
@@ -136,6 +138,11 @@ class HistoryImpl(private val file: File) : History {
         } finally {
             input.safeClose()
         }
+    }
+
+    override fun delete(): Single<Unit> = Single.create<Unit> { emitter ->
+        file.delete()
+        emitter.onSuccess(Unit)
     }
 
 }

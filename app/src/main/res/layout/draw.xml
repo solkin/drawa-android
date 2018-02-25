@@ -65,8 +65,7 @@
                     android:id="@+id/tools_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible">
+                    android:visibility="gone">
 
                     <View
                         android:layout_width="match_parent"

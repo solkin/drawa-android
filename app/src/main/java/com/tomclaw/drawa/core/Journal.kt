@@ -30,6 +30,8 @@ interface Journal {
     fun save(): Single<Unit>
 
     fun load(): Single<List<Record>>
+
+    fun delete(id: Int): Single<Unit>
 }
 
 class JournalImpl(private val journalFile: File) : Journal {
@@ -77,6 +79,15 @@ class JournalImpl(private val journalFile: File) : Journal {
                     .doOnSuccess { this.records = it }
                     .doOnError { this.records = emptyList() }
         }
+    }
+
+    override fun delete(id: Int): Single<Unit> {
+        return load()
+                .map { it.filter { it.id != id } }
+                .flatMap {
+                    this.records = it
+                    save()
+                }
     }
 
     private fun write(records: List<Record>): Single<Unit> = Single.create<Unit> { emitter ->

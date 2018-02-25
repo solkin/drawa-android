@@ -69,10 +69,8 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         }
         subscriptions += view.drawEvents().subscribe { tool?.onDraw() }
         subscriptions += view.navigationClicks().subscribe { onBackPressed() }
-        subscriptions += view.undoClicks().subscribe {
-            onUndo()
-        }
-        subscriptions += view.deleteClicks().subscribe { onBackPressed() }
+        subscriptions += view.undoClicks().subscribe { onUndo() }
+        subscriptions += view.deleteClicks().subscribe { onDelete() }
         subscriptions += saveRelay.debounce(500, TimeUnit.MILLISECONDS).subscribe {
             saveHistory()
         }
@@ -81,6 +79,14 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         tool = toolProvider.getTool(TYPE_BRUSH)?.apply {
             color = 0x2C82C9
         }
+    }
+
+    private fun onDelete() {
+        subscriptions += interactor.delete()
+                .observeOn(schedulers.mainThread())
+                .doOnSubscribe { view?.showProgress() }
+                .doAfterTerminate { view?.showContent() }
+                .subscribe({ router?.leaveScreen() }, { })
     }
 
     private fun onUndo() {
