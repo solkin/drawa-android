@@ -4,30 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_back"
     android:orientation="vertical">
 
     <ViewFlipper
         android:id="@+id/flipper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize">
+        android:layout_height="match_parent">
 
-        <ProgressBar
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center" />
-
-        <RelativeLayout
+        <FrameLayout
+            android:id="@+id/progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_back">
+            android:layout_marginTop="?actionBarSize">
+
+            <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_doodle">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@id/tune_container"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/background_doodle">
+                android:layout_marginBottom="@dimen/tunes_height"
+                android:layout_marginTop="?actionBarSize">
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/content"
@@ -51,39 +58,40 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
-                android:layout_above="@id/tools_wrapper"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="@dimen/tunes_height"
                 android:background="@drawable/shadow_top" />
 
-            <FrameLayout
-                android:id="@+id/tools_wrapper"
+            <LinearLayout
+                android:id="@+id/tools_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/tune_container"
-                android:background="@color/color_light_gray">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/tunes_height"
+                android:background="@color/color_semitransparent"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <FrameLayout
-                    android:id="@+id/tools_container"
+                <View
+                    android:id="@+id/tools_shadow"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone">
+                    android:layout_height="5dp"
+                    android:background="@drawable/shadow_top" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_gravity="bottom"
-                        android:background="@color/color_gray" />
+                <include layout="@layout/selector_flipper" />
 
-                    <include layout="@layout/selector_flipper" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_gravity="bottom"
+                    android:background="@color/color_gray" />
 
-                </FrameLayout>
-
-            </FrameLayout>
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/tune_container"
+                android:id="@+id/tunes_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_height="@dimen/tunes_height"
                 android:layout_gravity="bottom"
                 android:background="@color/color_light_gray"
                 android:orientation="horizontal">
@@ -108,7 +116,7 @@
 
             </LinearLayout>
 
-        </RelativeLayout>
+        </FrameLayout>
 
     </ViewFlipper>
 

@@ -8,6 +8,7 @@
     <color name="color_gray">#BDBDBD</color>
     <color name="color_back">#EEEEEE</color>
     <color name="color_tint">#8a8a8a</color>
+    <color name="color_semitransparent">#baffffff</color>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/color_primary</item>
@@ -65,8 +66,6 @@
     <style name="TuneItem">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:paddingTop">18dp</item>
-        <item name="android:paddingBottom">18dp</item>
         <item name="android:layout_weight">0.3</item>
         <item name="android:scaleType">center</item>
         <item name="android:clickable">true</item>

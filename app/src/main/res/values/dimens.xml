@@ -3,4 +3,5 @@
     <dimen name="toolbar_shadow_size">5dp</dimen>
     <dimen name="popup_width">50dp</dimen>
     <dimen name="popup_height">180dp</dimen>
+    <dimen name="tunes_height">60dp</dimen>
 </resources>
