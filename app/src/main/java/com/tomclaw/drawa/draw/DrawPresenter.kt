@@ -71,6 +71,9 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += view.navigationClicks().subscribe { onBackPressed() }
         subscriptions += view.undoClicks().subscribe { onUndo() }
         subscriptions += view.deleteClicks().subscribe { onDelete() }
+        subscriptions += view.tuneToolClicks().subscribe { view.showToolChooser() }
+        subscriptions += view.tuneColorClicks().subscribe { view.showColorChooser() }
+        subscriptions += view.tuneSizeClicks().subscribe { view.showSizeChooser() }
         subscriptions += saveRelay.debounce(500, TimeUnit.MILLISECONDS).subscribe {
             saveHistory()
         }

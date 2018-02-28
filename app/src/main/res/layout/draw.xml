@@ -73,7 +73,6 @@
                 android:visibility="gone">
 
                 <View
-                    android:id="@+id/tools_shadow"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
                     android:background="@drawable/shadow_top" />

@@ -10,6 +10,9 @@ import com.tomclaw.drawa.draw.view.DrawingListener
 import com.tomclaw.drawa.draw.view.DrawingView
 import com.tomclaw.drawa.draw.view.TouchEvent
 import com.tomclaw.drawa.util.convertDpToPixel
+import com.tomclaw.drawa.util.hide
+import com.tomclaw.drawa.util.show
+import com.tomclaw.drawa.util.toggle
 import io.reactivex.Observable
 
 
@@ -25,6 +28,12 @@ interface DrawView {
 
     fun showContent()
 
+    fun showToolChooser()
+
+    fun showColorChooser()
+
+    fun showSizeChooser()
+
     fun touchEvents(): Observable<TouchEvent>
 
     fun drawEvents(): Observable<Unit>
@@ -35,6 +44,12 @@ interface DrawView {
 
     fun deleteClicks(): Observable<Unit>
 
+    fun tuneToolClicks(): Observable<Unit>
+
+    fun tuneColorClicks(): Observable<Unit>
+
+    fun tuneSizeClicks(): Observable<Unit>
+
 }
 
 class DrawViewImpl(view: View,
@@ -44,12 +59,22 @@ class DrawViewImpl(view: View,
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private val drawingView: DrawingView = view.findViewById(R.id.drawing_view)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
+    private val tuneTool: View = view.findViewById(R.id.tune_tool)
+    private val tuneColor: View = view.findViewById(R.id.tune_color)
+    private val tuneSize: View = view.findViewById(R.id.tune_size)
+    private val toolsContainer: View = view.findViewById(R.id.tools_container)
+    private val toolChooser: View = view.findViewById(R.id.tool_chooser)
+    private val colorChooser: View = view.findViewById(R.id.color_chooser)
+    private val sizeChooser: View = view.findViewById(R.id.size_chooser)
 
     private val touchRelay = PublishRelay.create<TouchEvent>()
     private val drawRelay = PublishRelay.create<Unit>()
     private val navigationRelay = PublishRelay.create<Unit>()
     private val undoRelay = PublishRelay.create<Unit>()
     private val deleteRelay = PublishRelay.create<Unit>()
+    private val tuneToolRelay = PublishRelay.create<Unit>()
+    private val tuneColorRelay = PublishRelay.create<Unit>()
+    private val tuneSizeRelay = PublishRelay.create<Unit>()
 
     init {
         bitmapHolder.drawHost = drawingView
@@ -74,6 +99,9 @@ class DrawViewImpl(view: View,
                 drawRelay.accept(Unit)
             }
         }
+        tuneTool.setOnClickListener { tuneToolRelay.accept(Unit) }
+        tuneColor.setOnClickListener { tuneColorRelay.accept(Unit) }
+        tuneSize.setOnClickListener { tuneSizeRelay.accept(Unit) }
     }
 
     override fun setDrawingListener(listener: DrawingListener) {
@@ -96,6 +124,27 @@ class DrawViewImpl(view: View,
         flipper.displayedChild = 1
     }
 
+    override fun showToolChooser() {
+        toolsContainer.toggle()
+        toolChooser.show()
+        colorChooser.hide()
+        sizeChooser.hide()
+    }
+
+    override fun showColorChooser() {
+        toolsContainer.toggle()
+        toolChooser.hide()
+        colorChooser.show()
+        sizeChooser.hide()
+    }
+
+    override fun showSizeChooser() {
+        toolsContainer.toggle()
+        toolChooser.hide()
+        colorChooser.hide()
+        sizeChooser.show()
+    }
+
     override fun touchEvents(): Observable<TouchEvent> = touchRelay
 
     override fun drawEvents(): Observable<Unit> = drawRelay
@@ -105,5 +154,11 @@ class DrawViewImpl(view: View,
     override fun undoClicks(): Observable<Unit> = undoRelay
 
     override fun deleteClicks(): Observable<Unit> = deleteRelay
+
+    override fun tuneToolClicks(): Observable<Unit> = tuneToolRelay
+
+    override fun tuneColorClicks(): Observable<Unit> = tuneColorRelay
+
+    override fun tuneSizeClicks(): Observable<Unit> = tuneSizeRelay
 
 }
