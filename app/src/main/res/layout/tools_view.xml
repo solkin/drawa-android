@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/tunes_height"
+        android:background="@drawable/shadow_top" />
+
+    <LinearLayout
+        android:id="@+id/tools_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/tunes_height"
+        android:background="@color/color_semitransparent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/shadow_top" />
+
+        <include layout="@layout/choosers_view" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_gravity="bottom"
+            android:background="@color/color_gray" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tunes_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tunes_height"
+        android:layout_gravity="bottom"
+        android:background="@color/color_light_gray"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/tune_tool"
+            style="@style/TuneItem"
+            android:src="@drawable/lead_pencil"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/tune_color"
+            style="@style/TuneItem"
+            android:src="@drawable/circle"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/tune_size"
+            style="@style/TuneItem"
+            android:src="@drawable/marker"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
+
+</FrameLayout>
