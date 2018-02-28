@@ -57,7 +57,7 @@
         android:id="@+id/color_chooser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <com.tomclaw.drawa.draw.view.PaletteView
             android:layout_width="match_parent"
@@ -73,7 +73,7 @@
         android:orientation="horizontal"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/size_s"

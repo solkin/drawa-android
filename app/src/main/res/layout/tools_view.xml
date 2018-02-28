@@ -12,30 +12,42 @@
         android:layout_marginBottom="@dimen/tunes_height"
         android:background="@drawable/shadow_top" />
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/tools_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/tunes_height"
-        android:background="@color/color_semitransparent"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <View
+            android:id="@+id/tools_background"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="@drawable/shadow_top" />
+            android:layout_height="match_parent"
+            android:background="@color/color_semitransparent" />
 
-        <include layout="@layout/choosers_view" />
-
-        <View
+        <LinearLayout
+            android:id="@+id/tools_wrapper"
             android:layout_width="match_parent"
-            android:layout_height="1px"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/color_gray" />
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@drawable/shadow_top" />
+
+            <include layout="@layout/choosers_view" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_gravity="bottom"
+                android:background="@color/color_gray" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/tunes_container"

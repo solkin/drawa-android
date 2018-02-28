@@ -8,6 +8,8 @@ fun View?.toggle() {
     if (this?.visibility == VISIBLE) hide() else show()
 }
 
+fun View?.isVisible(): Boolean = this?.visibility == VISIBLE
+
 fun View?.show() {
     this?.visibility = VISIBLE
 }
