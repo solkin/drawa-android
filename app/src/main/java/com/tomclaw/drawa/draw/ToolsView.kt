@@ -20,11 +20,15 @@ interface ToolsView {
 
     fun showSizeChooser(animate: Boolean = true)
 
+    fun hideChooser(animate: Boolean = true)
+
     fun tuneToolClicks(): Observable<Unit>
 
     fun tuneColorClicks(): Observable<Unit>
 
     fun tuneSizeClicks(): Observable<Unit>
+
+    fun hideChooserClick(): Observable<Unit>
 
 }
 
@@ -43,11 +47,13 @@ class ToolsViewImpl(view: View) : ToolsView {
     private val tuneToolRelay = PublishRelay.create<Unit>()
     private val tuneColorRelay = PublishRelay.create<Unit>()
     private val tuneSizeRelay = PublishRelay.create<Unit>()
+    private val hideChooserRelay = PublishRelay.create<Unit>()
 
     init {
         tuneTool.setOnClickListener { tuneToolRelay.accept(Unit) }
         tuneColor.setOnClickListener { tuneColorRelay.accept(Unit) }
         tuneSize.setOnClickListener { tuneSizeRelay.accept(Unit) }
+        toolsBackground.setOnClickListener { hideChooserRelay.accept(Unit) }
     }
 
     override fun showToolChooser(animate: Boolean) {
@@ -85,11 +91,19 @@ class ToolsViewImpl(view: View) : ToolsView {
         }
     }
 
+    override fun hideChooser(animate: Boolean) {
+        if (toolsContainer.isVisible()) {
+            hideTools(animate)
+        }
+    }
+
     override fun tuneToolClicks(): Observable<Unit> = tuneToolRelay
 
     override fun tuneColorClicks(): Observable<Unit> = tuneColorRelay
 
     override fun tuneSizeClicks(): Observable<Unit> = tuneSizeRelay
+
+    override fun hideChooserClick(): Observable<Unit> = hideChooserRelay
 
     private fun showTools(animate: Boolean) {
         if (animate) {

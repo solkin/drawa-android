@@ -74,6 +74,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += view.tuneToolClicks().subscribe { view.showToolChooser() }
         subscriptions += view.tuneColorClicks().subscribe { view.showColorChooser() }
         subscriptions += view.tuneSizeClicks().subscribe { view.showSizeChooser() }
+        subscriptions += view.hideChooserClick().subscribe { view.hideChooser() }
         subscriptions += saveRelay.debounce(SAVE_DEBOUNCE_DELAY, TimeUnit.MILLISECONDS).subscribe {
             saveHistory()
         }
