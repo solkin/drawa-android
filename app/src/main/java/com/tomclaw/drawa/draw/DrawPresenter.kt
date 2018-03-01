@@ -75,14 +75,44 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += view.tuneColorClicks().subscribe { view.showColorChooser() }
         subscriptions += view.tuneSizeClicks().subscribe { view.showSizeChooser() }
         subscriptions += view.hideChooserClick().subscribe { view.hideChooser() }
+        subscriptions += view.toolSelected().subscribe {
+            selectTool(it)
+            view.hideChooser(animate = true)
+        }
+        subscriptions += view.colorSelected().subscribe {
+            changeColor(it)
+            view.hideChooser(animate = true)
+        }
+        subscriptions += view.sizeSelected().subscribe {
+            changeSize(it)
+            view.hideChooser(animate = true)
+        }
         subscriptions += saveRelay.debounce(SAVE_DEBOUNCE_DELAY, TimeUnit.MILLISECONDS).subscribe {
             saveHistory()
         }
         loadHistory()
 
-        tool = toolProvider.getTool(TYPE_BRUSH)?.apply {
-            color = 0x2C82C9
+        selectTool(TYPE_BRUSH)
+    }
+
+    private fun selectTool(type: Int) {
+        // TODO: apply with state saving
+        // TODO: use correct default color
+        val toolColor = tool?.color ?: 0x2C82C9
+        tool = toolProvider.getTool(type)?.apply {
+            color = toolColor
         }
+    }
+
+    private fun changeColor(color: Int) {
+        // TODO: apply with state saving
+        tool?.color = color
+    }
+
+    private fun changeSize(size: Int) {
+        // TODO: apply with state saving
+        // TODO: use correct size multiplicator
+        tool?.radius = size * 10
     }
 
     private fun onDelete() {

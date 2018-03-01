@@ -10,7 +10,7 @@ import android.util.DisplayMetrics
  * @return A float value to represent px equivalent to dp depending on device density
  */
 fun Resources.convertDpToPixel(dp: Float): Float {
-    val metrics = getDisplayMetrics()
+    val metrics = displayMetrics
     return dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
 }
 
@@ -21,6 +21,6 @@ fun Resources.convertDpToPixel(dp: Float): Float {
  * @return A float value to represent dp equivalent to px value
  */
 fun Resources.convertPixelsToDp(px: Float): Float {
-    val metrics = getDisplayMetrics()
+    val metrics = displayMetrics
     return px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
 }

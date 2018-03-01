@@ -6,6 +6,18 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
+import com.tomclaw.drawa.draw.tools.SIZE_L
+import com.tomclaw.drawa.draw.tools.SIZE_M
+import com.tomclaw.drawa.draw.tools.SIZE_S
+import com.tomclaw.drawa.draw.tools.SIZE_XL
+import com.tomclaw.drawa.draw.tools.SIZE_XXL
+import com.tomclaw.drawa.draw.tools.TYPE_BRUSH
+import com.tomclaw.drawa.draw.tools.TYPE_ERASER
+import com.tomclaw.drawa.draw.tools.TYPE_FILL
+import com.tomclaw.drawa.draw.tools.TYPE_FLUFFY
+import com.tomclaw.drawa.draw.tools.TYPE_MARKER
+import com.tomclaw.drawa.draw.tools.TYPE_PENCIL
+import com.tomclaw.drawa.draw.view.PaletteView
 import com.tomclaw.drawa.util.hide
 import com.tomclaw.drawa.util.isVisible
 import com.tomclaw.drawa.util.show
@@ -30,6 +42,12 @@ interface ToolsView {
 
     fun hideChooserClick(): Observable<Unit>
 
+    fun toolSelected(): Observable<Int>
+
+    fun colorSelected(): Observable<Int>
+
+    fun sizeSelected(): Observable<Int>
+
 }
 
 class ToolsViewImpl(view: View) : ToolsView {
@@ -48,12 +66,33 @@ class ToolsViewImpl(view: View) : ToolsView {
     private val tuneColorRelay = PublishRelay.create<Unit>()
     private val tuneSizeRelay = PublishRelay.create<Unit>()
     private val hideChooserRelay = PublishRelay.create<Unit>()
+    private val toolRelay = PublishRelay.create<Int>()
+    private val colorRelay = PublishRelay.create<Int>()
+    private val sizeRelay = PublishRelay.create<Int>()
 
     init {
         tuneTool.setOnClickListener { tuneToolRelay.accept(Unit) }
         tuneColor.setOnClickListener { tuneColorRelay.accept(Unit) }
         tuneSize.setOnClickListener { tuneSizeRelay.accept(Unit) }
         toolsBackground.setOnClickListener { hideChooserRelay.accept(Unit) }
+
+        view.setOnClickListener(R.id.tool_pencil, { toolRelay.accept(TYPE_PENCIL) })
+        view.setOnClickListener(R.id.tool_brush, { toolRelay.accept(TYPE_BRUSH) })
+        view.setOnClickListener(R.id.tool_marker, { toolRelay.accept(TYPE_MARKER) })
+        view.setOnClickListener(R.id.tool_fluffy, { toolRelay.accept(TYPE_FLUFFY) })
+        view.setOnClickListener(R.id.tool_fill, { toolRelay.accept(TYPE_FILL) })
+        view.setOnClickListener(R.id.tool_eraser, { toolRelay.accept(TYPE_ERASER) })
+        view.findViewById<PaletteView>(R.id.palette_view).colorClickListener =
+                object : PaletteView.OnColorClickListener {
+                    override fun onColorClicked(color: Int) {
+                        colorRelay.accept(color)
+                    }
+                }
+        view.setOnClickListener(R.id.size_s, { sizeRelay.accept(SIZE_S) })
+        view.setOnClickListener(R.id.size_m, { sizeRelay.accept(SIZE_M) })
+        view.setOnClickListener(R.id.size_l, { sizeRelay.accept(SIZE_L) })
+        view.setOnClickListener(R.id.size_xl, { sizeRelay.accept(SIZE_XL) })
+        view.setOnClickListener(R.id.size_xxl, { sizeRelay.accept(SIZE_XXL) })
     }
 
     override fun showToolChooser(animate: Boolean) {
@@ -104,6 +143,12 @@ class ToolsViewImpl(view: View) : ToolsView {
     override fun tuneSizeClicks(): Observable<Unit> = tuneSizeRelay
 
     override fun hideChooserClick(): Observable<Unit> = hideChooserRelay
+
+    override fun toolSelected(): Observable<Int> = toolRelay
+
+    override fun colorSelected(): Observable<Int> = colorRelay
+
+    override fun sizeSelected(): Observable<Int> = sizeRelay
 
     private fun showTools(animate: Boolean) {
         if (animate) {
@@ -178,6 +223,10 @@ class ToolsViewImpl(view: View) : ToolsView {
                         endCallback.invoke()
                     }
                 })
+    }
+
+    private fun View.setOnClickListener(id: Int, listener: () -> Unit) {
+        findViewById<View>(id).setOnClickListener { listener.invoke() }
     }
 
 }

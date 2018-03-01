@@ -60,6 +60,7 @@
         android:visibility="invisible">
 
         <com.tomclaw.drawa.draw.view.PaletteView
+            android:id="@+id/palette_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:palette="@array/palette" />
