@@ -1,6 +1,10 @@
 package com.tomclaw.drawa.draw.tools
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import com.tomclaw.drawa.draw.DrawHost
 
 abstract class Tool {

@@ -59,11 +59,12 @@ class DrawInteractorImpl(private val record: Record, // TODO: may be replaced wi
     }
 
     override fun saveHistory(): Observable<Unit> {
+        val prevImageFile = record.imageFile(filesDir)
         return resolve({
             val recordId = record.id
             history.save()
                     .flatMap {
-                        record.imageFile(filesDir).delete()
+                        prevImageFile.delete()
                         journal.touch(recordId)
                     }
                     .map { record ->

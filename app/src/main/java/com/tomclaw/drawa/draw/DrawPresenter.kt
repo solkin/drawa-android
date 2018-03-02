@@ -99,8 +99,10 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         // TODO: apply with state saving
         // TODO: use correct default color
         val toolColor = tool?.color ?: 0x2C82C9
+        val toolRadius = tool?.baseRadius ?: 30
         tool = toolProvider.getTool(type)?.apply {
             color = toolColor
+            baseRadius = toolRadius
         }
     }
 
@@ -112,7 +114,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     private fun changeSize(size: Int) {
         // TODO: apply with state saving
         // TODO: use correct size multiplicator
-        tool?.radius = size * 10
+        tool?.baseRadius = size * 10
     }
 
     private fun onDelete() {
