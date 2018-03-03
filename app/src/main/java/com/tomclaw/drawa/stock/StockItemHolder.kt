@@ -25,8 +25,6 @@ class StockItemHolder(view: View,
         GlideApp.with(imageView)
                 .load(item.image)
                 .centerCrop()
-                .override(item.width, item.height)
-                .centerCrop()
                 .into(imageView)
     }
 }
