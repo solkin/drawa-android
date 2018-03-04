@@ -104,17 +104,30 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
             color = toolColor
             baseRadius = toolRadius
         }
+        bindTool()
     }
 
     private fun changeColor(color: Int) {
         // TODO: apply with state saving
         tool?.color = color
+        bindTool()
     }
 
     private fun changeSize(size: Int) {
         // TODO: apply with state saving
         // TODO: use correct size multiplicator
         tool?.baseRadius = size * 10
+        bindTool()
+    }
+
+    private fun bindTool() {
+        tool?.let { tool ->
+            with(view ?: return) {
+                setToolSelected(tool.type)
+                setColorSelected(tool.color)
+                setSizeSelected(tool.baseRadius / 10) // TODO: use size value in tool, calculate real size on draw
+            }
+        }
     }
 
     private fun onDelete() {

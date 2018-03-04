@@ -2,8 +2,11 @@ package com.tomclaw.drawa.draw
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.ImageView
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.tools.SIZE_L
@@ -32,6 +35,12 @@ interface ToolsView {
 
     fun showSizeChooser(animate: Boolean = true)
 
+    fun setToolSelected(toolType: Int)
+
+    fun setColorSelected(color: Int)
+
+    fun setSizeSelected(size: Int)
+
     fun hideChooser(animate: Boolean = true)
 
     fun tuneToolClicks(): Observable<Unit>
@@ -52,9 +61,9 @@ interface ToolsView {
 
 class ToolsViewImpl(view: View) : ToolsView {
 
-    private val tuneTool: View = view.findViewById(R.id.tune_tool)
-    private val tuneColor: View = view.findViewById(R.id.tune_color)
-    private val tuneSize: View = view.findViewById(R.id.tune_size)
+    private val tuneTool: ImageView = view.findViewById(R.id.tune_tool)
+    private val tuneColor: ImageView = view.findViewById(R.id.tune_color)
+    private val tuneSize: ImageView = view.findViewById(R.id.tune_size)
     private val toolsBackground: View = view.findViewById(R.id.tools_background)
     private val toolsContainer: View = view.findViewById(R.id.tools_container)
     private val toolsWrapper: View = view.findViewById(R.id.tools_wrapper)
@@ -128,6 +137,35 @@ class ToolsViewImpl(view: View) : ToolsView {
             sizeChooser.show()
             showTools(animate)
         }
+    }
+
+    override fun setToolSelected(toolType: Int) {
+        val toolIcon = when (toolType) {
+            TYPE_PENCIL -> R.drawable.lead_pencil
+            TYPE_BRUSH -> R.drawable.brush
+            TYPE_MARKER -> R.drawable.marker
+            TYPE_FLUFFY -> R.drawable.spray
+            TYPE_FILL -> R.drawable.format_color_fill
+            TYPE_ERASER -> R.drawable.eraser
+            else -> return
+        }
+        tuneTool.setImageResource(toolIcon)
+    }
+
+    override fun setColorSelected(color: Int) {
+        tuneColor.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+    }
+
+    override fun setSizeSelected(size: Int) {
+        val sizeIcon = when (size) {
+            SIZE_S -> R.drawable.size_s
+            SIZE_M -> R.drawable.size_m
+            SIZE_L -> R.drawable.size_l
+            SIZE_XL -> R.drawable.size_xl
+            SIZE_XXL -> R.drawable.size_xxl
+            else -> return
+        }
+        tuneSize.setImageResource(sizeIcon)
     }
 
     override fun hideChooser(animate: Boolean) {
