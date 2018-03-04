@@ -69,6 +69,7 @@ class DrawingView(context: Context,
     override fun clearBitmap() {
         canvas.drawColor(Color.WHITE)
     }
+
 }
 
 const val BITMAP_WIDTH = 720

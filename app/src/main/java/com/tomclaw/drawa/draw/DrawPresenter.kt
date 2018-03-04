@@ -63,7 +63,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                 val e = history.add(tool, event.eventX, event.eventY, event.action)
                 processToolEvent(e)
                 if (event.action == MotionEvent.ACTION_UP) {
-                    acceptSaveHistory()
+                    scheduleSaveHistory()
                 }
             }
         }
@@ -131,10 +131,13 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                 .observeOn(schedulers.mainThread())
                 .doOnSubscribe { view?.showProgress() }
                 .doAfterTerminate { view?.showContent() }
-                .subscribe({ acceptSaveHistory() }, { })
+                .subscribe({
+                    invalidateDrawHost()
+                    scheduleSaveHistory()
+                }, { })
     }
 
-    private fun acceptSaveHistory() {
+    private fun scheduleSaveHistory() {
         isSaved = false
         saveRelay.accept(Unit)
     }
@@ -186,16 +189,17 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                 .doOnSubscribe { view?.showProgress() }
                 .doAfterTerminate { view?.showContent() }
                 .subscribe({
-                    onHistoryLoaded()
+                    invalidateDrawHost()
                 }, {
                     onError()
                 })
     }
 
-    private fun onHistoryLoaded() {
+    private fun onError() {
     }
 
-    private fun onError() {
+    private fun invalidateDrawHost() {
+        bitmapHolder.drawHost.invalidate()
     }
 
     private fun applyHistory() {

@@ -13,4 +13,6 @@ interface DrawHost {
 
     fun clearBitmap()
 
+    fun invalidate()
+
 }
