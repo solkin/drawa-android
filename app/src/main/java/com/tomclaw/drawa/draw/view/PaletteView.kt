@@ -63,7 +63,8 @@ class PaletteView(context: Context, attributes: AttributeSet)
 
         shadowPaint.style = Paint.Style.FILL
         shadowPaint.isAntiAlias = true
-        setLayerType(LAYER_TYPE_SOFTWARE, shadowPaint)
+
+        setLayerType(LAYER_TYPE_SOFTWARE, fillPaint)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -83,7 +84,6 @@ class PaletteView(context: Context, attributes: AttributeSet)
                 shadowPaint.setShadowLayer(padding / 2, 0f, padding / 2, shadowColor)
                 canvas.drawCircle(drawX, drawY, radius, shadowPaint)
                 fillPaint.color = color
-                setLayerType(LAYER_TYPE_SOFTWARE, fillPaint)
                 canvas.drawCircle(drawX, drawY, radius, fillPaint)
                 position++
             }
@@ -122,7 +122,7 @@ class PaletteView(context: Context, attributes: AttributeSet)
     private fun onTouchUp(x: Float, y: Float) {
         val column = ((x - padding) / cellSize).toInt()
         val row = ((y - padding) / cellSize).toInt()
-        if (column < columns && row < rows) {
+        if (column in 0..(columns - 1) && row in 0..(rows - 1)) {
             val color = palette[row * columns + column]
             colorClickListener?.onColorClicked(color)
         }
