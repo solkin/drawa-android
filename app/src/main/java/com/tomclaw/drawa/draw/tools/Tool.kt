@@ -6,15 +6,25 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import com.tomclaw.drawa.draw.DrawHost
+import com.tomclaw.drawa.util.MetricsProvider
 
 abstract class Tool {
 
     private lateinit var callback: DrawHost
+    private lateinit var metricsProvider: MetricsProvider
 
     lateinit var paint: Paint
         private set
 
-    var baseRadius: Int = 0
+    var size: Int = SIZE_M
+        set(value) {
+            field = value
+            baseRadius = metricsProvider.convertDpToPixel(
+                    dp = value.toFloat() * SIZE_MULTIPLIER
+            ).toInt()
+        }
+
+    protected var baseRadius: Int = 0
         set(value) {
             if (this.baseRadius != value) {
                 field = value
@@ -48,8 +58,9 @@ abstract class Tool {
             paint.strokeWidth = radius.toFloat()
         }
 
-    fun initialize(callback: DrawHost) {
+    fun initialize(callback: DrawHost, metricsProvider: MetricsProvider) {
         this.callback = callback
+        this.metricsProvider = metricsProvider
         this.paint = initPaint()
     }
 
@@ -73,6 +84,8 @@ abstract class Tool {
     }
 
 }
+
+private const val SIZE_MULTIPLIER = 0.57792f
 
 const val TYPE_PENCIL = 1
 const val TYPE_BRUSH = 2

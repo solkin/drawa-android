@@ -6,6 +6,7 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_MOVE
 import android.view.MotionEvent.ACTION_UP
 import com.jakewharton.rxrelay2.PublishRelay
+import com.tomclaw.drawa.draw.tools.SIZE_M
 import com.tomclaw.drawa.draw.tools.TYPE_BRUSH
 import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.util.SchedulersFactory
@@ -99,10 +100,10 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         // TODO: apply with state saving
         // TODO: use correct default color
         val toolColor = tool?.color ?: 0x2C82C9
-        val toolRadius = tool?.baseRadius ?: 30
+        val toolSize = tool?.size ?: SIZE_M
         tool = toolProvider.getTool(type)?.apply {
             color = toolColor
-            baseRadius = toolRadius
+            size = toolSize
         }
         bindTool()
     }
@@ -115,8 +116,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
 
     private fun changeSize(size: Int) {
         // TODO: apply with state saving
-        // TODO: use correct size multiplicator
-        tool?.baseRadius = size * 10
+        tool?.size = size
         bindTool()
     }
 
@@ -125,7 +125,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
             with(view ?: return) {
                 setToolSelected(tool.type)
                 setColorSelected(tool.color)
-                setSizeSelected(tool.baseRadius / 10) // TODO: use size value in tool, calculate real size on draw
+                setSizeSelected(tool.size) // TODO: use size value in tool, calculate real size on draw
             }
         }
     }

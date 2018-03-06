@@ -1,5 +1,6 @@
 package com.tomclaw.drawa.draw.di
 
+import android.content.res.Resources
 import android.os.Bundle
 import com.tomclaw.drawa.core.Journal
 import com.tomclaw.drawa.draw.BitmapHolder
@@ -19,6 +20,8 @@ import com.tomclaw.drawa.draw.tools.Marker
 import com.tomclaw.drawa.draw.tools.Pencil
 import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.dto.Record
+import com.tomclaw.drawa.util.MetricsProvider
+import com.tomclaw.drawa.util.MetricsProviderImpl
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.historyFile
@@ -28,7 +31,8 @@ import dagger.multibindings.IntoSet
 import java.io.File
 
 @Module
-class DrawModule(private val record: Record,
+class DrawModule(private val resources: Resources,
+                 private val record: Record,
                  private val bitmapHolder: BitmapHolder,
                  private val presenterState: Bundle?) {
 
@@ -68,6 +72,12 @@ class DrawModule(private val record: Record,
     fun provideHistory(filesDir: File): History {
         val file = record.historyFile(filesDir)
         return HistoryImpl(file)
+    }
+
+    @Provides
+    @PerActivity
+    fun provideMetricsProvider(): MetricsProvider {
+        return MetricsProviderImpl(resources)
     }
 
     @IntoSet

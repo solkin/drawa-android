@@ -3,7 +3,7 @@ package com.tomclaw.drawa.draw.tools
 import android.graphics.DiscretePathEffect
 import android.graphics.Paint
 import android.graphics.Path
-import java.util.*
+import java.util.Random
 
 class Fluffy : Tool() {
 

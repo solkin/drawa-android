@@ -1,6 +1,6 @@
 package com.tomclaw.drawa.util
 
-import java.util.*
+import java.util.ArrayList
 import java.util.Collections.emptyList
 
 class DataProvider<A> {

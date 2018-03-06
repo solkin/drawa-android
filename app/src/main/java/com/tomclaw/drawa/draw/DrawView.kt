@@ -9,6 +9,7 @@ import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.draw.view.DrawingListener
 import com.tomclaw.drawa.draw.view.DrawingView
 import com.tomclaw.drawa.draw.view.TouchEvent
+import com.tomclaw.drawa.util.MetricsProvider
 import io.reactivex.Observable
 
 
@@ -37,7 +38,8 @@ interface DrawView : ToolsView {
 }
 
 class DrawViewImpl(view: View,
-                   bitmapHolder: BitmapHolder
+                   bitmapHolder: BitmapHolder,
+                   private val metricsProvider: MetricsProvider
 ) : DrawView, ToolsView by ToolsViewImpl(view) {
 
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
@@ -80,7 +82,7 @@ class DrawViewImpl(view: View,
     }
 
     override fun acceptTool(tool: Tool) {
-        tool.initialize(drawingView)
+        tool.initialize(drawingView, metricsProvider)
     }
 
     override fun showProgress() {

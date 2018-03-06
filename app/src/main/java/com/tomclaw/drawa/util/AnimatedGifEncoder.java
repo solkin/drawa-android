@@ -516,7 +516,7 @@ class NeuQuant {
 	 */
 
 	/*
-	 * Network Definitions -------------------
+     * Network Definitions -------------------
 	 */
 
     protected static final int maxnetpos = (netsize - 1);

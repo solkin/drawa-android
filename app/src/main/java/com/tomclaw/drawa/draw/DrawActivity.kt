@@ -8,12 +8,16 @@ import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.di.DrawModule
 import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.main.getComponent
+import com.tomclaw.drawa.util.MetricsProvider
 import javax.inject.Inject
 
 class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
 
     @Inject
     lateinit var presenter: DrawPresenter
+
+    @Inject
+    lateinit var metricsProvider: MetricsProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val record = intent.getParcelableExtra<Record>(EXTRA_RECORD)
@@ -23,6 +27,7 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
         application.getComponent()
                 .drawComponent(
                         DrawModule(
+                                resources = resources,
                                 record = record,
                                 bitmapHolder = bitmapHolder,
                                 presenterState = presenterState
@@ -33,7 +38,7 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.draw)
 
-        val view = DrawViewImpl(window.decorView, bitmapHolder)
+        val view = DrawViewImpl(window.decorView, bitmapHolder, metricsProvider)
 
         presenter.attachView(view)
     }
