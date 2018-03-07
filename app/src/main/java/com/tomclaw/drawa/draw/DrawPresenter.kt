@@ -225,10 +225,12 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         val x = event.x
         val y = event.y
         with(tool) {
-            color = event.color
-            radius = event.radius
             when (event.action) {
-                ACTION_DOWN -> onTouchDown(x, y)
+                ACTION_DOWN -> {
+                    color = event.color
+                    size = event.size
+                    onTouchDown(x, y)
+                }
                 ACTION_MOVE -> onTouchMove(x, y)
                 ACTION_UP -> onTouchUp(x, y)
             }

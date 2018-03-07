@@ -43,7 +43,7 @@ class HistoryImpl(private val file: File) : History {
         if (action == MotionEvent.ACTION_DOWN) {
             eventIndex++
         }
-        val e = Event(eventIndex, tool.type, tool.color, tool.radius, x, y, action)
+        val e = Event(eventIndex, tool.type, tool.color, tool.size, x, y, action)
         events.push(e)
         return e
     }

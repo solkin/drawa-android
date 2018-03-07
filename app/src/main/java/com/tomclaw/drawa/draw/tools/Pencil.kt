@@ -22,8 +22,11 @@ class Pencil : Tool() {
     }
 
     override fun onTouchDown(x: Int, y: Int) {
+        resetRadius()
+
         startX = x
         startY = y
+
         path.moveTo(x.toFloat(), y.toFloat())
         path.lineTo(x.toFloat(), y.toFloat())
 

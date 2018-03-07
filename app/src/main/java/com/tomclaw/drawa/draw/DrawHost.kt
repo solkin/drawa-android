@@ -9,6 +9,8 @@ interface DrawHost {
 
     val canvas: Canvas
 
+    fun getWidth(): Int
+
     fun applyBitmap(bitmap: Bitmap)
 
     fun clearBitmap()

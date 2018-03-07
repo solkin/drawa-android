@@ -11,6 +11,8 @@ class Brush : Tool() {
     private var prevY: Int = 0
     private var path = Path()
 
+    private var startStrokeSize: Int = 0
+
     override val alpha = 0xff
     override val type = TYPE_BRUSH
 
@@ -22,9 +24,11 @@ class Brush : Tool() {
     }
 
     override fun onTouchDown(x: Int, y: Int) {
+        resetRadius()
+        startStrokeSize = strokeSize
+
         startX = x
         startY = y
-        resetRadius()
 
         path.moveTo(x.toFloat(), y.toFloat())
         path.lineTo(x.toFloat(), y.toFloat())
@@ -39,23 +43,28 @@ class Brush : Tool() {
         if (path.isEmpty) {
             path.moveTo(prevX.toFloat(), prevY.toFloat())
         }
-        path.quadTo(prevX.toFloat(), prevY.toFloat(), ((x + prevX) / 2).toFloat(), ((y + prevY) / 2).toFloat())
+        path.quadTo(
+                prevX.toFloat(),
+                prevY.toFloat(),
+                ((x + prevX) / 2).toFloat(),
+                ((y + prevY) / 2).toFloat()
+        )
 
         val deltaX = Math.abs(x - prevX)
         val deltaY = Math.abs(y - prevY)
         val length = Math.sqrt((deltaX * deltaX + deltaY * deltaY).toDouble())
-        var r = radius
-        if (length < baseRadius / 5) {
-            r += 2
+        var size = strokeSize
+        if (length < startStrokeSize / 5) {
+            size += 2
 
             path.reset()
             path.moveTo(prevX.toFloat(), prevY.toFloat())
             path.lineTo(x.toFloat(), y.toFloat())
         } else {
-            r -= 2
+            size -= 2
         }
-        if (r > baseRadius / RADIUS_MULTIPLIER && r < baseRadius * RADIUS_MULTIPLIER) {
-            radius = r
+        if (size > startStrokeSize / SIZE_MULTIPLIER && size < startStrokeSize * SIZE_MULTIPLIER) {
+            strokeSize = size
         }
 
         prevX = x
@@ -86,4 +95,4 @@ class Brush : Tool() {
 
 }
 
-private const val RADIUS_MULTIPLIER = 2f
+private const val SIZE_MULTIPLIER = 2f

@@ -17,20 +17,6 @@ abstract class Tool {
         private set
 
     var size: Int = SIZE_M
-        set(value) {
-            field = value
-            baseRadius = metricsProvider.convertDpToPixel(
-                    dp = value.toFloat() * SIZE_MULTIPLIER
-            ).toInt()
-        }
-
-    protected var baseRadius: Int = 0
-        set(value) {
-            if (this.baseRadius != value) {
-                field = value
-                radius = value
-            }
-        }
 
     abstract val alpha: Int
 
@@ -52,10 +38,10 @@ abstract class Tool {
 
     abstract val type: Int
 
-    var radius: Int
+    var strokeSize: Int
         get() = paint.strokeWidth.toInt()
-        set(radius) {
-            paint.strokeWidth = radius.toFloat()
+        set(strokeSize) {
+            paint.strokeWidth = strokeSize.toFloat()
         }
 
     fun initialize(callback: DrawHost, metricsProvider: MetricsProvider) {
@@ -79,13 +65,11 @@ abstract class Tool {
     }
 
     fun resetRadius() {
-        val baseRadius = baseRadius
-        radius = baseRadius
+        val pixelSize = metricsProvider.convertDpToPixel(dp = size.toFloat()).toInt()
+        strokeSize = pixelSize * callback.bitmap.width / callback.getWidth()
     }
 
 }
-
-private const val SIZE_MULTIPLIER = 0.57792f
 
 const val TYPE_PENCIL = 1
 const val TYPE_BRUSH = 2
