@@ -5,7 +5,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import java.util.Random
 
-class Marker internal constructor() : Tool() {
+class Marker : Tool() {
 
     private var startX: Int = 0
     private var startY: Int = 0
@@ -29,7 +29,7 @@ class Marker internal constructor() : Tool() {
 
         startX = x
         startY = y
-        
+
         path.moveTo(x.toFloat(), y.toFloat())
         path.lineTo(x.toFloat(), y.toFloat())
 
