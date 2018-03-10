@@ -32,7 +32,7 @@ import java.io.File
 
 @Module
 class DrawModule(private val resources: Resources,
-                 private val record: Record,
+                 private val record: Record, // TODO: use plain record id instead of full record
                  private val bitmapHolder: BitmapHolder,
                  private val presenterState: Bundle?) {
 
@@ -58,7 +58,7 @@ class DrawModule(private val resources: Resources,
                               journal: Journal,
                               filesDir: File,
                               schedulers: SchedulersFactory): DrawInteractor {
-        return DrawInteractorImpl(record, filesDir, journal, history, bitmapHolder, schedulers)
+        return DrawInteractorImpl(record.id, filesDir, journal, history, bitmapHolder, schedulers)
     }
 
     @Provides

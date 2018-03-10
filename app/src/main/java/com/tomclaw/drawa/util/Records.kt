@@ -3,7 +3,7 @@ package com.tomclaw.drawa.util
 import com.tomclaw.drawa.dto.Record
 import java.io.File
 
-fun Record.name(): String = "draw-" + id
+fun Record.name(): String = "draw-$id"
 
 fun Record.touch() {
     time = System.currentTimeMillis()

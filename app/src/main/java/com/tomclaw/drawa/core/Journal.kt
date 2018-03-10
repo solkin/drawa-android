@@ -23,6 +23,8 @@ interface Journal {
 
     fun get(): List<Record>
 
+    fun get(id: Int): Record
+
     fun add(record: Record): List<Record>
 
     fun touch(id: Int): Single<Record>
@@ -44,6 +46,11 @@ class JournalImpl(private val journalFile: File) : Journal {
 
     override fun get(): List<Record> {
         return assertLoaded()
+    }
+
+    override fun get(id: Int): Record {
+        assertLoaded()
+        return records?.find { it.id == id } ?: throw RecordNotFoundException()
     }
 
     override fun add(record: Record): List<Record> {

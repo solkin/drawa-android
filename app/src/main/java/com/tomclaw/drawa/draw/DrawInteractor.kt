@@ -27,12 +27,14 @@ interface DrawInteractor {
 
 }
 
-class DrawInteractorImpl(private val record: Record, // TODO: may be replaced with id
+class DrawInteractorImpl(private val recordId: Int,
                          private val filesDir: File, // TODO: may be replaced with image provider
                          private val journal: Journal,
                          private val history: History,
                          private val bitmapHolder: BitmapHolder,
                          private val schedulers: SchedulersFactory) : DrawInteractor {
+
+    private val record = journal.get(recordId)
 
     private var isDeleted = false
 
@@ -61,7 +63,6 @@ class DrawInteractorImpl(private val record: Record, // TODO: may be replaced wi
     override fun saveHistory(): Observable<Unit> {
         val prevImageFile = record.imageFile(filesDir)
         return resolve({
-            val recordId = record.id
             history.save()
                     .flatMap {
                         prevImageFile.delete()
@@ -105,7 +106,7 @@ class DrawInteractorImpl(private val record: Record, // TODO: may be replaced wi
     override fun delete(): Observable<Unit> {
         isDeleted = true
         return history.delete()
-                .flatMap { journal.delete(id = record.id) }
+                .flatMap { journal.delete(id = recordId) }
                 .toObservable()
                 .subscribeOn(schedulers.io())
     }
