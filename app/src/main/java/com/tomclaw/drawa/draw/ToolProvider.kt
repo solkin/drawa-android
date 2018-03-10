@@ -4,7 +4,7 @@ import com.tomclaw.drawa.draw.tools.Tool
 
 interface ToolProvider {
 
-    fun getTool(type: Int): Tool?
+    fun getTool(type: Int): Tool
 
     fun listTools(): List<Tool>
 
@@ -20,7 +20,8 @@ class ToolProviderImpl(toolSet: Set<Tool>) : ToolProvider {
         }
     }
 
-    override fun getTool(type: Int): Tool? = tools[type]
+    override fun getTool(type: Int): Tool = tools[type]
+            ?: throw IllegalArgumentException("No tool found for type $type")
 
     override fun listTools(): List<Tool> = ArrayList(tools.values)
 

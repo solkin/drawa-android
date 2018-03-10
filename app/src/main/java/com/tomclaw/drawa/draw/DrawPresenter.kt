@@ -49,7 +49,11 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
 
     private val subscriptions = CompositeDisposable()
 
-    private var tool: Tool? = null
+    private var toolColor = state?.getInt(KEY_TOOL_COLOR) ?: 0x2C82C9
+    private var toolSize = state?.getInt(KEY_TOOL_SIZE) ?: SIZE_M
+    private var toolType = state?.getInt(KEY_TOOL_TYPE) ?: TYPE_BRUSH
+
+    private var tool: Tool = toolProvider.getTool(toolType)
 
     private val saveRelay = PublishRelay.create<Unit>()
 
@@ -60,15 +64,13 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         this.view = view
         toolProvider.listTools().forEach { view.acceptTool(it) }
         subscriptions += view.touchEvents().subscribe { event ->
-            tool?.let { tool ->
-                val e = history.add(tool, event.eventX, event.eventY, event.action)
-                processToolEvent(e)
-                if (event.action == MotionEvent.ACTION_UP) {
-                    scheduleSaveHistory()
-                }
+            val e = history.add(tool, event.eventX, event.eventY, event.action)
+            processToolEvent(e)
+            if (event.action == MotionEvent.ACTION_UP) {
+                scheduleSaveHistory()
             }
         }
-        subscriptions += view.drawEvents().subscribe { tool?.onDraw() }
+        subscriptions += view.drawEvents().subscribe { tool.onDraw() }
         subscriptions += view.navigationClicks().subscribe { onBackPressed() }
         subscriptions += view.undoClicks().subscribe { onUndo() }
         subscriptions += view.deleteClicks().subscribe { onDelete() }
@@ -77,7 +79,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += view.tuneSizeClicks().subscribe { view.showSizeChooser() }
         subscriptions += view.hideChooserClick().subscribe { view.hideChooser() }
         subscriptions += view.toolSelected().subscribe {
-            selectTool(it)
+            changeTool(it)
             view.hideChooser(animate = true)
         }
         subscriptions += view.colorSelected().subscribe {
@@ -93,40 +95,37 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         }
         loadHistory()
 
-        selectTool(TYPE_BRUSH)
+        selectTool()
     }
 
-    private fun selectTool(type: Int) {
-        // TODO: apply with state saving
-        // TODO: use correct default color
-        val toolColor = tool?.color ?: 0x2C82C9
-        val toolSize = tool?.size ?: SIZE_M
-        tool = toolProvider.getTool(type)?.apply {
+    private fun selectTool() {
+        tool = toolProvider.getTool(toolType).apply {
             color = toolColor
             size = toolSize
         }
         bindTool()
     }
 
+    private fun changeTool(type: Int) {
+        toolType = type
+        selectTool()
+    }
+
     private fun changeColor(color: Int) {
-        // TODO: apply with state saving
-        tool?.color = color
-        bindTool()
+        toolColor = color
+        selectTool()
     }
 
     private fun changeSize(size: Int) {
-        // TODO: apply with state saving
-        tool?.size = size
-        bindTool()
+        toolSize = size
+        selectTool()
     }
 
     private fun bindTool() {
-        tool?.let { tool ->
-            with(view ?: return) {
-                setToolSelected(tool.type)
-                setColorSelected(tool.color)
-                setSizeSelected(tool.size) // TODO: use size value in tool, calculate real size on draw
-            }
+        with(view ?: return) {
+            setToolSelected(tool.type)
+            setColorSelected(tool.color)
+            setSizeSelected(tool.size)
         }
     }
 
@@ -185,6 +184,9 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     override fun saveState() = Bundle().apply {
+        putInt(KEY_TOOL_TYPE, toolType)
+        putInt(KEY_TOOL_COLOR, toolColor)
+        putInt(KEY_TOOL_SIZE, toolSize)
     }
 
     override fun onBackPressed() {
@@ -221,7 +223,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun processToolEvent(event: Event) {
-        val tool = toolProvider.getTool(event.toolType) ?: return
+        val tool = toolProvider.getTool(event.toolType)
         val x = event.x
         val y = event.y
         with(tool) {
@@ -239,5 +241,9 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
 }
+
+private const val KEY_TOOL_TYPE = "tool_type"
+private const val KEY_TOOL_COLOR = "tool_color"
+private const val KEY_TOOL_SIZE = "tool_size"
 
 private const val SAVE_DEBOUNCE_DELAY: Long = 500
