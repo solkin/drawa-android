@@ -146,6 +146,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                 .subscribe({
                     invalidateDrawHost()
                     scheduleSaveHistory()
+                    selectTool()
                 }, { })
     }
 
