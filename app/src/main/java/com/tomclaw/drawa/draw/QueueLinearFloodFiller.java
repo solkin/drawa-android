@@ -3,7 +3,6 @@ package com.tomclaw.drawa.draw;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-
 import java.util.LinkedList;
 import java.util.Queue;
 

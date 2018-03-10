@@ -19,7 +19,6 @@ import com.tomclaw.drawa.draw.tools.Fluffy
 import com.tomclaw.drawa.draw.tools.Marker
 import com.tomclaw.drawa.draw.tools.Pencil
 import com.tomclaw.drawa.draw.tools.Tool
-import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.util.MetricsProvider
 import com.tomclaw.drawa.util.MetricsProviderImpl
 import com.tomclaw.drawa.util.PerActivity
@@ -31,8 +30,8 @@ import dagger.multibindings.IntoSet
 import java.io.File
 
 @Module
-class DrawModule(private val resources: Resources,
-                 private val record: Record, // TODO: use plain record id instead of full record
+class DrawModule(private val recordId: Int,
+                 private val resources: Resources,
                  private val bitmapHolder: BitmapHolder,
                  private val presenterState: Bundle?) {
 
@@ -58,7 +57,7 @@ class DrawModule(private val resources: Resources,
                               journal: Journal,
                               filesDir: File,
                               schedulers: SchedulersFactory): DrawInteractor {
-        return DrawInteractorImpl(record.id, filesDir, journal, history, bitmapHolder, schedulers)
+        return DrawInteractorImpl(recordId, filesDir, journal, history, bitmapHolder, schedulers)
     }
 
     @Provides
@@ -70,7 +69,7 @@ class DrawModule(private val resources: Resources,
     @Provides
     @PerActivity
     fun provideHistory(filesDir: File): History {
-        val file = record.historyFile(filesDir)
+        val file = historyFile(recordId, filesDir)
         return HistoryImpl(file)
     }
 

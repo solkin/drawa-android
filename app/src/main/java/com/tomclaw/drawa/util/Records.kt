@@ -3,12 +3,12 @@ package com.tomclaw.drawa.util
 import com.tomclaw.drawa.dto.Record
 import java.io.File
 
-fun Record.name(): String = "draw-$id"
+fun recordName(recordId: Int): String = "draw-$recordId"
 
 fun Record.touch() {
     time = System.currentTimeMillis()
 }
 
-fun Record.historyFile(dir: File): File = File(dir, name() + ".bin")
+fun Record.imageFile(dir: File): File = File(dir, recordName(id) + "-" + time + ".png")
 
-fun Record.imageFile(dir: File): File = File(dir, name() + "-" + time + ".png")
+fun historyFile(recordId: Int, dir: File): File = File(dir, recordName(recordId) + ".bin")

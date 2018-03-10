@@ -3,7 +3,6 @@ package com.tomclaw.drawa.util;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -542,7 +541,7 @@ class NeuQuant {
 
     /* defs for decreasing radius factor */
     protected static final int initrad = (netsize >> 3); /*
-														 * for 256 cols, radius
+                                                         * for 256 cols, radius
 														 * starts
 														 */
 
@@ -551,7 +550,7 @@ class NeuQuant {
     protected static final int radiusbias = (((int) 1) << radiusbiasshift);
 
     protected static final int initradius = (initrad * radiusbias); /*
-																	 * and
+                                                                     * and
 																	 * decreases
 																	 * by a
 																	 */
@@ -575,7 +574,7 @@ class NeuQuant {
     protected static final int alpharadbias = (((int) 1) << alpharadbshift);
 
 	/*
-	 * Types and Global Variables --------------------------
+     * Types and Global Variables --------------------------
 	 */
 
     protected byte[] thepicture; /* the input image itself */

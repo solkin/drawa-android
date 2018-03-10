@@ -66,7 +66,7 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
     }
 
     override fun showDrawingScreen(record: Record) {
-        val intent = createDrawActivityIntent(context = this, record = record)
+        val intent = createDrawActivityIntent(context = this, recordId = record.id)
         startActivityForResult(intent, REQUEST_DRAW)
     }
 

@@ -3,7 +3,6 @@ package com.tomclaw.drawa.draw
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.tomclaw.drawa.core.Journal
-import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.imageFile
 import com.tomclaw.drawa.util.safeClose

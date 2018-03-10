@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.di.DrawModule
-import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.util.MetricsProvider
 import javax.inject.Inject
@@ -20,15 +19,18 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
     lateinit var metricsProvider: MetricsProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val record = intent.getParcelableExtra<Record>(EXTRA_RECORD)
-                ?: throw IllegalArgumentException("name must be specified")
+        val recordId = intent.getIntExtra(EXTRA_RECORD_ID, RECORD_ID_INVALID).apply {
+            if (this == RECORD_ID_INVALID) {
+                throw IllegalArgumentException("record id must be specified")
+            }
+        }
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
         val bitmapHolder = BitmapHolder()
         application.getComponent()
                 .drawComponent(
                         DrawModule(
+                                recordId = recordId,
                                 resources = resources,
-                                record = record,
                                 bitmapHolder = bitmapHolder,
                                 presenterState = presenterState
                         )
@@ -78,10 +80,12 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
 }
 
 fun createDrawActivityIntent(context: Context,
-                             record: Record): Intent =
+                             recordId: Int): Intent =
         Intent(context, DrawActivity::class.java)
-                .putExtra(EXTRA_RECORD, record)
+                .putExtra(EXTRA_RECORD_ID, recordId)
 
 private const val KEY_PRESENTER_STATE = "presenter_state"
 
-private const val EXTRA_RECORD = "record"
+private const val EXTRA_RECORD_ID = "record_id"
+
+private const val RECORD_ID_INVALID = -1
