@@ -13,8 +13,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.LinkedList
-import java.util.Stack
+import java.util.ArrayDeque
+import java.util.Deque
 
 interface History {
 
@@ -24,7 +24,7 @@ interface History {
 
     fun clear()
 
-    fun getEvents(): Collection<Event>
+    fun getEvents(): Iterator<Event>
 
     fun save(): Single<Unit>
 
@@ -36,7 +36,7 @@ interface History {
 
 class HistoryImpl(private val file: File) : History {
 
-    private val events = Stack<Event>()
+    private val events: Deque<Event> = ArrayDeque<Event>()
     private var eventIndex = 0
 
     override fun add(tool: Tool, x: Int, y: Int, action: Int): Event {
@@ -62,10 +62,10 @@ class HistoryImpl(private val file: File) : History {
         events.clear()
     }
 
-    override fun getEvents(): Collection<Event> = events
+    override fun getEvents(): Iterator<Event> = events.descendingIterator()
 
     override fun save(): Single<Unit> = Single.create<Unit> { emitter ->
-        val events = LinkedList(events)
+        val events = ArrayList(events)
         var output: DataOutputStream? = null
         try {
             var time = System.currentTimeMillis()
@@ -102,7 +102,7 @@ class HistoryImpl(private val file: File) : History {
             input = DataInputStream(BufferedInputStream(FileInputStream(file), BUFFER_SIZE))
             val backupVersion = input.readInt()
             if (backupVersion == BACKUP_VERSION) {
-                val eventList = LinkedList<Event>()
+                val eventList = ArrayList<Event>()
                 val eventIndex = input.readInt()
                 val eventsCount = input.readInt()
                 with(input) {

@@ -15,7 +15,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.LinkedList
 
 interface Journal {
 
@@ -54,7 +53,7 @@ class JournalImpl(private val journalFile: File) : Journal {
     }
 
     override fun add(record: Record): List<Record> {
-        val updated = LinkedList(assertLoaded())
+        val updated = ArrayList(assertLoaded())
         updated.add(record)
         records = updated
         return updated
@@ -125,7 +124,7 @@ class JournalImpl(private val journalFile: File) : Journal {
             input = DataInputStream(BufferedInputStream(FileInputStream(journalFile), BUFFER_SIZE))
             val backupVersion = input.readInt()
             if (backupVersion == JOURNAL_VERSION) {
-                val records = LinkedList<Record>()
+                val records = ArrayList<Record>()
                 val recordsCount = input.readInt()
                 with(input) {
                     for (c in 0 until recordsCount) {
