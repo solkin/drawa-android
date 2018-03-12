@@ -160,7 +160,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                 .observeOn(schedulers.mainThread())
                 .subscribe(
                         { onHistorySaved() },
-                        {}
+                        { }
                 )
     }
 
