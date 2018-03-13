@@ -110,7 +110,7 @@ class ToolsViewImpl(view: View) : ToolsView {
             toolChooser.show()
             colorChooser.hide()
             sizeChooser.hide()
-            showTools(animate)
+            showTools(chooser = toolChooser, animate = animate)
         }
     }
 
@@ -121,7 +121,7 @@ class ToolsViewImpl(view: View) : ToolsView {
             toolChooser.hide()
             colorChooser.show()
             sizeChooser.hide()
-            showTools(animate)
+            showTools(chooser = colorChooser, animate = animate)
         }
     }
 
@@ -132,7 +132,7 @@ class ToolsViewImpl(view: View) : ToolsView {
             toolChooser.hide()
             colorChooser.hide()
             sizeChooser.show()
-            showTools(animate)
+            showTools(chooser = sizeChooser, animate = animate)
         }
     }
 
@@ -217,11 +217,11 @@ class ToolsViewImpl(view: View) : ToolsView {
         }
     }
 
-    private fun showTools(animate: Boolean) {
+    private fun showTools(chooser: View, animate: Boolean) {
         if (animate) {
             toolsContainer.show()
             toolsBackground.showWithAlphaAnimation()
-            toolsWrapper.showWithTranslationAnimation()
+            toolsWrapper.showWithTranslationAnimation(chooser.height.toFloat())
         } else {
             toolsContainer.show()
             toolsBackground.show()
@@ -250,9 +250,9 @@ class ToolsViewImpl(view: View) : ToolsView {
                 .setListener(null)
     }
 
-    private fun View.showWithTranslationAnimation() {
+    private fun View.showWithTranslationAnimation(height: Float) {
         show()
-        translationY = height.toFloat()
+        translationY = height
         alpha = 0.0f
         animate()
                 .setDuration(ANIMATION_DURATION)
