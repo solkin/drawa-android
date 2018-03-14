@@ -255,15 +255,20 @@ class ToolsViewImpl(view: View) : ToolsView {
     }
 
     private fun View.showWithTranslationAnimation(height: Float) {
-        show()
-        translationY = height
         alpha = 0.0f
+        translationY = height
+        show()
         animate()
                 .setDuration(ANIMATION_DURATION)
                 .alpha(1.0f)
                 .translationY(0f)
                 .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(null)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        alpha = 1.0f
+                        translationY = 0f
+                    }
+                })
     }
 
     private fun View.moveWithTranslationAnimation(fromTranslationY: Float, tillTranslationY: Float, endCallback: () -> (Unit)) {
@@ -274,8 +279,8 @@ class ToolsViewImpl(view: View) : ToolsView {
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
-                        endCallback.invoke()
                         translationY = 0f
+                        endCallback.invoke()
                     }
                 })
     }
@@ -288,6 +293,7 @@ class ToolsViewImpl(view: View) : ToolsView {
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
+                        alpha = 0.0f
                         hide()
                         endCallback.invoke()
                     }
@@ -297,13 +303,16 @@ class ToolsViewImpl(view: View) : ToolsView {
     private fun View.hideWithTranslationAnimation(endCallback: () -> (Unit)) {
         alpha = 1.0f
         translationY = 0f
+        val endTranslationY = height.toFloat()
         animate()
                 .setDuration(ANIMATION_DURATION)
                 .alpha(0.0f)
-                .translationY(height.toFloat())
+                .translationY(endTranslationY)
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
+                        alpha = 0.0f
+                        translationY = endTranslationY
                         hide()
                         endCallback.invoke()
                     }
