@@ -247,7 +247,11 @@ class ToolsViewImpl(view: View) : ToolsView {
                 .setDuration(ANIMATION_DURATION)
                 .alpha(1.0f)
                 .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(null)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        alpha = 1.0f
+                    }
+                })
     }
 
     private fun View.showWithTranslationAnimation(height: Float) {
@@ -312,4 +316,4 @@ class ToolsViewImpl(view: View) : ToolsView {
 
 }
 
-private const val ANIMATION_DURATION: Long = 2000
+private const val ANIMATION_DURATION: Long = 250
