@@ -25,6 +25,7 @@ import com.tomclaw.drawa.util.hide
 import com.tomclaw.drawa.util.isVisible
 import com.tomclaw.drawa.util.show
 import io.reactivex.Observable
+import java.util.concurrent.TimeUnit
 
 interface ToolsView {
 
@@ -42,13 +43,9 @@ interface ToolsView {
 
     fun hideChooser(animate: Boolean = true)
 
-    fun tuneToolClicks(): Observable<Unit>
+    fun tuneClicks(): Observable<Int>
 
-    fun tuneColorClicks(): Observable<Unit>
-
-    fun tuneSizeClicks(): Observable<Unit>
-
-    fun hideChooserClick(): Observable<Unit>
+    fun hideChooserClicks(): Observable<Unit>
 
     fun toolSelected(): Observable<Int>
 
@@ -70,18 +67,16 @@ class ToolsViewImpl(view: View) : ToolsView {
     private val colorChooser: View = view.findViewById(R.id.color_chooser)
     private val sizeChooser: View = view.findViewById(R.id.size_chooser)
 
-    private val tuneToolRelay = PublishRelay.create<Unit>()
-    private val tuneColorRelay = PublishRelay.create<Unit>()
-    private val tuneSizeRelay = PublishRelay.create<Unit>()
+    private val selectChooserRelay = PublishRelay.create<Int>()
     private val hideChooserRelay = PublishRelay.create<Unit>()
     private val toolRelay = PublishRelay.create<Int>()
     private val colorRelay = PublishRelay.create<Int>()
     private val sizeRelay = PublishRelay.create<Int>()
 
     init {
-        tuneTool.setOnClickListener { tuneToolRelay.accept(Unit) }
-        tuneColor.setOnClickListener { tuneColorRelay.accept(Unit) }
-        tuneSize.setOnClickListener { tuneSizeRelay.accept(Unit) }
+        tuneTool.setOnClickListener { selectChooserRelay.accept(ID_TOOL_CHOOSER) }
+        tuneColor.setOnClickListener { selectChooserRelay.accept(ID_COLOR_CHOOSER) }
+        tuneSize.setOnClickListener { selectChooserRelay.accept(ID_SIZE_CHOOSER) }
         toolsBackground.setOnClickListener { hideChooserRelay.accept(Unit) }
 
         view.setOnClickListener(R.id.tool_pencil, { toolRelay.accept(TYPE_PENCIL) })
@@ -171,13 +166,11 @@ class ToolsViewImpl(view: View) : ToolsView {
         }
     }
 
-    override fun tuneToolClicks(): Observable<Unit> = tuneToolRelay
+    override fun tuneClicks(): Observable<Int> = selectChooserRelay
+            .throttleFirst(ANIMATION_DURATION, TimeUnit.MILLISECONDS)
 
-    override fun tuneColorClicks(): Observable<Unit> = tuneColorRelay
-
-    override fun tuneSizeClicks(): Observable<Unit> = tuneSizeRelay
-
-    override fun hideChooserClick(): Observable<Unit> = hideChooserRelay
+    override fun hideChooserClicks(): Observable<Unit> = hideChooserRelay
+            .throttleFirst(ANIMATION_DURATION, TimeUnit.MILLISECONDS)
 
     override fun toolSelected(): Observable<Int> = toolRelay
 
@@ -196,18 +189,16 @@ class ToolsViewImpl(view: View) : ToolsView {
             hideTools(animate)
         } else {
             val delta = visibleChooser.height - nextChooser.height
-            val fromTranslationY = if (delta >= 0) {
-                toolsWrapper.translationY
-            } else {
-                -delta.toFloat()
-            }
-            val tillTranslationY = if (delta >= 0) {
-                delta.toFloat()
-            } else {
-                0f
-            }
-            nextChooser.showWithAlphaAnimation()
-            visibleChooser.hideWithAlphaAnimation { }
+            val fromTranslationY = if (delta >= 0) toolsWrapper.translationY else -delta.toFloat()
+            val tillTranslationY = if (delta >= 0) delta.toFloat() else 0f
+            visibleChooser.hideWithAlphaAnimation(
+                    duration = ANIMATION_DURATION,
+                    endCallback = { }
+            )
+            nextChooser.showWithAlphaAnimation(
+                    duration = ANIMATION_DURATION,
+                    endCallback = { }
+            )
             toolsWrapper.moveWithTranslationAnimation(fromTranslationY, tillTranslationY, {
                 toolChooser.hide()
                 colorChooser.hide()
@@ -231,8 +222,11 @@ class ToolsViewImpl(view: View) : ToolsView {
 
     private fun hideTools(animate: Boolean, endCallback: (() -> Unit)? = null) {
         if (animate) {
-            toolsBackground.hideWithAlphaAnimation({ toolsContainer.hide() })
-            toolsWrapper.hideWithTranslationAnimation({ endCallback?.invoke() })
+            toolsBackground.hideWithAlphaAnimation {
+                toolsContainer.hide()
+                toolsBackground.hide()
+            }
+            toolsWrapper.hideWithTranslationAnimation { endCallback?.invoke() }
         } else {
             toolsContainer.hide()
             toolsBackground.hide()
@@ -240,16 +234,19 @@ class ToolsViewImpl(view: View) : ToolsView {
         }
     }
 
-    private fun View.showWithAlphaAnimation() {
+    private fun View.showWithAlphaAnimation(duration: Long = ANIMATION_DURATION,
+                                            endCallback: (() -> Unit)? = null) {
         alpha = 0.0f
         show()
         animate()
-                .setDuration(ANIMATION_DURATION)
+                .setDuration(duration)
                 .alpha(1.0f)
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
                         alpha = 1.0f
+                        show()
+                        endCallback?.invoke()
                     }
                 })
     }
@@ -267,11 +264,14 @@ class ToolsViewImpl(view: View) : ToolsView {
                     override fun onAnimationEnd(animation: Animator?) {
                         alpha = 1.0f
                         translationY = 0f
+                        show()
                     }
                 })
     }
 
-    private fun View.moveWithTranslationAnimation(fromTranslationY: Float, tillTranslationY: Float, endCallback: () -> (Unit)) {
+    private fun View.moveWithTranslationAnimation(fromTranslationY: Float,
+                                                  tillTranslationY: Float,
+                                                  endCallback: () -> (Unit)) {
         translationY = fromTranslationY
         animate()
                 .setDuration(ANIMATION_DURATION)
@@ -285,10 +285,11 @@ class ToolsViewImpl(view: View) : ToolsView {
                 })
     }
 
-    private fun View.hideWithAlphaAnimation(endCallback: () -> (Unit)) {
+    private fun View.hideWithAlphaAnimation(duration: Long = ANIMATION_DURATION,
+                                            endCallback: () -> (Unit)) {
         alpha = 1.0f
         animate()
-                .setDuration(ANIMATION_DURATION)
+                .setDuration(duration)
                 .alpha(0.0f)
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .setListener(object : AnimatorListenerAdapter() {
@@ -326,3 +327,7 @@ class ToolsViewImpl(view: View) : ToolsView {
 }
 
 private const val ANIMATION_DURATION: Long = 250
+
+const val ID_TOOL_CHOOSER = 1
+const val ID_COLOR_CHOOSER = 2
+const val ID_SIZE_CHOOSER = 3

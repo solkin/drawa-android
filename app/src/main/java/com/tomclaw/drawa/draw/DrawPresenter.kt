@@ -74,10 +74,18 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += view.navigationClicks().subscribe { onBackPressed() }
         subscriptions += view.undoClicks().subscribe { onUndo() }
         subscriptions += view.deleteClicks().subscribe { onDelete() }
-        subscriptions += view.tuneToolClicks().subscribe { view.showToolChooser() }
-        subscriptions += view.tuneColorClicks().subscribe { view.showColorChooser() }
-        subscriptions += view.tuneSizeClicks().subscribe { view.showSizeChooser() }
-        subscriptions += view.hideChooserClick().subscribe { view.hideChooser() }
+        subscriptions += view.tuneClicks()
+                .observeOn(schedulers.mainThread())
+                .subscribe { id ->
+                    when (id) {
+                        ID_TOOL_CHOOSER -> view.showToolChooser()
+                        ID_COLOR_CHOOSER -> view.showColorChooser()
+                        ID_SIZE_CHOOSER -> view.showSizeChooser()
+                    }
+                }
+        subscriptions += view.hideChooserClicks()
+                .observeOn(schedulers.mainThread())
+                .subscribe { view.hideChooser() }
         subscriptions += view.toolSelected().subscribe {
             changeTool(it)
             view.hideChooser(animate = true)

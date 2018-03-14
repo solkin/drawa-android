@@ -12,7 +12,6 @@ import com.tomclaw.drawa.draw.view.TouchEvent
 import com.tomclaw.drawa.util.MetricsProvider
 import io.reactivex.Observable
 
-
 interface DrawView : ToolsView {
 
     fun setDrawingListener(listener: DrawingListener)
