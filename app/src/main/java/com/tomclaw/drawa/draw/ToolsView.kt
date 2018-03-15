@@ -252,8 +252,8 @@ class ToolsViewImpl(view: View) : ToolsView {
     }
 
     private fun View.showWithTranslationAnimation(height: Float) {
-        alpha = 0.0f
         translationY = height
+        alpha = 0.0f
         show()
         animate()
                 .setDuration(ANIMATION_DURATION)
@@ -262,8 +262,8 @@ class ToolsViewImpl(view: View) : ToolsView {
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
-                        alpha = 1.0f
                         translationY = 0f
+                        alpha = 1.0f
                         show()
                     }
                 })
@@ -294,8 +294,8 @@ class ToolsViewImpl(view: View) : ToolsView {
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
-                        alpha = 0.0f
                         hide()
+                        alpha = 1.0f
                         endCallback.invoke()
                     }
                 })
@@ -312,9 +312,9 @@ class ToolsViewImpl(view: View) : ToolsView {
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
-                        alpha = 0.0f
                         translationY = endTranslationY
                         hide()
+                        alpha = 1.0f
                         endCallback.invoke()
                     }
                 })
