@@ -199,11 +199,15 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     override fun onBackPressed() {
-        isClosing = true
-        if (isSaved) {
-            router?.leaveScreen()
+        if (view?.isToolContainerShown == true) {
+            view?.hideChooser()
         } else {
-            view?.showSaveProgress()
+            isClosing = true
+            if (isSaved) {
+                router?.leaveScreen()
+            } else {
+                view?.showSaveProgress()
+            }
         }
     }
 

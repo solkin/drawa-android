@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit
 
 interface ToolsView {
 
+    val isToolContainerShown: Boolean
+
     fun showToolChooser(animate: Boolean = true)
 
     fun showColorChooser(animate: Boolean = true)
@@ -73,6 +75,11 @@ class ToolsViewImpl(view: View) : ToolsView {
     private val colorRelay = PublishRelay.create<Int>()
     private val sizeRelay = PublishRelay.create<Int>()
 
+    override val isToolContainerShown: Boolean
+        get() {
+            return toolsContainer.isVisible()
+        }
+
     init {
         tuneTool.setOnClickListener { selectChooserRelay.accept(ID_TOOL_CHOOSER) }
         tuneColor.setOnClickListener { selectChooserRelay.accept(ID_COLOR_CHOOSER) }
@@ -99,7 +106,7 @@ class ToolsViewImpl(view: View) : ToolsView {
     }
 
     override fun showToolChooser(animate: Boolean) {
-        if (toolsContainer.isVisible()) {
+        if (isToolContainerShown) {
             switchChooser(toolChooser, animate)
         } else {
             toolChooser.show()
@@ -110,7 +117,7 @@ class ToolsViewImpl(view: View) : ToolsView {
     }
 
     override fun showColorChooser(animate: Boolean) {
-        if (toolsContainer.isVisible()) {
+        if (isToolContainerShown) {
             switchChooser(colorChooser, animate)
         } else {
             toolChooser.hide()
@@ -121,7 +128,7 @@ class ToolsViewImpl(view: View) : ToolsView {
     }
 
     override fun showSizeChooser(animate: Boolean) {
-        if (toolsContainer.isVisible()) {
+        if (isToolContainerShown) {
             switchChooser(sizeChooser, animate)
         } else {
             toolChooser.hide()
@@ -161,7 +168,7 @@ class ToolsViewImpl(view: View) : ToolsView {
     }
 
     override fun hideChooser(animate: Boolean) {
-        if (toolsContainer.isVisible()) {
+        if (isToolContainerShown) {
             hideTools(animate)
         }
     }
