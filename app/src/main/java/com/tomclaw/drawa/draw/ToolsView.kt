@@ -1,11 +1,8 @@
 package com.tomclaw.drawa.draw
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
@@ -22,8 +19,13 @@ import com.tomclaw.drawa.draw.tools.TYPE_MARKER
 import com.tomclaw.drawa.draw.tools.TYPE_PENCIL
 import com.tomclaw.drawa.draw.view.PaletteView
 import com.tomclaw.drawa.util.hide
+import com.tomclaw.drawa.util.hideWithAlphaAnimation
+import com.tomclaw.drawa.util.hideWithTranslationAnimation
 import com.tomclaw.drawa.util.isVisible
+import com.tomclaw.drawa.util.moveWithTranslationAnimation
 import com.tomclaw.drawa.util.show
+import com.tomclaw.drawa.util.showWithAlphaAnimation
+import com.tomclaw.drawa.util.showWithTranslationAnimation
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -198,14 +200,8 @@ class ToolsViewImpl(view: View) : ToolsView {
             val delta = visibleChooser.height - nextChooser.height
             val fromTranslationY = if (delta >= 0) toolsWrapper.translationY else -delta.toFloat()
             val tillTranslationY = if (delta >= 0) delta.toFloat() else 0f
-            visibleChooser.hideWithAlphaAnimation(
-                    duration = ANIMATION_DURATION,
-                    endCallback = { }
-            )
-            nextChooser.showWithAlphaAnimation(
-                    duration = ANIMATION_DURATION,
-                    endCallback = { }
-            )
+            visibleChooser.hideWithAlphaAnimation()
+            nextChooser.showWithAlphaAnimation()
             toolsWrapper.moveWithTranslationAnimation(fromTranslationY, tillTranslationY, {
                 toolChooser.hide()
                 colorChooser.hide()
@@ -241,99 +237,11 @@ class ToolsViewImpl(view: View) : ToolsView {
         }
     }
 
-    private fun View.showWithAlphaAnimation(duration: Long = ANIMATION_DURATION,
-                                            endCallback: (() -> Unit)? = null) {
-        alpha = 0.0f
-        show()
-        animate()
-                .setDuration(duration)
-                .alpha(1.0f)
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        alpha = 1.0f
-                        show()
-                        endCallback?.invoke()
-                    }
-                })
-    }
-
-    private fun View.showWithTranslationAnimation(height: Float) {
-        translationY = height
-        alpha = 0.0f
-        show()
-        animate()
-                .setDuration(ANIMATION_DURATION)
-                .alpha(1.0f)
-                .translationY(0f)
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        translationY = 0f
-                        alpha = 1.0f
-                        show()
-                    }
-                })
-    }
-
-    private fun View.moveWithTranslationAnimation(fromTranslationY: Float,
-                                                  tillTranslationY: Float,
-                                                  endCallback: () -> (Unit)) {
-        translationY = fromTranslationY
-        animate()
-                .setDuration(ANIMATION_DURATION)
-                .translationY(tillTranslationY)
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        translationY = 0f
-                        endCallback.invoke()
-                    }
-                })
-    }
-
-    private fun View.hideWithAlphaAnimation(duration: Long = ANIMATION_DURATION,
-                                            endCallback: () -> (Unit)) {
-        alpha = 1.0f
-        animate()
-                .setDuration(duration)
-                .alpha(0.0f)
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        hide()
-                        alpha = 1.0f
-                        endCallback.invoke()
-                    }
-                })
-    }
-
-    private fun View.hideWithTranslationAnimation(endCallback: () -> (Unit)) {
-        alpha = 1.0f
-        translationY = 0f
-        val endTranslationY = height.toFloat()
-        animate()
-                .setDuration(ANIMATION_DURATION)
-                .alpha(0.0f)
-                .translationY(endTranslationY)
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        translationY = endTranslationY
-                        hide()
-                        alpha = 1.0f
-                        endCallback.invoke()
-                    }
-                })
-    }
-
     private fun View.setOnClickListener(id: Int, listener: () -> Unit) {
         findViewById<View>(id).setOnClickListener { listener.invoke() }
     }
 
 }
-
-private const val ANIMATION_DURATION: Long = 250
 
 const val ID_TOOL_CHOOSER = 1
 const val ID_COLOR_CHOOSER = 2

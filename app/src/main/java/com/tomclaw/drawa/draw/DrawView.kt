@@ -10,6 +10,8 @@ import com.tomclaw.drawa.draw.view.DrawingListener
 import com.tomclaw.drawa.draw.view.DrawingView
 import com.tomclaw.drawa.draw.view.TouchEvent
 import com.tomclaw.drawa.util.MetricsProvider
+import com.tomclaw.drawa.util.hideWithAlphaAnimation
+import com.tomclaw.drawa.util.showWithAlphaAnimation
 import io.reactivex.Observable
 
 interface DrawView : ToolsView {
@@ -21,6 +23,8 @@ interface DrawView : ToolsView {
     fun showProgress()
 
     fun showSaveProgress()
+
+    fun showUndoProgress()
 
     fun showContent()
 
@@ -43,6 +47,7 @@ class DrawViewImpl(view: View,
 
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private val drawingView: DrawingView = view.findViewById(R.id.drawing_view)
+    private val drawingProgress: View = view.findViewById(R.id.drawing_progress)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
 
     private val touchRelay = PublishRelay.create<TouchEvent>()
@@ -91,8 +96,13 @@ class DrawViewImpl(view: View,
     override fun showSaveProgress() {
     }
 
+    override fun showUndoProgress() {
+        drawingProgress.showWithAlphaAnimation(animateFully = false)
+    }
+
     override fun showContent() {
         flipper.displayedChild = 1
+        drawingProgress.hideWithAlphaAnimation(animateFully = false)
     }
 
     override fun touchEvents(): Observable<TouchEvent> = touchRelay
@@ -106,3 +116,5 @@ class DrawViewImpl(view: View,
     override fun deleteClicks(): Observable<Unit> = deleteRelay
 
 }
+
+const val ANIMATION_DURATION: Long = 250

@@ -149,7 +149,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += interactor.undo()
                 .map { applyHistory() }
                 .observeOn(schedulers.mainThread())
-                .doOnSubscribe { view?.showProgress() }
+                .doOnSubscribe { view?.showUndoProgress() }
                 .doAfterTerminate { view?.showContent() }
                 .subscribe({
                     invalidateDrawHost()
