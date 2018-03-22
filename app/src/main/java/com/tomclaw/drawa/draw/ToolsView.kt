@@ -18,6 +18,7 @@ import com.tomclaw.drawa.draw.tools.TYPE_FLUFFY
 import com.tomclaw.drawa.draw.tools.TYPE_MARKER
 import com.tomclaw.drawa.draw.tools.TYPE_PENCIL
 import com.tomclaw.drawa.draw.view.PaletteView
+import com.tomclaw.drawa.util.ANIMATION_DURATION
 import com.tomclaw.drawa.util.hide
 import com.tomclaw.drawa.util.hideWithAlphaAnimation
 import com.tomclaw.drawa.util.hideWithTranslationAnimation

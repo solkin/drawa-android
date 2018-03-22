@@ -2,6 +2,7 @@ package com.tomclaw.drawa.draw
 
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.view.ViewPropertyAnimator
 import android.widget.ViewFlipper
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
@@ -97,7 +98,7 @@ class DrawViewImpl(view: View,
     }
 
     override fun showUndoProgress() {
-        drawingProgress.showWithAlphaAnimation(animateFully = false)
+        drawingProgress.showWithAlphaAnimation(animateFully = true)
     }
 
     override fun showContent() {
@@ -116,5 +117,3 @@ class DrawViewImpl(view: View,
     override fun deleteClicks(): Observable<Unit> = deleteRelay
 
 }
-
-const val ANIMATION_DURATION: Long = 250
