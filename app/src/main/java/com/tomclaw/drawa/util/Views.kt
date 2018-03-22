@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewPropertyAnimator
 import android.view.animation.AccelerateDecelerateInterpolator
 
 fun View?.toggle() {
@@ -21,14 +22,16 @@ fun View?.hide() {
     this?.visibility = GONE
 }
 
-fun View.showWithAlphaAnimation(duration: Long = ANIMATION_DURATION,
-                                animateFully: Boolean = true,
-                                endCallback: (() -> Unit)? = null) {
+fun View.showWithAlphaAnimation(
+        duration: Long = ANIMATION_DURATION,
+        animateFully: Boolean = true,
+        endCallback: (() -> Unit)? = null
+): ViewPropertyAnimator {
     if (animateFully) {
         alpha = 0.0f
     }
     show()
-    animate()
+    return animate()
             .setDuration(duration)
             .alpha(1.0f)
             .setInterpolator(AccelerateDecelerateInterpolator())
@@ -41,13 +44,15 @@ fun View.showWithAlphaAnimation(duration: Long = ANIMATION_DURATION,
             })
 }
 
-fun View.hideWithAlphaAnimation(duration: Long = ANIMATION_DURATION,
-                                animateFully: Boolean = true,
-                                endCallback: (() -> Unit)? = null) {
+fun View.hideWithAlphaAnimation(
+        duration: Long = ANIMATION_DURATION,
+        animateFully: Boolean = true,
+        endCallback: (() -> Unit)? = null
+): ViewPropertyAnimator {
     if (animateFully) {
         alpha = 1.0f
     }
-    animate()
+    return animate()
             .setDuration(duration)
             .alpha(0.0f)
             .setInterpolator(AccelerateDecelerateInterpolator())
@@ -60,11 +65,13 @@ fun View.hideWithAlphaAnimation(duration: Long = ANIMATION_DURATION,
             })
 }
 
-fun View.showWithTranslationAnimation(height: Float) {
+fun View.showWithTranslationAnimation(
+        height: Float
+): ViewPropertyAnimator {
     translationY = height
     alpha = 0.0f
     show()
-    animate()
+    return animate()
             .setDuration(ANIMATION_DURATION)
             .alpha(1.0f)
             .translationY(0f)
@@ -78,11 +85,14 @@ fun View.showWithTranslationAnimation(height: Float) {
             })
 }
 
-fun View.moveWithTranslationAnimation(fromTranslationY: Float,
-                                      tillTranslationY: Float,
-                                      endCallback: () -> (Unit)) {
+fun View.moveWithTranslationAnimation(
+        fromTranslationY: Float,
+        tillTranslationY: Float,
+        endCallback: () -> (Unit)
+
+): ViewPropertyAnimator {
     translationY = fromTranslationY
-    animate()
+    return animate()
             .setDuration(ANIMATION_DURATION)
             .translationY(tillTranslationY)
             .setInterpolator(AccelerateDecelerateInterpolator())
@@ -94,11 +104,13 @@ fun View.moveWithTranslationAnimation(fromTranslationY: Float,
             })
 }
 
-fun View.hideWithTranslationAnimation(endCallback: () -> (Unit)) {
+fun View.hideWithTranslationAnimation(
+        endCallback: () -> (Unit)
+): ViewPropertyAnimator {
     alpha = 1.0f
     translationY = 0f
     val endTranslationY = height.toFloat()
-    animate()
+    return animate()
             .setDuration(ANIMATION_DURATION)
             .alpha(0.0f)
             .translationY(endTranslationY)
