@@ -9,6 +9,8 @@ interface DrawHost {
 
     val canvas: Canvas
 
+    var hidden: Boolean
+
     fun getWidth(): Int
 
     fun applyBitmap(bitmap: Bitmap)

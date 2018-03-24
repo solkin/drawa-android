@@ -231,8 +231,14 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun applyHistory() {
-        bitmapHolder.drawHost.clearBitmap()
-        history.getEvents().forEach { processToolEvent(it) }
+        val drawHost = bitmapHolder.drawHost
+        try {
+            drawHost.hidden = true
+            drawHost.clearBitmap()
+            history.getEvents().forEach { processToolEvent(it) }
+        } finally {
+            drawHost.hidden = false
+        }
     }
 
     private fun processToolEvent(event: Event) {

@@ -15,20 +15,39 @@ class DrawingView(context: Context,
                   attributeSet: AttributeSet)
     : View(context, attributeSet), DrawHost {
 
-    override val bitmap: Bitmap = Bitmap.createBitmap(
+    private val hiddenBitmap: Bitmap = Bitmap.createBitmap(
             BITMAP_WIDTH,
             BITMAP_HEIGHT,
             Bitmap.Config.ARGB_8888
     )
-    override val canvas: Canvas
 
-    private var src: Rect
+    private val normalBitmap: Bitmap = Bitmap.createBitmap(
+            BITMAP_WIDTH,
+            BITMAP_HEIGHT,
+            Bitmap.Config.ARGB_8888
+    )
+
+    private val hiddenCanvas: Canvas = Canvas(hiddenBitmap)
+    private val normalCanvas: Canvas = Canvas(normalBitmap)
+
+    override val canvas: Canvas
+        get() = if (hidden) hiddenCanvas else normalCanvas
+    override val bitmap: Bitmap
+        get() = if (hidden) hiddenBitmap else normalBitmap
+
+    private var src: Rect = Rect(0, 0, bitmap.width, bitmap.height)
     private var dst: Rect? = null
 
+    override var hidden = false
+        set(value) {
+            if (!value) {
+                normalCanvas.drawBitmap(hiddenBitmap, src, src, paint)
+            }
+            field = value
+        }
+
     init {
-        canvas = Canvas(bitmap)
         clearBitmap()
-        src = Rect(0, 0, bitmap.width, bitmap.height)
     }
 
     private val paint: Paint = Paint().apply {
@@ -43,7 +62,7 @@ class DrawingView(context: Context,
         if (dst == null) {
             dst = Rect(0, 0, width, height)
         }
-        canvas.drawBitmap(bitmap, src, dst, paint)
+        canvas.drawBitmap(normalBitmap, src, dst, paint)
         drawingListener?.onDraw()
     }
 
@@ -61,8 +80,8 @@ class DrawingView(context: Context,
     }
 
     override fun applyBitmap(bitmap: Bitmap) {
+        val dst = this.src
         val src = Rect(0, 0, bitmap.width, bitmap.height)
-        val dst = Rect(0, 0, this.bitmap.width, this.bitmap.height)
         canvas.drawBitmap(bitmap, src, dst, paint)
     }
 
