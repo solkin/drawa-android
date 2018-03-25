@@ -1,18 +1,21 @@
 package com.tomclaw.drawa.share.di
 
-import android.content.Context
 import android.os.Bundle
+import com.tomclaw.drawa.draw.History
+import com.tomclaw.drawa.draw.HistoryImpl
 import com.tomclaw.drawa.share.ShareInteractor
 import com.tomclaw.drawa.share.ShareInteractorImpl
 import com.tomclaw.drawa.share.SharePresenter
 import com.tomclaw.drawa.share.SharePresenterImpl
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
+import com.tomclaw.drawa.util.historyFile
 import dagger.Module
 import dagger.Provides
+import java.io.File
 
 @Module
-class ShareModule(private val context: Context,
+class ShareModule(private val recordId: Int,
                   private val presenterState: Bundle?) {
 
     @Provides
@@ -24,8 +27,16 @@ class ShareModule(private val context: Context,
 
     @Provides
     @PerActivity
-    fun provideShareInteractor(schedulers: SchedulersFactory): ShareInteractor {
-        return ShareInteractorImpl(schedulers)
+    fun provideShareInteractor(history: History,
+                               schedulers: SchedulersFactory): ShareInteractor {
+        return ShareInteractorImpl(history, schedulers)
+    }
+
+    @Provides
+    @PerActivity
+    fun provideHistory(filesDir: File): History {
+        val file = historyFile(recordId, filesDir)
+        return HistoryImpl(file)
     }
 
 }

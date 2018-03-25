@@ -15,9 +15,10 @@ class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
     lateinit var presenter: SharePresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val recordId = intent.getRecordId()
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
         application.getComponent()
-                .shareComponent(ShareModule(this, presenterState))
+                .shareComponent(ShareModule(recordId, presenterState))
                 .inject(activity = this)
 
         super.onCreate(savedInstanceState)
@@ -52,6 +53,12 @@ class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
         finish()
     }
 
+    private fun Intent.getRecordId() = this.getIntExtra(EXTRA_RECORD_ID, RECORD_ID_INVALID).apply {
+        if (this == RECORD_ID_INVALID) {
+            throw IllegalArgumentException("record id must be specified")
+        }
+    }
+
 }
 
 fun createShareActivityIntent(context: Context,
@@ -62,3 +69,5 @@ fun createShareActivityIntent(context: Context,
 private const val KEY_PRESENTER_STATE = "presenter_state"
 
 private const val EXTRA_RECORD_ID = "record_id"
+
+private const val RECORD_ID_INVALID = -1

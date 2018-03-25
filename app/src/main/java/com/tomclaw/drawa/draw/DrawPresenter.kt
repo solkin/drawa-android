@@ -160,6 +160,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun onDone() {
+        // TODO: check for history saved
         router?.showShareScreen()
     }
 

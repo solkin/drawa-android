@@ -40,6 +40,8 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
         subscriptions += view.navigationClicks().subscribe {
             router?.leaveScreen()
         }
+
+        loadHistory()
     }
 
     override fun detachView() {
@@ -56,5 +58,23 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
     }
 
     override fun saveState() = Bundle().apply {}
+
+    private fun loadHistory() {
+        subscriptions += interactor.loadHistory()
+                .observeOn(schedulers.mainThread())
+                .doOnSubscribe { view?.showProgress() }
+                .doAfterTerminate { view?.showContent() }
+                .subscribe({
+                    onLoaded()
+                }, {
+                    onError()
+                })
+    }
+
+    private fun onLoaded() {
+    }
+
+    private fun onError() {
+    }
 
 }
