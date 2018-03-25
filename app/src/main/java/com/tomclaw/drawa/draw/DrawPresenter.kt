@@ -73,6 +73,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += view.drawEvents().subscribe { tool.onDraw() }
         subscriptions += view.navigationClicks().subscribe { onBackPressed() }
         subscriptions += view.undoClicks().subscribe { onUndo() }
+        subscriptions += view.doneClicks().subscribe { onDone() }
         subscriptions += view.deleteClicks().subscribe { onDelete() }
         subscriptions += view.tuneClicks()
                 .observeOn(schedulers.mainThread())
@@ -149,13 +150,16 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += interactor.undo()
                 .map { applyHistory() }
                 .observeOn(schedulers.mainThread())
-                .doOnSubscribe { view?.showUndoProgress() }
+                .doOnSubscribe { view?.showOverlayProgress() }
                 .doAfterTerminate { view?.showContent() }
                 .subscribe({
                     invalidateDrawHost()
                     scheduleSaveHistory()
                     selectTool()
                 }, { })
+    }
+
+    private fun onDone() {
     }
 
     private fun scheduleSaveHistory() {
@@ -206,7 +210,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
             if (isSaved) {
                 router?.leaveScreen()
             } else {
-                view?.showSaveProgress()
+                view?.showOverlayProgress()
             }
         }
     }

@@ -2,7 +2,6 @@ package com.tomclaw.drawa.draw
 
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.view.ViewPropertyAnimator
 import android.widget.ViewFlipper
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
@@ -23,9 +22,7 @@ interface DrawView : ToolsView {
 
     fun showProgress()
 
-    fun showSaveProgress()
-
-    fun showUndoProgress()
+    fun showOverlayProgress()
 
     fun showContent()
 
@@ -50,7 +47,7 @@ class DrawViewImpl(view: View,
 
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private val drawingView: DrawingView = view.findViewById(R.id.drawing_view)
-    private val drawingProgress: View = view.findViewById(R.id.drawing_progress)
+    private val overlayProgress: View = view.findViewById(R.id.overlay_progress)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
     private val undoButton: View = view.findViewById(R.id.undo_button)
     private val doneButton: View = view.findViewById(R.id.done_button)
@@ -100,16 +97,13 @@ class DrawViewImpl(view: View,
         flipper.displayedChild = 0
     }
 
-    override fun showSaveProgress() {
-    }
-
-    override fun showUndoProgress() {
-        drawingProgress.showWithAlphaAnimation(animateFully = true)
+    override fun showOverlayProgress() {
+        overlayProgress.showWithAlphaAnimation(animateFully = true)
     }
 
     override fun showContent() {
         flipper.displayedChild = 1
-        drawingProgress.hideWithAlphaAnimation(animateFully = false)
+        overlayProgress.hideWithAlphaAnimation(animateFully = false)
     }
 
     override fun touchEvents(): Observable<TouchEvent> = touchRelay
