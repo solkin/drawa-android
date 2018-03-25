@@ -96,10 +96,9 @@ class DrawInteractorImpl(private val recordId: Int,
                         emitter.onSuccess(Unit)
                     }
                     .toObservable()
-                    .subscribeOn(schedulers.io())
         }, {
             Observable.just(Unit)
-        })
+        }).subscribeOn(schedulers.signle())
     }
 
     override fun delete(): Observable<Unit> {
