@@ -30,7 +30,7 @@ interface DrawPresenter {
 
     interface DrawRouter {
 
-        fun showStockScreen()
+        fun showShareScreen()
 
         fun leaveScreen()
 
@@ -160,6 +160,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun onDone() {
+        router?.showShareScreen()
     }
 
     private fun scheduleSaveHistory() {

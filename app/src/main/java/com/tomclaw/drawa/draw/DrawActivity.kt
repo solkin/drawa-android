@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.di.DrawModule
 import com.tomclaw.drawa.main.getComponent
+import com.tomclaw.drawa.share.createShareActivityIntent
 import com.tomclaw.drawa.util.MetricsProvider
 import javax.inject.Inject
 
@@ -19,11 +20,7 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
     lateinit var metricsProvider: MetricsProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val recordId = intent.getIntExtra(EXTRA_RECORD_ID, RECORD_ID_INVALID).apply {
-            if (this == RECORD_ID_INVALID) {
-                throw IllegalArgumentException("record id must be specified")
-            }
-        }
+        val recordId = intent.getRecordId()
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
         val bitmapHolder = BitmapHolder()
         application.getComponent()
@@ -69,12 +66,23 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
         presenter.onBackPressed()
     }
 
-    override fun showStockScreen() {
+    override fun showShareScreen() {
+        val intent = createShareActivityIntent(
+                context = this,
+                recordId = intent.getRecordId()
+        )
+        startActivity(intent)
     }
 
     override fun leaveScreen() {
         setResult(RESULT_OK)
         finish()
+    }
+
+    private fun Intent.getRecordId() = this.getIntExtra(EXTRA_RECORD_ID, RECORD_ID_INVALID).apply {
+        if (this == RECORD_ID_INVALID) {
+            throw IllegalArgumentException("record id must be specified")
+        }
     }
 
 }
