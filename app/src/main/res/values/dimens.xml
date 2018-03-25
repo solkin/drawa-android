@@ -4,4 +4,6 @@
     <dimen name="popup_width">50dp</dimen>
     <dimen name="popup_height">180dp</dimen>
     <dimen name="tunes_height">60dp</dimen>
+    <dimen name="buttons_height">48dp</dimen>
+    <dimen name="buttons_divider_height">28dp</dimen>
 </resources>

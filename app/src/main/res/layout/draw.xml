@@ -33,7 +33,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/tunes_height"
-                android:layout_marginTop="?actionBarSize">
+                android:layout_marginTop="?actionBarSize"
+                android:paddingTop="@dimen/buttons_height">
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/content"
@@ -53,6 +54,8 @@
                 </android.support.v7.widget.CardView>
 
             </FrameLayout>
+
+            <include layout="@layout/buttons_view" />
 
             <include layout="@layout/tools_view" />
 
@@ -82,7 +85,5 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ToolbarTheme"
         app:navigationIcon="?attr/homeAsUpIndicator" />
-
-    <include layout="@layout/shadow_toolbar" />
 
 </FrameLayout>

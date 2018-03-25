@@ -37,6 +37,8 @@ interface DrawView : ToolsView {
 
     fun undoClicks(): Observable<Unit>
 
+    fun doneClicks(): Observable<Unit>
+
     fun deleteClicks(): Observable<Unit>
 
 }
@@ -50,11 +52,14 @@ class DrawViewImpl(view: View,
     private val drawingView: DrawingView = view.findViewById(R.id.drawing_view)
     private val drawingProgress: View = view.findViewById(R.id.drawing_progress)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
+    private val undoButton: View = view.findViewById(R.id.undo_button)
+    private val doneButton: View = view.findViewById(R.id.done_button)
 
     private val touchRelay = PublishRelay.create<TouchEvent>()
     private val drawRelay = PublishRelay.create<Unit>()
     private val navigationRelay = PublishRelay.create<Unit>()
     private val undoRelay = PublishRelay.create<Unit>()
+    private val doneRelay = PublishRelay.create<Unit>()
     private val deleteRelay = PublishRelay.create<Unit>()
 
     init {
@@ -66,11 +71,12 @@ class DrawViewImpl(view: View,
         toolbar.inflateMenu(R.menu.main_draw)
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_undo -> undoRelay.accept(Unit)
                 R.id.menu_delete -> deleteRelay.accept(Unit)
             }
             true
         }
+        undoButton.setOnClickListener { undoRelay.accept(Unit) }
+        doneButton.setOnClickListener { doneRelay.accept(Unit) }
         drawingView.drawingListener = object : DrawingListener {
             override fun onTouchEvent(event: TouchEvent) {
                 touchRelay.accept(event)
@@ -113,6 +119,8 @@ class DrawViewImpl(view: View,
     override fun navigationClicks(): Observable<Unit> = navigationRelay
 
     override fun undoClicks(): Observable<Unit> = undoRelay
+
+    override fun doneClicks(): Observable<Unit> = doneRelay
 
     override fun deleteClicks(): Observable<Unit> = deleteRelay
 

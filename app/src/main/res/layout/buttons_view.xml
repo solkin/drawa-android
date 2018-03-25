@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?actionBarSize">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_gravity="top"
+        android:layout_marginTop="@dimen/buttons_height"
+        android:background="@drawable/shadow_toolbar" />
+
+    <LinearLayout
+        android:id="@+id/tunes_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buttons_height"
+        android:layout_gravity="top"
+        android:background="@color/color_light_gray"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/undo_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:text="@string/undo" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="@dimen/buttons_divider_height"
+            android:layout_gravity="center_vertical"
+            android:background="@color/color_gray" />
+
+        <Button
+            android:id="@+id/done_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:text="@string/done" />
+
+    </LinearLayout>
+
+</FrameLayout>
