@@ -7,12 +7,16 @@ import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.share.di.ShareModule
+import com.tomclaw.drawa.util.DataProvider
 import javax.inject.Inject
 
 class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
 
     @Inject
     lateinit var presenter: SharePresenter
+
+    @Inject
+    lateinit var dataProvider: DataProvider<ShareTypeItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val recordId = intent.getRecordId()
@@ -24,7 +28,8 @@ class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.share)
 
-        val view = ShareViewImpl(window.decorView)
+        val adapter = ShareTypeAdapter(this, dataProvider)
+        val view = ShareViewImpl(window.decorView, adapter)
 
         presenter.attachView(view)
     }

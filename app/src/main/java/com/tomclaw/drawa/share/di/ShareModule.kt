@@ -7,6 +7,8 @@ import com.tomclaw.drawa.share.ShareInteractor
 import com.tomclaw.drawa.share.ShareInteractorImpl
 import com.tomclaw.drawa.share.SharePresenter
 import com.tomclaw.drawa.share.SharePresenterImpl
+import com.tomclaw.drawa.share.ShareTypeItem
+import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.historyFile
@@ -37,6 +39,12 @@ class ShareModule(private val recordId: Int,
     fun provideHistory(filesDir: File): History {
         val file = historyFile(recordId, filesDir)
         return HistoryImpl(file)
+    }
+
+    @Provides
+    @PerActivity
+    fun provideShareTypeItemDataProvider(): DataProvider<ShareTypeItem> {
+        return DataProvider()
     }
 
 }
