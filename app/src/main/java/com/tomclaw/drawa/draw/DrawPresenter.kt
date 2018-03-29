@@ -58,7 +58,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     private val saveRelay = PublishRelay.create<Unit>()
 
     private var isSaved = true
-    private var isClosing = false
+    private val onSaveActions = mutableListOf<() -> Unit>()
 
     override fun attachView(view: DrawView) {
         this.view = view
@@ -160,8 +160,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun onDone() {
-        // TODO: check for history saved
-        router?.showShareScreen()
+        addOnSavedAction { router?.showShareScreen() }
     }
 
     private fun scheduleSaveHistory() {
@@ -180,8 +179,20 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
 
     private fun onHistorySaved() {
         isSaved = true
-        if (isClosing) {
-            router?.leaveScreen()
+        val actions = onSaveActions.toList()
+        actions.forEach { action ->
+            action.invoke()
+            onSaveActions.remove(action)
+        }
+        view?.showContent()
+    }
+
+    private fun addOnSavedAction(action: () -> Unit) {
+        if (isSaved) {
+            action.invoke()
+        } else {
+            view?.showOverlayProgress()
+            onSaveActions += action
         }
     }
 
@@ -208,12 +219,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         if (view?.isToolContainerShown == true) {
             view?.hideChooser()
         } else {
-            isClosing = true
-            if (isSaved) {
-                router?.leaveScreen()
-            } else {
-                view?.showOverlayProgress()
-            }
+            addOnSavedAction { router?.leaveScreen() }
         }
     }
 
