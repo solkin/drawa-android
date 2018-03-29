@@ -8,4 +8,5 @@
     <string name="draw">Рисунок</string>
     <string name="done">Готово</string>
     <string name="share">Поделиться</string>
+    <string name="select_share_type">Выбрать</string>
 </resources>
