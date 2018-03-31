@@ -1,6 +1,7 @@
 package com.tomclaw.drawa.share
 
 import android.os.Bundle
+import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -26,6 +27,7 @@ interface SharePresenter {
 }
 
 class SharePresenterImpl(private val interactor: ShareInteractor,
+                         private val dataProvider: DataProvider<ShareTypeItem>,
                          private val schedulers: SchedulersFactory,
                          state: Bundle?) : SharePresenter {
 

@@ -23,8 +23,9 @@ class ShareModule(private val recordId: Int,
     @Provides
     @PerActivity
     fun provideSharePresenter(interactor: ShareInteractor,
+                              dataProvider: DataProvider<ShareTypeItem>,
                               schedulers: SchedulersFactory): SharePresenter {
-        return SharePresenterImpl(interactor, schedulers, presenterState)
+        return SharePresenterImpl(interactor, dataProvider,schedulers, presenterState)
     }
 
     @Provides
