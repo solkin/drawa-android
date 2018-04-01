@@ -28,6 +28,7 @@ interface SharePresenter {
 
 class SharePresenterImpl(private val interactor: ShareInteractor,
                          private val dataProvider: DataProvider<ShareTypeItem>,
+                         private val shareTypePlugins: Set<ShareTypePlugin>,
                          private val schedulers: SchedulersFactory,
                          state: Bundle?) : SharePresenter {
 

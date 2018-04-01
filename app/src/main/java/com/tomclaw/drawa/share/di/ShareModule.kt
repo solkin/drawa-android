@@ -25,7 +25,13 @@ class ShareModule(private val recordId: Int,
     fun provideSharePresenter(interactor: ShareInteractor,
                               dataProvider: DataProvider<ShareTypeItem>,
                               schedulers: SchedulersFactory): SharePresenter {
-        return SharePresenterImpl(interactor, dataProvider,schedulers, presenterState)
+        return SharePresenterImpl(
+                interactor,
+                dataProvider,
+                emptySet(),
+                schedulers,
+                presenterState
+        )
     }
 
     @Provides
