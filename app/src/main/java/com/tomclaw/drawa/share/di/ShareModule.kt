@@ -8,12 +8,16 @@ import com.tomclaw.drawa.share.ShareInteractorImpl
 import com.tomclaw.drawa.share.SharePresenter
 import com.tomclaw.drawa.share.SharePresenterImpl
 import com.tomclaw.drawa.share.ShareTypeItem
+import com.tomclaw.drawa.share.ShareTypePlugin
+import com.tomclaw.drawa.share.plugin.AnimSharePlugin
+import com.tomclaw.drawa.share.plugin.StaticSharePlugin
 import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.historyFile
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoSet
 import java.io.File
 
 @Module
@@ -24,11 +28,12 @@ class ShareModule(private val recordId: Int,
     @PerActivity
     fun provideSharePresenter(interactor: ShareInteractor,
                               dataProvider: DataProvider<ShareTypeItem>,
+                              sharePlugins: Set<@JvmSuppressWildcards ShareTypePlugin>,
                               schedulers: SchedulersFactory): SharePresenter {
         return SharePresenterImpl(
                 interactor,
                 dataProvider,
-                emptySet(),
+                sharePlugins,
                 schedulers,
                 presenterState
         )
@@ -52,6 +57,18 @@ class ShareModule(private val recordId: Int,
     @PerActivity
     fun provideShareTypeItemDataProvider(): DataProvider<ShareTypeItem> {
         return DataProvider()
+    }
+
+    @Provides
+    @IntoSet
+    fun provideAnimSharePlugin(): ShareTypePlugin {
+        return AnimSharePlugin()
+    }
+
+    @Provides
+    @IntoSet
+    fun provideStaticSharePlugin(): ShareTypePlugin {
+        return StaticSharePlugin()
     }
 
 }
