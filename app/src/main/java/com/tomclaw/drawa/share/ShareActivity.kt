@@ -16,7 +16,7 @@ class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
     lateinit var presenter: SharePresenter
 
     @Inject
-    lateinit var dataProvider: DataProvider<ShareTypeItem>
+    lateinit var dataProvider: DataProvider<ShareItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val recordId = intent.getRecordId()
@@ -28,7 +28,7 @@ class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.share)
 
-        val adapter = ShareTypeAdapter(this, dataProvider)
+        val adapter = ShareAdapter(layoutInflater, dataProvider)
         val view = ShareViewImpl(window.decorView, adapter)
 
         presenter.attachView(view)

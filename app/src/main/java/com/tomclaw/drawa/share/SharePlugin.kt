@@ -3,7 +3,7 @@ package com.tomclaw.drawa.share
 import io.reactivex.Observable
 import java.io.File
 
-interface ShareTypePlugin {
+interface SharePlugin {
 
     val image: Int
 

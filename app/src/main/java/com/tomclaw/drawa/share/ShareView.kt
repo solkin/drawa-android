@@ -17,12 +17,12 @@ interface ShareView {
 
     fun navigationClicks(): Observable<Unit>
 
-    fun itemClicks(): Observable<ShareTypeItem>
+    fun itemClicks(): Observable<ShareItem>
 
 }
 
 class ShareViewImpl(view: View,
-                    adapter: ShareTypeAdapter) : ShareView {
+                    adapter: ShareAdapter) : ShareView {
 
     private val context = view.context
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
@@ -30,7 +30,7 @@ class ShareViewImpl(view: View,
     private val recycler: RecyclerView = view.findViewById(R.id.recycler)
 
     private val navigationRelay = PublishRelay.create<Unit>()
-    private val itemRelay = PublishRelay.create<ShareTypeItem>()
+    private val itemRelay = PublishRelay.create<ShareItem>()
 
     init {
         toolbar.setTitle(R.string.share)
@@ -58,6 +58,6 @@ class ShareViewImpl(view: View,
 
     override fun navigationClicks(): Observable<Unit> = navigationRelay
 
-    override fun itemClicks(): Observable<ShareTypeItem> = itemRelay
+    override fun itemClicks(): Observable<ShareItem> = itemRelay
 
 }

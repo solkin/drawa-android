@@ -5,10 +5,10 @@ import android.os.Parcelable
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
 
-class ShareTypeItem(val id: Int,
-                    @DrawableRes val image: Int,
-                    @StringRes val title: Int,
-                    @StringRes val description: Int) : Parcelable {
+class ShareItem(val id: Int,
+                @DrawableRes val image: Int,
+                @StringRes val title: Int,
+                @StringRes val description: Int) : Parcelable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(id)
@@ -19,16 +19,16 @@ class ShareTypeItem(val id: Int,
 
     override fun describeContents(): Int = 0
 
-    companion object CREATOR : Parcelable.Creator<ShareTypeItem> {
-        override fun createFromParcel(parcel: Parcel): ShareTypeItem {
+    companion object CREATOR : Parcelable.Creator<ShareItem> {
+        override fun createFromParcel(parcel: Parcel): ShareItem {
             val id = parcel.readInt()
             val image = parcel.readInt()
             val title = parcel.readInt()
             val description = parcel.readInt()
-            return ShareTypeItem(id, image, title, description)
+            return ShareItem(id, image, title, description)
         }
 
-        override fun newArray(size: Int): Array<ShareTypeItem?> {
+        override fun newArray(size: Int): Array<ShareItem?> {
             return arrayOfNulls(size)
         }
     }
