@@ -1,5 +1,6 @@
 package com.tomclaw.drawa.share.plugin
 
+import com.tomclaw.drawa.R
 import com.tomclaw.drawa.share.SharePlugin
 import io.reactivex.Observable
 import java.io.File
@@ -7,14 +8,14 @@ import java.io.File
 class StaticSharePlugin : SharePlugin {
 
     override val image: Int
-        get() = TODO("not implemented")
+        get() = R.drawable.image
     override val title: Int
-        get() = TODO("not implemented")
+        get() = R.string.static_share_title
     override val description: Int
-        get() = TODO("not implemented")
+        get() = R.string.static_share_description
 
     override fun getOperation(): Observable<File> {
-        TODO("not implemented")
+        return Observable.empty()
     }
 
 }

@@ -75,6 +75,16 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
     }
 
     private fun onLoaded() {
+        var id = 0
+        val shareItems = sharePlugins.map { plugin ->
+            ShareItem(
+                    id = id++,
+                    image = plugin.image,
+                    title = plugin.title,
+                    description = plugin.description
+            )
+        }
+        dataProvider.setData(shareItems)
     }
 
     private fun onError() {
