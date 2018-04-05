@@ -26,7 +26,7 @@ interface StockInteractor {
 class StockInteractorImpl(private val journal: Journal,
                           private val schedulers: SchedulersFactory) : StockInteractor {
 
-    override fun nextId() = journal.get().size
+    override fun nextId() = journal.nextId
 
     override fun isLoaded() = journal.isLoaded()
 

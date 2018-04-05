@@ -18,6 +18,8 @@ import java.io.IOException
 
 interface Journal {
 
+    val nextId: Int
+
     fun isLoaded(): Boolean
 
     fun get(): List<Record>
@@ -38,6 +40,10 @@ interface Journal {
 class JournalImpl(private val journalFile: File) : Journal {
 
     private var records: List<Record>? = null
+
+    override var nextId: Int = 0
+        get() = field++
+        private set
 
     override fun isLoaded(): Boolean {
         return records != null
@@ -82,8 +88,12 @@ class JournalImpl(private val journalFile: File) : Journal {
             Single.just(records)
         } else {
             read()
-                    .doOnSuccess { this.records = it }
+                    .doOnSuccess {
+                        this.records = it.records
+                        this.nextId = it.nextId
+                    }
                     .doOnError { this.records = emptyList() }
+                    .map { it.records }
         }
     }
 
@@ -102,6 +112,7 @@ class JournalImpl(private val journalFile: File) : Journal {
             output = DataOutputStream(BufferedOutputStream(FileOutputStream(journalFile), BUFFER_SIZE))
             with(output) {
                 writeInt(JOURNAL_VERSION)
+                writeInt(nextId)
                 writeInt(records.size)
                 for (record in records) {
                     writeInt(record.id)
@@ -118,13 +129,14 @@ class JournalImpl(private val journalFile: File) : Journal {
         }
     }
 
-    private fun read(): Single<List<Record>> = Single.create<List<Record>> { emitter ->
+    private fun read(): Single<Records> = Single.create<Records> { emitter ->
         var input: DataInputStream? = null
         try {
             input = DataInputStream(BufferedInputStream(FileInputStream(journalFile), BUFFER_SIZE))
             val backupVersion = input.readInt()
             if (backupVersion == JOURNAL_VERSION) {
                 val records = ArrayList<Record>()
+                val nextId = input.readInt()
                 val recordsCount = input.readInt()
                 with(input) {
                     for (c in 0 until recordsCount) {
@@ -138,7 +150,7 @@ class JournalImpl(private val journalFile: File) : Journal {
                     }
                 }
                 Log.d("Drawa", String.format("journal %d bytes read", journalFile.length()))
-                emitter.onSuccess(records)
+                emitter.onSuccess(Records(records, nextId))
             } else {
                 emitter.onError(IOException("journal format of unknown version"))
             }
@@ -152,6 +164,8 @@ class JournalImpl(private val journalFile: File) : Journal {
     }
 
     private fun notLoadedException() = IllegalStateException("journal must be loaded first")
+
+    private data class Records(val records: List<Record>, val nextId: Int)
 
 }
 
