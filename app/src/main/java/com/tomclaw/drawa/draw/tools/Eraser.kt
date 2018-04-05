@@ -11,7 +11,7 @@ class Eraser : Tool() {
     private var prevY: Int = 0
     private var path = Path()
 
-    override var color = -0x1
+    override var color = ERASER_COLOR
     override val alpha = 0xff
     override val type = TYPE_ERASER
 
@@ -20,6 +20,7 @@ class Eraser : Tool() {
         style = Paint.Style.STROKE
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
+        color = ERASER_COLOR
     }
 
     override fun onTouchDown(x: Int, y: Int) {
@@ -44,7 +45,12 @@ class Eraser : Tool() {
         if (x == startX && y == startY) {
             path.lineTo(x + 0.1f, y.toFloat())
         } else {
-            path.quadTo(prevX.toFloat(), prevY.toFloat(), ((x + prevX) / 2).toFloat(), ((y + prevY) / 2).toFloat())
+            path.quadTo(
+                    prevX.toFloat(),
+                    prevY.toFloat(),
+                    ((x + prevX) / 2).toFloat(),
+                    ((y + prevY) / 2).toFloat()
+            )
         }
 
         prevX = x
@@ -57,7 +63,7 @@ class Eraser : Tool() {
         if (path.isEmpty) {
             path.moveTo(prevX.toFloat(), prevY.toFloat())
         }
-        path.lineTo(x.toFloat(), y.toFloat())
+        path.quadTo(prevX.toFloat(), prevY.toFloat(), x.toFloat(), y.toFloat())
 
         path.reset()
 
@@ -67,6 +73,8 @@ class Eraser : Tool() {
         prevY = 0
     }
 
-    override fun onDraw() = path.reset()
+    override fun onDraw() {}
 
 }
+
+const val ERASER_COLOR = -0x1
