@@ -4,6 +4,7 @@ import com.tomclaw.drawa.R
 import com.tomclaw.drawa.share.SharePlugin
 import io.reactivex.Observable
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 class StaticSharePlugin : SharePlugin {
 
@@ -14,6 +15,8 @@ class StaticSharePlugin : SharePlugin {
     override val description: Int
         get() = R.string.static_share_description
 
-    override val operation: Observable<File> = Observable.empty()
+    override val operation: Observable<File> = Observable
+            .timer(1, TimeUnit.SECONDS)
+            .flatMap { Observable.empty<File>() }
 
 }

@@ -104,7 +104,7 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
         subscriptions += plugin.operation
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.mainThread())
-                .doOnSubscribe { view?.showProgress() } // TODO: use semi-transparent progress
+                .doOnSubscribe { view?.showOverlayProgress() }
                 .doAfterTerminate { view?.showContent() }
                 .subscribe({
                     logger.log("plugin operation completed")

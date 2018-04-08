@@ -7,11 +7,15 @@ import android.view.View
 import android.widget.ViewFlipper
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
+import com.tomclaw.drawa.util.hideWithAlphaAnimation
+import com.tomclaw.drawa.util.showWithAlphaAnimation
 import io.reactivex.Observable
 
 interface ShareView {
 
     fun showProgress()
+
+    fun showOverlayProgress()
 
     fun showContent()
 
@@ -26,6 +30,7 @@ class ShareViewImpl(view: View,
 
     private val context = view.context
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+    private val overlayProgress: View = view.findViewById(R.id.overlay_progress)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
     private val recycler: RecyclerView = view.findViewById(R.id.recycler)
 
@@ -52,8 +57,13 @@ class ShareViewImpl(view: View,
         flipper.displayedChild = 0
     }
 
+    override fun showOverlayProgress() {
+        overlayProgress.showWithAlphaAnimation(animateFully = true)
+    }
+
     override fun showContent() {
         flipper.displayedChild = 1
+        overlayProgress.hideWithAlphaAnimation(animateFully = false)
     }
 
     override fun navigationClicks(): Observable<Unit> = navigationRelay
