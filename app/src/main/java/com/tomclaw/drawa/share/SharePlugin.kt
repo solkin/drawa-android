@@ -11,6 +11,6 @@ interface SharePlugin {
 
     val description: Int
 
-    fun getOperation(): Observable<File>
+    val operation: Observable<File>
 
 }

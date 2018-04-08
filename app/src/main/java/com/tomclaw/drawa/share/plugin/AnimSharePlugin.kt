@@ -14,8 +14,6 @@ class AnimSharePlugin : SharePlugin {
     override val description: Int
         get() = R.string.anim_share_description
 
-    override fun getOperation(): Observable<File> {
-        return Observable.empty()
-    }
+    override val operation: Observable<File> = Observable.empty()
 
 }

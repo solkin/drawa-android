@@ -101,6 +101,16 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
     private fun runPlugin(plugin: SharePlugin) {
         // TODO: implement plugin invocation
         logger.log("run plugin $plugin")
+        subscriptions += plugin.operation
+                .subscribeOn(schedulers.io())
+                .observeOn(schedulers.mainThread())
+                .doOnSubscribe { view?.showProgress() } // TODO: use semi-transparent progress
+                .doAfterTerminate { view?.showContent() }
+                .subscribe({
+                    logger.log("plugin operation completed")
+                }, {
+                    onError()
+                })
     }
 
     private fun onError() {
