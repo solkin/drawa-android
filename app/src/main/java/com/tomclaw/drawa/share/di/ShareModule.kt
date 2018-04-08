@@ -5,13 +5,14 @@ import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.HistoryImpl
 import com.tomclaw.drawa.share.ShareInteractor
 import com.tomclaw.drawa.share.ShareInteractorImpl
-import com.tomclaw.drawa.share.SharePresenter
-import com.tomclaw.drawa.share.SharePresenterImpl
 import com.tomclaw.drawa.share.ShareItem
 import com.tomclaw.drawa.share.SharePlugin
+import com.tomclaw.drawa.share.SharePresenter
+import com.tomclaw.drawa.share.SharePresenterImpl
 import com.tomclaw.drawa.share.plugin.AnimSharePlugin
 import com.tomclaw.drawa.share.plugin.StaticSharePlugin
 import com.tomclaw.drawa.util.DataProvider
+import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.historyFile
@@ -29,11 +30,13 @@ class ShareModule(private val recordId: Int,
     fun provideSharePresenter(interactor: ShareInteractor,
                               dataProvider: DataProvider<ShareItem>,
                               sharePlugins: Set<@JvmSuppressWildcards SharePlugin>,
+                              logger: Logger,
                               schedulers: SchedulersFactory): SharePresenter {
         return SharePresenterImpl(
                 interactor,
                 dataProvider,
                 sharePlugins,
+                logger,
                 schedulers,
                 presenterState
         )
