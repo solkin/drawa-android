@@ -37,11 +37,16 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
 
     private val subscriptions = CompositeDisposable()
 
+    private var itemsMap: Map<Int, SharePlugin> = emptyMap()
+
     override fun attachView(view: ShareView) {
         this.view = view
 
         subscriptions += view.navigationClicks().subscribe {
             router?.leaveScreen()
+        }
+        subscriptions += view.itemClicks().subscribe { shareItem ->
+            itemsMap[shareItem.id]?.let { runPlugin(it) }
         }
 
         loadHistory()
@@ -84,7 +89,12 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
                     description = plugin.description
             )
         }
+        // TODO: fill itemsMap
         dataProvider.setData(shareItems)
+    }
+
+    private fun runPlugin(plugin: SharePlugin) {
+        // TODO: implement plugin invocation
     }
 
     private fun onError() {
