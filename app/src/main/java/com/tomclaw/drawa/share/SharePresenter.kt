@@ -2,6 +2,7 @@ package com.tomclaw.drawa.share
 
 import android.os.Bundle
 import com.tomclaw.drawa.util.DataProvider
+import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -29,6 +30,7 @@ interface SharePresenter {
 class SharePresenterImpl(private val interactor: ShareInteractor,
                          private val dataProvider: DataProvider<ShareItem>,
                          private val sharePlugins: Set<SharePlugin>,
+                         private val logger: Logger,
                          private val schedulers: SchedulersFactory,
                          state: Bundle?) : SharePresenter {
 
@@ -81,20 +83,24 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
 
     private fun onLoaded() {
         var id = 0
-        val shareItems = sharePlugins.map { plugin ->
+        itemsMap = sharePlugins.associate {
+            Pair(id++, it)
+        }
+        val shareItems = itemsMap.entries.map { entry ->
+            val plugin = entry.value
             ShareItem(
-                    id = id++,
+                    id = entry.key,
                     image = plugin.image,
                     title = plugin.title,
                     description = plugin.description
             )
         }
-        // TODO: fill itemsMap
         dataProvider.setData(shareItems)
     }
 
     private fun runPlugin(plugin: SharePlugin) {
         // TODO: implement plugin invocation
+        logger.log("run plugin $plugin")
     }
 
     private fun onError() {
