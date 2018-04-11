@@ -27,7 +27,6 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
                 .drawComponent(
                         DrawModule(
                                 recordId = recordId,
-                                resources = resources,
                                 bitmapHolder = bitmapHolder,
                                 presenterState = presenterState
                         )

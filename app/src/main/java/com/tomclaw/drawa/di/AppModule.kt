@@ -6,6 +6,8 @@ import com.tomclaw.drawa.core.Journal
 import com.tomclaw.drawa.core.JournalImpl
 import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.LoggerImpl
+import com.tomclaw.drawa.util.MetricsProvider
+import com.tomclaw.drawa.util.MetricsProviderImpl
 import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.SchedulersFactoryImpl
 import dagger.Module
@@ -38,5 +40,13 @@ class AppModule(private val app: Application) {
     @Provides
     @Singleton
     internal fun provideLogger(): Logger = LoggerImpl()
+
+
+
+    @Provides
+    @Singleton
+    fun provideMetricsProvider(): MetricsProvider {
+        return MetricsProviderImpl(app.resources)
+    }
 
 }

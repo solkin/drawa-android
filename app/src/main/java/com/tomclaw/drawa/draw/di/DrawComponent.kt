@@ -5,7 +5,7 @@ import com.tomclaw.drawa.util.PerActivity
 import dagger.Subcomponent
 
 @PerActivity
-@Subcomponent(modules = [DrawModule::class])
+@Subcomponent(modules = [DrawModule::class, ToolsModule::class])
 interface DrawComponent {
 
     fun inject(activity: DrawActivity)

@@ -1,8 +1,10 @@
 package com.tomclaw.drawa.share.di
 
 import android.os.Bundle
+import com.tomclaw.drawa.draw.BitmapHolder
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.HistoryImpl
+import com.tomclaw.drawa.draw.ToolProvider
 import com.tomclaw.drawa.share.ShareInteractor
 import com.tomclaw.drawa.share.ShareInteractorImpl
 import com.tomclaw.drawa.share.ShareItem
@@ -22,8 +24,11 @@ import dagger.multibindings.IntoSet
 import java.io.File
 
 @Module
-class ShareModule(private val recordId: Int,
-                  private val presenterState: Bundle?) {
+class ShareModule(
+        private val recordId: Int,
+        private val bitmapHolder: BitmapHolder,
+        private val presenterState: Bundle?
+) {
 
     @Provides
     @PerActivity
@@ -31,7 +36,8 @@ class ShareModule(private val recordId: Int,
                               dataProvider: DataProvider<ShareItem>,
                               sharePlugins: Set<@JvmSuppressWildcards SharePlugin>,
                               logger: Logger,
-                              schedulers: SchedulersFactory): SharePresenter {
+                              schedulers: SchedulersFactory
+    ): SharePresenter {
         return SharePresenterImpl(
                 interactor,
                 dataProvider,
@@ -44,8 +50,10 @@ class ShareModule(private val recordId: Int,
 
     @Provides
     @PerActivity
-    fun provideShareInteractor(history: History,
-                               schedulers: SchedulersFactory): ShareInteractor {
+    fun provideShareInteractor(
+            history: History,
+            schedulers: SchedulersFactory
+    ): ShareInteractor {
         return ShareInteractorImpl(history, schedulers)
     }
 
@@ -64,8 +72,15 @@ class ShareModule(private val recordId: Int,
 
     @Provides
     @IntoSet
-    fun provideAnimSharePlugin(): SharePlugin {
-        return AnimSharePlugin()
+    fun provideAnimSharePlugin(
+            toolProvider: ToolProvider,
+            history: History
+    ): SharePlugin {
+        return AnimSharePlugin(
+                toolProvider,
+                history,
+                bitmapHolder
+        )
     }
 
     @Provides
