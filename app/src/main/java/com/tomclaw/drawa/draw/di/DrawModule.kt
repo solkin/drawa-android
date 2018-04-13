@@ -2,7 +2,7 @@ package com.tomclaw.drawa.draw.di
 
 import android.os.Bundle
 import com.tomclaw.drawa.core.Journal
-import com.tomclaw.drawa.draw.BitmapHolder
+import com.tomclaw.drawa.draw.DrawHostHolder
 import com.tomclaw.drawa.draw.DrawInteractor
 import com.tomclaw.drawa.draw.DrawInteractorImpl
 import com.tomclaw.drawa.draw.DrawPresenter
@@ -19,7 +19,7 @@ import java.io.File
 
 @Module
 class DrawModule(private val recordId: Int,
-                 private val bitmapHolder: BitmapHolder,
+                 private val drawHostHolder: DrawHostHolder,
                  private val presenterState: Bundle?) {
 
     @Provides
@@ -33,7 +33,7 @@ class DrawModule(private val recordId: Int,
                 schedulers,
                 toolProvider,
                 history,
-                bitmapHolder,
+                drawHostHolder,
                 presenterState
         )
     }
@@ -44,7 +44,7 @@ class DrawModule(private val recordId: Int,
                               journal: Journal,
                               filesDir: File,
                               schedulers: SchedulersFactory): DrawInteractor {
-        return DrawInteractorImpl(recordId, filesDir, journal, history, bitmapHolder, schedulers)
+        return DrawInteractorImpl(recordId, filesDir, journal, history, drawHostHolder, schedulers)
     }
 
     @Provides

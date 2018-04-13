@@ -1,6 +1,6 @@
 package com.tomclaw.drawa.draw
 
-class BitmapHolder {
+class DrawHostHolder {
 
     lateinit var drawHost: DrawHost
 

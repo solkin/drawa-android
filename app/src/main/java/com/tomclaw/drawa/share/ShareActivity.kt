@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
-import com.tomclaw.drawa.draw.BitmapHolder
+import com.tomclaw.drawa.draw.DrawHostHolder
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.share.di.ShareModule
 import com.tomclaw.drawa.util.DataProvider
@@ -22,9 +22,9 @@ class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
     override fun onCreate(savedInstanceState: Bundle?) {
         val recordId = intent.getRecordId()
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
-        val bitmapHolder = BitmapHolder()
+        val drawHostHolder = DrawHostHolder()
         application.getComponent()
-                .shareComponent(ShareModule(recordId, bitmapHolder, presenterState))
+                .shareComponent(ShareModule(recordId, drawHostHolder, presenterState))
                 .inject(activity = this)
 
         super.onCreate(savedInstanceState)

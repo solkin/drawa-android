@@ -41,7 +41,7 @@ interface DrawView : ToolsView {
 }
 
 class DrawViewImpl(view: View,
-                   bitmapHolder: BitmapHolder,
+                   drawHostHolder: DrawHostHolder,
                    private val metricsProvider: MetricsProvider
 ) : DrawView, ToolsView by ToolsViewImpl(view) {
 
@@ -60,7 +60,7 @@ class DrawViewImpl(view: View,
     private val deleteRelay = PublishRelay.create<Unit>()
 
     init {
-        bitmapHolder.drawHost = drawingView
+        drawHostHolder.drawHost = drawingView
         toolbar.setTitle(R.string.draw)
         toolbar.setNavigationOnClickListener {
             navigationRelay.accept(Unit)

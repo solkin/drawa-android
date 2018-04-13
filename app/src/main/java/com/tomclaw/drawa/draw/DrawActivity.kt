@@ -22,12 +22,12 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
     override fun onCreate(savedInstanceState: Bundle?) {
         val recordId = intent.getRecordId()
         val presenterState = savedInstanceState?.getBundle(KEY_PRESENTER_STATE)
-        val bitmapHolder = BitmapHolder()
+        val drawHostHolder = DrawHostHolder()
         application.getComponent()
                 .drawComponent(
                         DrawModule(
                                 recordId = recordId,
-                                bitmapHolder = bitmapHolder,
+                                drawHostHolder = drawHostHolder,
                                 presenterState = presenterState
                         )
                 )
@@ -36,7 +36,7 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.draw)
 
-        val view = DrawViewImpl(window.decorView, bitmapHolder, metricsProvider)
+        val view = DrawViewImpl(window.decorView, drawHostHolder, metricsProvider)
 
         presenter.attachView(view)
     }

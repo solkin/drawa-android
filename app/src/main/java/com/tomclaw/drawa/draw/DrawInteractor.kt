@@ -30,7 +30,7 @@ class DrawInteractorImpl(private val recordId: Int,
                          private val filesDir: File, // TODO: may be replaced with image provider
                          private val journal: Journal,
                          private val history: History,
-                         private val bitmapHolder: BitmapHolder,
+                         private val drawHostHolder: DrawHostHolder,
                          private val schedulers: SchedulersFactory) : DrawInteractor {
 
     private val record = journal.get(recordId)
@@ -46,7 +46,7 @@ class DrawInteractorImpl(private val recordId: Int,
                             val imageFile = record.imageFile(filesDir)
                             stream = FileInputStream(imageFile)
                             val bitmap = BitmapFactory.decodeStream(stream)
-                            bitmapHolder.drawHost.applyBitmap(bitmap)
+                            drawHostHolder.drawHost.applyBitmap(bitmap)
                         } finally {
                             stream.safeClose()
                         }
@@ -72,7 +72,7 @@ class DrawInteractorImpl(private val recordId: Int,
                         try {
                             val imageFile = record.imageFile(filesDir)
                             stream = FileOutputStream(imageFile)
-                            bitmapHolder
+                            drawHostHolder
                                     .drawHost
                                     .bitmap
                                     .compress(Bitmap.CompressFormat.PNG, 100, stream)

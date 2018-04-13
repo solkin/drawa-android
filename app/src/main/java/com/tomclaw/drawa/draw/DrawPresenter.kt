@@ -41,7 +41,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                         private val schedulers: SchedulersFactory,
                         private val toolProvider: ToolProvider,
                         private val history: History,
-                        private val bitmapHolder: BitmapHolder,
+                        private val drawHostHolder: DrawHostHolder,
                         state: Bundle?) : DrawPresenter {
 
     private var view: DrawView? = null
@@ -239,11 +239,11 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     }
 
     private fun invalidateDrawHost() {
-        bitmapHolder.drawHost.invalidate()
+        drawHostHolder.drawHost.invalidate()
     }
 
     private fun applyHistory() {
-        val drawHost = bitmapHolder.drawHost
+        val drawHost = drawHostHolder.drawHost
         try {
             drawHost.hidden = true
             drawHost.clearBitmap()

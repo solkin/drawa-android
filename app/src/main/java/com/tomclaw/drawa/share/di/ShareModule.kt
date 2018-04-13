@@ -1,7 +1,7 @@
 package com.tomclaw.drawa.share.di
 
 import android.os.Bundle
-import com.tomclaw.drawa.draw.BitmapHolder
+import com.tomclaw.drawa.draw.DrawHostHolder
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.HistoryImpl
 import com.tomclaw.drawa.draw.ToolProvider
@@ -26,7 +26,7 @@ import java.io.File
 @Module
 class ShareModule(
         private val recordId: Int,
-        private val bitmapHolder: BitmapHolder,
+        private val drawHostHolder: DrawHostHolder,
         private val presenterState: Bundle?
 ) {
 
@@ -79,7 +79,7 @@ class ShareModule(
         return AnimSharePlugin(
                 toolProvider,
                 history,
-                bitmapHolder
+                drawHostHolder
         )
     }
 
