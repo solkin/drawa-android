@@ -1,7 +1,10 @@
 package com.tomclaw.drawa.util
 
-import android.content.res.Resources
+import android.content.Context
+import android.graphics.Rect
 import android.util.DisplayMetrics
+import android.view.WindowManager
+
 
 interface MetricsProvider {
 
@@ -21,18 +24,27 @@ interface MetricsProvider {
      */
     fun convertPixelsToDp(px: Float): Float
 
+    fun getScreenSize(): Rect
+
 }
 
-class MetricsProviderImpl(private val resources: Resources) : MetricsProvider {
+class MetricsProviderImpl(private val context: Context) : MetricsProvider {
 
     override fun convertDpToPixel(dp: Float): Float {
-        val metrics = resources.displayMetrics
+        val metrics = context.resources.displayMetrics
         return dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
     override fun convertPixelsToDp(px: Float): Float {
-        val metrics = resources.displayMetrics
+        val metrics = context.resources.displayMetrics
         return px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    }
+
+    override fun getScreenSize(): Rect {
+        val size = Rect()
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        wm.defaultDisplay.getRectSize(size)
+        return size
     }
 
 }

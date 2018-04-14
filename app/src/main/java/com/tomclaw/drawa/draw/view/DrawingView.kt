@@ -13,7 +13,7 @@ import com.tomclaw.drawa.draw.DrawHost
 
 class DrawingView(context: Context,
                   attributeSet: AttributeSet)
-    : View(context, attributeSet), BitmapHost by BitmapDrawHost(), DrawHost {
+    : View(context, attributeSet), BitmapHost by BitmapDrawHost(BITMAP_WIDTH, BITMAP_HEIGHT), DrawHost {
 
     private var dst: Rect? = null
 

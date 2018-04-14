@@ -6,17 +6,17 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 
-class BitmapDrawHost : BitmapHost {
+class BitmapDrawHost(width: Int, height: Int) : BitmapHost {
 
     private val hiddenBitmap: Bitmap = Bitmap.createBitmap(
-            BITMAP_WIDTH,
-            BITMAP_HEIGHT,
+            width,
+            height,
             Bitmap.Config.ARGB_8888
     )
 
     override val normalBitmap: Bitmap = Bitmap.createBitmap(
-            BITMAP_WIDTH,
-            BITMAP_HEIGHT,
+            width,
+            height,
             Bitmap.Config.ARGB_8888
     )
 
@@ -59,6 +59,3 @@ class BitmapDrawHost : BitmapHost {
     }
 
 }
-
-const val BITMAP_WIDTH = 720
-const val BITMAP_HEIGHT = 720

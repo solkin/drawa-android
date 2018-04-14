@@ -2,7 +2,7 @@ package com.tomclaw.drawa.share.plugin
 
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.share.SharePlugin
-import io.reactivex.Observable
+import io.reactivex.Single
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -15,8 +15,8 @@ class StaticSharePlugin : SharePlugin {
     override val description: Int
         get() = R.string.static_share_description
 
-    override val operation: Observable<File> = Observable
+    override val operation: Single<File> = Single
             .timer(1, TimeUnit.SECONDS)
-            .flatMap { Observable.empty<File>() }
+            .map { createTempFile() }
 
 }

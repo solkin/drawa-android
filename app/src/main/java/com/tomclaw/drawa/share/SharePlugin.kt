@@ -1,6 +1,6 @@
 package com.tomclaw.drawa.share
 
-import io.reactivex.Observable
+import io.reactivex.Single
 import java.io.File
 
 interface SharePlugin {
@@ -11,6 +11,6 @@ interface SharePlugin {
 
     val description: Int
 
-    val operation: Observable<File>
+    val operation: Single<File>
 
 }

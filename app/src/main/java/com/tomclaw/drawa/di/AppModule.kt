@@ -46,7 +46,7 @@ class AppModule(private val app: Application) {
     @Provides
     @Singleton
     fun provideMetricsProvider(): MetricsProvider {
-        return MetricsProviderImpl(app.resources)
+        return MetricsProviderImpl(app)
     }
 
 }

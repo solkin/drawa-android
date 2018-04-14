@@ -11,7 +11,7 @@ class Brush : Tool() {
     private var prevY: Int = 0
     private var path = Path()
 
-    private var startStrokeSize: Int = 0
+    private var startStrokeSize: Float = 0.0f
 
     override val alpha = 0xff
     override val type = TYPE_BRUSH
@@ -46,22 +46,23 @@ class Brush : Tool() {
         path.quadTo(
                 prevX.toFloat(),
                 prevY.toFloat(),
-                ((x + prevX) / 2).toFloat(),
-                ((y + prevY) / 2).toFloat()
+                ((x + prevX).toFloat() / 2),
+                ((y + prevY).toFloat() / 2)
         )
 
         val deltaX = Math.abs(x - prevX)
         val deltaY = Math.abs(y - prevY)
         val length = Math.sqrt((deltaX * deltaX + deltaY * deltaY).toDouble())
+        val sizeStep = defaultRadius / 20
         var size = strokeSize
-        if (length < startStrokeSize / 5) {
-            size += 2
+        if (length * 5 < defaultRadius) {
+            size += sizeStep
 
             path.reset()
             path.moveTo(prevX.toFloat(), prevY.toFloat())
             path.lineTo(x.toFloat(), y.toFloat())
         } else {
-            size -= 2
+            size -= sizeStep
         }
         if (size > startStrokeSize / SIZE_MULTIPLIER && size < startStrokeSize * SIZE_MULTIPLIER) {
             strokeSize = size

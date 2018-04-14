@@ -5,13 +5,14 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.Rect
 import com.tomclaw.drawa.draw.DrawHost
 import com.tomclaw.drawa.util.MetricsProvider
 
 abstract class Tool {
 
     private lateinit var callback: DrawHost
-    private lateinit var metricsProvider: MetricsProvider
+    protected lateinit var metricsProvider: MetricsProvider
 
     lateinit var paint: Paint
         private set
@@ -38,16 +39,20 @@ abstract class Tool {
 
     abstract val type: Int
 
-    var strokeSize: Int
-        get() = paint.strokeWidth.toInt()
+    var strokeSize: Float
+        get() = paint.strokeWidth
         set(strokeSize) {
-            paint.strokeWidth = strokeSize.toFloat()
+            paint.strokeWidth = strokeSize
         }
+
+    var defaultRadius: Float = 0.0f
 
     fun initialize(callback: DrawHost, metricsProvider: MetricsProvider) {
         this.callback = callback
         this.metricsProvider = metricsProvider
         this.paint = initPaint()
+
+        defaultRadius = convertSize(SIZE_L)
     }
 
     abstract fun initPaint(): Paint
@@ -65,8 +70,16 @@ abstract class Tool {
     }
 
     fun resetRadius() {
-        val pixelSize = metricsProvider.convertDpToPixel(dp = size.toFloat()).toInt()
-        strokeSize = pixelSize * callback.bitmap.width / callback.getWidth()
+        strokeSize = convertSize(size)
+    }
+
+    private fun convertSize(size: Int): Float {
+        val pixelSize = metricsProvider.convertDpToPixel(dp = size.toFloat())
+        return pixelSize * callback.bitmap.width / metricsProvider.getScreenSize().minDimension()
+    }
+
+    private fun Rect.minDimension(): Int {
+        return Math.min(width(), height())
     }
 
 }

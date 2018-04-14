@@ -6,15 +6,16 @@ import com.tomclaw.drawa.draw.DrawHost
 import com.tomclaw.drawa.draw.Event
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.ToolProvider
+import com.tomclaw.drawa.draw.view.BITMAP_HEIGHT
+import com.tomclaw.drawa.draw.view.BITMAP_WIDTH
 import com.tomclaw.drawa.share.SharePlugin
 import com.tomclaw.drawa.util.AnimatedGifEncoder
 import com.tomclaw.drawa.util.MetricsProvider
 import com.tomclaw.drawa.util.safeClose
-import io.reactivex.Observable
+import io.reactivex.Single
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
-import java.util.concurrent.TimeUnit
 
 class AnimSharePlugin(
         private val toolProvider: ToolProvider,
@@ -34,20 +35,18 @@ class AnimSharePlugin(
     override val description: Int
         get() = R.string.anim_share_description
 
-    override val operation: Observable<File> = Observable
-            .timer(10, TimeUnit.MILLISECONDS)
-            .map {
-                val file: File = createTempFile()
-                applyHistory(file)
-                file
-            }
+    override val operation: Single<File> = Single.create { emitter ->
+        val file: File = createTempFile()
+        applyHistory(file)
+        emitter.onSuccess(file)
+    }
 
     private fun applyHistory(file: File) {
         var stream: OutputStream? = null
         try {
             stream = FileOutputStream(file)
             val encoder = AnimatedGifEncoder().apply {
-                setDelay(100)
+                setDelay(10)
                 start(stream)
             }
             drawHost.clearBitmap()
@@ -63,8 +62,8 @@ class AnimSharePlugin(
 
     private fun processToolEvent(event: Event) {
         val tool = toolProvider.getTool(event.toolType)
-        val x = event.x
-        val y = event.y
+        val x = (event.x * drawHost.bitmap.width / BITMAP_WIDTH)
+        val y = (event.y * drawHost.bitmap.height / BITMAP_HEIGHT)
         with(tool) {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
