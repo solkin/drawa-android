@@ -6,6 +6,7 @@ import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import java.io.File
 
 interface SharePresenter {
 
@@ -22,6 +23,8 @@ interface SharePresenter {
     interface ShareRouter {
 
         fun leaveScreen()
+
+        fun shareFile(file: File)
 
     }
 
@@ -101,13 +104,16 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
     private fun runPlugin(plugin: SharePlugin) {
         // TODO: implement plugin invocation
         logger.log("run plugin $plugin")
+        val time = System.currentTimeMillis()
         subscriptions += plugin.operation
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.mainThread())
                 .doOnSubscribe { view?.showOverlayProgress() }
                 .doAfterTerminate { view?.showContent() }
-                .subscribe({
+                .subscribe({ file ->
                     logger.log("plugin operation completed")
+                    router?.shareFile(file)
+                    view?.showMessage((System.currentTimeMillis() - time).toString() + " ms")
                 }, {
                     onError()
                 })

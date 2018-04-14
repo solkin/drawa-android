@@ -2,13 +2,19 @@ package com.tomclaw.drawa.share
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager.MATCH_DEFAULT_ONLY
 import android.os.Bundle
+import android.support.v4.app.ShareCompat
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
+import android.webkit.MimeTypeMap
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.share.di.ShareModule
 import com.tomclaw.drawa.util.DataProvider
+import java.io.File
 import javax.inject.Inject
+
 
 class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
 
@@ -56,6 +62,28 @@ class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
 
     override fun leaveScreen() {
         finish()
+    }
+
+    override fun shareFile(file: File) {
+        val uri = FileProvider.getUriForFile(this, packageName, file)
+        val type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
+        ShareCompat.IntentBuilder.from(this)
+                .setStream(uri)
+                .setType(type)
+                .intent
+                .setAction(Intent.ACTION_SEND)
+                .setDataAndType(uri, type)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .run {
+                    val list = packageManager.queryIntentActivities(this, MATCH_DEFAULT_ONLY)
+                    for (resolveInfo in list) {
+                        val packageName = resolveInfo.activityInfo.packageName
+                        grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    if (resolveActivity(packageManager) != null) {
+                        startActivity(this)
+                    }
+                }
     }
 
     private fun Intent.getRecordId() = getIntExtra(EXTRA_RECORD_ID, RECORD_ID_INVALID).apply {

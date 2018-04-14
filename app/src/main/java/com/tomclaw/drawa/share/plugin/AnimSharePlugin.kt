@@ -9,19 +9,18 @@ import com.tomclaw.drawa.draw.ToolProvider
 import com.tomclaw.drawa.draw.view.BITMAP_HEIGHT
 import com.tomclaw.drawa.draw.view.BITMAP_WIDTH
 import com.tomclaw.drawa.share.SharePlugin
-import com.tomclaw.drawa.util.AnimatedGifEncoder
 import com.tomclaw.drawa.util.MetricsProvider
-import com.tomclaw.drawa.util.safeClose
+import com.waynejo.androidndkgif.GifEncoder
+import com.waynejo.androidndkgif.GifEncoder.EncodingType
 import io.reactivex.Single
 import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
 
 class AnimSharePlugin(
         private val toolProvider: ToolProvider,
         private val metricsProvider: MetricsProvider,
         private val history: History,
-        private val drawHost: DrawHost
+        private val drawHost: DrawHost,
+        private val outputDirectory: File
 ) : SharePlugin {
 
     init {
@@ -36,27 +35,52 @@ class AnimSharePlugin(
         get() = R.string.anim_share_description
 
     override val operation: Single<File> = Single.create { emitter ->
-        val file: File = createTempFile()
+        outputDirectory.mkdirs()
+        val file: File = createTempFile("anim", ".gif", outputDirectory).apply {
+            deleteOnExit()
+        }
         applyHistory(file)
         emitter.onSuccess(file)
     }
 
     private fun applyHistory(file: File) {
-        var stream: OutputStream? = null
+        /*var stream: OutputStream? = null
         try {
             stream = FileOutputStream(file)
             val encoder = AnimatedGifEncoder().apply {
-                setDelay(10)
+                setDelay(100)
                 start(stream)
             }
             drawHost.clearBitmap()
             history.getEvents().forEach {
                 processToolEvent(it)
-                encoder.addFrame(drawHost.bitmap)
+                if (it.action == MotionEvent.ACTION_UP) {
+                    encoder.setDelay(100)
+                    encoder.addFrame(drawHost.bitmap)
+                }
             }
             encoder.finish()
         } finally {
             stream.safeClose()
+        }*/
+
+        val encoder = GifEncoder()
+        try {
+            encoder.init(
+                    drawHost.bitmap.width,
+                    drawHost.bitmap.height,
+                    file.path,
+                    EncodingType.ENCODING_TYPE_FAST
+            )
+            drawHost.clearBitmap()
+            history.getEvents().forEach {
+                processToolEvent(it)
+                if (it.action == MotionEvent.ACTION_UP) {
+                    encoder.encodeFrame(drawHost.bitmap, 100)
+                }
+            }
+        } finally {
+            encoder.close()
         }
     }
 

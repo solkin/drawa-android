@@ -77,13 +77,16 @@ class ShareModule(
             toolProvider: ToolProvider,
             metricsProvider: MetricsProvider,
             history: History,
-            drawHost: DrawHost
+            drawHost: DrawHost,
+            filesDir: File
     ): SharePlugin {
+        val outputDirectory = File(filesDir, "share")
         return AnimSharePlugin(
                 toolProvider,
                 metricsProvider,
                 history,
-                drawHost
+                drawHost,
+                outputDirectory
         )
     }
 

@@ -4,6 +4,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.Toast
 import android.widget.ViewFlipper
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
@@ -18,6 +19,8 @@ interface ShareView {
     fun showOverlayProgress()
 
     fun showContent()
+
+    fun showMessage(text: String)
 
     fun navigationClicks(): Observable<Unit>
 
@@ -64,6 +67,10 @@ class ShareViewImpl(view: View,
     override fun showContent() {
         flipper.displayedChild = 1
         overlayProgress.hideWithAlphaAnimation(animateFully = false)
+    }
+
+    override fun showMessage(text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show()
     }
 
     override fun navigationClicks(): Observable<Unit> = navigationRelay
