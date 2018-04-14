@@ -1,19 +1,31 @@
 package com.tomclaw.drawa.share.plugin
 
+import android.view.MotionEvent
 import com.tomclaw.drawa.R
-import com.tomclaw.drawa.draw.DrawHostHolder
+import com.tomclaw.drawa.draw.DrawHost
+import com.tomclaw.drawa.draw.Event
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.ToolProvider
 import com.tomclaw.drawa.share.SharePlugin
+import com.tomclaw.drawa.util.AnimatedGifEncoder
+import com.tomclaw.drawa.util.MetricsProvider
+import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Observable
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.util.concurrent.TimeUnit
 
 class AnimSharePlugin(
         private val toolProvider: ToolProvider,
+        private val metricsProvider: MetricsProvider,
         private val history: History,
-        private val drawHostHolder: DrawHostHolder
+        private val drawHost: DrawHost
 ) : SharePlugin {
+
+    init {
+        toolProvider.listTools().forEach { it.initialize(drawHost, metricsProvider) }
+    }
 
     override val image: Int
         get() = R.drawable.animation
@@ -23,7 +35,48 @@ class AnimSharePlugin(
         get() = R.string.anim_share_description
 
     override val operation: Observable<File> = Observable
-            .timer(3, TimeUnit.SECONDS)
-            .flatMap { Observable.empty<File>() }
+            .timer(10, TimeUnit.MILLISECONDS)
+            .map {
+                val file: File = createTempFile()
+                applyHistory(file)
+                file
+            }
+
+    private fun applyHistory(file: File) {
+        var stream: OutputStream? = null
+        try {
+            stream = FileOutputStream(file)
+            val encoder = AnimatedGifEncoder().apply {
+                setDelay(100)
+                start(stream)
+            }
+            drawHost.clearBitmap()
+            history.getEvents().forEach {
+                processToolEvent(it)
+                encoder.addFrame(drawHost.bitmap)
+            }
+            encoder.finish()
+        } finally {
+            stream.safeClose()
+        }
+    }
+
+    private fun processToolEvent(event: Event) {
+        val tool = toolProvider.getTool(event.toolType)
+        val x = event.x
+        val y = event.y
+        with(tool) {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    color = event.color
+                    size = event.size
+                    onTouchDown(x, y)
+                }
+                MotionEvent.ACTION_MOVE -> onTouchMove(x, y)
+                MotionEvent.ACTION_UP -> onTouchUp(x, y)
+            }
+            onDraw()
+        }
+    }
 
 }

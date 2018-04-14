@@ -1,10 +1,11 @@
 package com.tomclaw.drawa.share.di
 
 import android.os.Bundle
-import com.tomclaw.drawa.draw.DrawHostHolder
+import com.tomclaw.drawa.draw.DrawHost
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.HistoryImpl
 import com.tomclaw.drawa.draw.ToolProvider
+import com.tomclaw.drawa.share.DetachedDrawHost
 import com.tomclaw.drawa.share.ShareInteractor
 import com.tomclaw.drawa.share.ShareInteractorImpl
 import com.tomclaw.drawa.share.ShareItem
@@ -15,6 +16,7 @@ import com.tomclaw.drawa.share.plugin.AnimSharePlugin
 import com.tomclaw.drawa.share.plugin.StaticSharePlugin
 import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.Logger
+import com.tomclaw.drawa.util.MetricsProvider
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.historyFile
@@ -26,7 +28,6 @@ import java.io.File
 @Module
 class ShareModule(
         private val recordId: Int,
-        private val drawHostHolder: DrawHostHolder,
         private val presenterState: Bundle?
 ) {
 
@@ -74,12 +75,15 @@ class ShareModule(
     @IntoSet
     fun provideAnimSharePlugin(
             toolProvider: ToolProvider,
-            history: History
+            metricsProvider: MetricsProvider,
+            history: History,
+            drawHost: DrawHost
     ): SharePlugin {
         return AnimSharePlugin(
                 toolProvider,
+                metricsProvider,
                 history,
-                drawHostHolder
+                drawHost
         )
     }
 
@@ -87,6 +91,12 @@ class ShareModule(
     @IntoSet
     fun provideStaticSharePlugin(): SharePlugin {
         return StaticSharePlugin()
+    }
+
+    @Provides
+    @PerActivity
+    fun provideDrawHost(): DrawHost {
+        return DetachedDrawHost()
     }
 
 }
