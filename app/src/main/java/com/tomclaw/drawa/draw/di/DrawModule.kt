@@ -9,6 +9,7 @@ import com.tomclaw.drawa.draw.DrawPresenter
 import com.tomclaw.drawa.draw.DrawPresenterImpl
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.HistoryImpl
+import com.tomclaw.drawa.draw.ImageProvider
 import com.tomclaw.drawa.draw.ToolProvider
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
@@ -18,34 +19,43 @@ import dagger.Provides
 import java.io.File
 
 @Module
-class DrawModule(private val recordId: Int,
-                 private val drawHostHolder: DrawHostHolder,
-                 private val presenterState: Bundle?) {
+class DrawModule(
+        private val recordId: Int,
+        private val drawHostHolder: DrawHostHolder,
+        private val presenterState: Bundle?
+) {
 
     @Provides
     @PerActivity
-    fun provideDrawPresenter(interactor: DrawInteractor,
-                             toolProvider: ToolProvider,
-                             history: History,
-                             schedulers: SchedulersFactory): DrawPresenter {
-        return DrawPresenterImpl(
-                interactor,
-                schedulers,
-                toolProvider,
-                history,
-                drawHostHolder,
-                presenterState
-        )
-    }
+    fun provideDrawPresenter(
+            interactor: DrawInteractor,
+            toolProvider: ToolProvider,
+            history: History,
+            schedulers: SchedulersFactory
+    ): DrawPresenter = DrawPresenterImpl(
+            interactor,
+            schedulers,
+            toolProvider,
+            history,
+            drawHostHolder,
+            presenterState
+    )
 
     @Provides
     @PerActivity
-    fun provideDrawInteractor(history: History,
-                              journal: Journal,
-                              filesDir: File,
-                              schedulers: SchedulersFactory): DrawInteractor {
-        return DrawInteractorImpl(recordId, filesDir, journal, history, drawHostHolder, schedulers)
-    }
+    fun provideDrawInteractor(
+            history: History,
+            journal: Journal,
+            imageProvider: ImageProvider,
+            schedulers: SchedulersFactory
+    ): DrawInteractor = DrawInteractorImpl(
+            recordId,
+            imageProvider,
+            journal,
+            history,
+            drawHostHolder,
+            schedulers
+    )
 
     @Provides
     @PerActivity

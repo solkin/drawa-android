@@ -1,7 +1,7 @@
 package com.tomclaw.drawa.draw.tools
 
 import android.graphics.Paint
-import com.tomclaw.drawa.draw.QueueLinearFloodFiller
+import com.tomclaw.drawa.util.QueueLinearFloodFiller
 
 class Fill : Tool() {
 

@@ -38,9 +38,7 @@ class AnimSharePlugin(
 
     override val operation: Single<File> = Single.create { emitter ->
         outputDirectory.mkdirs()
-        val file: File = createTempFile("anim", ".gif", outputDirectory).apply {
-            deleteOnExit()
-        }
+        val file: File = createTempFile("anim", ".gif", outputDirectory)
         applyHistory(file)
         emitter.onSuccess(file)
     }

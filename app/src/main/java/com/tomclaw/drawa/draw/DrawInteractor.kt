@@ -1,18 +1,9 @@
 package com.tomclaw.drawa.draw
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.tomclaw.drawa.core.Journal
 import com.tomclaw.drawa.util.SchedulersFactory
-import com.tomclaw.drawa.util.imageFile
-import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Observable
 import io.reactivex.Single
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
 
 interface DrawInteractor {
 
@@ -27,30 +18,23 @@ interface DrawInteractor {
 }
 
 class DrawInteractorImpl(private val recordId: Int,
-                         private val filesDir: File, // TODO: may be replaced with image provider
+                         private val imageProvider: ImageProvider,
                          private val journal: Journal,
                          private val history: History,
                          private val drawHostHolder: DrawHostHolder,
                          private val schedulers: SchedulersFactory) : DrawInteractor {
 
-    private val record = journal.get(recordId)
+    private var record = journal.get(recordId)
 
     private var isDeleted = false
 
     override fun loadHistory(): Observable<Unit> {
         return resolve({
             history.load()
-                    .map {
-                        var stream: InputStream? = null
-                        try {
-                            val imageFile = record.imageFile(filesDir)
-                            stream = FileInputStream(imageFile)
-                            val bitmap = BitmapFactory.decodeStream(stream)
-                            drawHostHolder.drawHost.applyBitmap(bitmap)
-                        } finally {
-                            stream.safeClose()
-                        }
-                        Unit
+                    .flatMap { imageProvider.readImage(record) }
+                    .map { bitmap ->
+                        drawHostHolder.drawHost.applyBitmap(bitmap)
+                        bitmap.recycle()
                     }
                     .toObservable()
                     .subscribeOn(schedulers.io())
@@ -60,27 +44,15 @@ class DrawInteractorImpl(private val recordId: Int,
     }
 
     override fun saveHistory(): Observable<Unit> {
-        val prevImageFile = record.imageFile(filesDir)
         return resolve({
             history.save()
                     .flatMap {
-                        prevImageFile.delete()
-                        journal.touch(recordId)
+                        imageProvider.saveImage(
+                                record,
+                                drawHostHolder.drawHost.bitmap
+                        )
                     }
-                    .map { record ->
-                        var stream: OutputStream? = null
-                        try {
-                            val imageFile = record.imageFile(filesDir)
-                            stream = FileOutputStream(imageFile)
-                            drawHostHolder
-                                    .drawHost
-                                    .bitmap
-                                    .compress(Bitmap.CompressFormat.PNG, 100, stream)
-                        } finally {
-                            stream.safeClose()
-                        }
-                        Unit
-                    }
+                    .map { record = it }
                     .toObservable()
                     .subscribeOn(schedulers.io())
         }, {

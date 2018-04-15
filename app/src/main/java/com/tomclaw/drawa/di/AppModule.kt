@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import com.tomclaw.drawa.core.Journal
 import com.tomclaw.drawa.core.JournalImpl
+import com.tomclaw.drawa.draw.ImageProvider
+import com.tomclaw.drawa.draw.ImageProviderImpl
 import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.LoggerImpl
 import com.tomclaw.drawa.util.MetricsProvider
@@ -35,12 +37,17 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
+    fun provideImageProvider(filesDir: File, journal: Journal): ImageProvider {
+        return ImageProviderImpl(filesDir, journal)
+    }
+
+    @Provides
+    @Singleton
     fun provideFilesDir(): File = app.filesDir
 
     @Provides
     @Singleton
     internal fun provideLogger(): Logger = LoggerImpl()
-
 
 
     @Provides

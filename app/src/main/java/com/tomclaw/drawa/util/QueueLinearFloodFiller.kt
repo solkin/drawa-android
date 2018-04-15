@@ -1,4 +1,4 @@
-package com.tomclaw.drawa.draw
+package com.tomclaw.drawa.util
 
 import android.graphics.Bitmap
 import android.graphics.Color
