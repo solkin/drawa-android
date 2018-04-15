@@ -99,7 +99,10 @@ class ShareModule(
     @Provides
     @PerActivity
     fun provideDrawHost(): DrawHost {
-        return DetachedDrawHost()
+        return DetachedDrawHost(SHARE_WIDTH, SHARE_HEIGHT)
     }
 
 }
+
+const val SHARE_WIDTH = 256
+const val SHARE_HEIGHT = 256

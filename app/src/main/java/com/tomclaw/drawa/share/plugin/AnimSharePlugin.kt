@@ -2,12 +2,12 @@ package com.tomclaw.drawa.share.plugin
 
 import android.view.MotionEvent
 import com.tomclaw.drawa.R
+import com.tomclaw.drawa.core.BITMAP_HEIGHT
+import com.tomclaw.drawa.core.BITMAP_WIDTH
 import com.tomclaw.drawa.draw.DrawHost
 import com.tomclaw.drawa.draw.Event
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.ToolProvider
-import com.tomclaw.drawa.draw.view.BITMAP_HEIGHT
-import com.tomclaw.drawa.draw.view.BITMAP_WIDTH
 import com.tomclaw.drawa.gif.GifEncoder
 import com.tomclaw.drawa.share.SharePlugin
 import com.tomclaw.drawa.util.MetricsProvider
@@ -54,9 +54,11 @@ class AnimSharePlugin(
                 setRepeat(0)
             }
             drawHost.clearBitmap()
+            var eventCount = 0
             history.getEvents().forEach { event ->
                 processToolEvent(event)
-                if (event.action == MotionEvent.ACTION_UP) {
+                eventCount++
+                if ((eventCount % 10) == 0 || event.action == MotionEvent.ACTION_UP) {
                     encoder.setDelay(100)
                     encoder.addFrame(drawHost.bitmap)
                 }

@@ -11,9 +11,10 @@ import com.tomclaw.drawa.draw.BitmapDrawHost
 import com.tomclaw.drawa.draw.BitmapHost
 import com.tomclaw.drawa.draw.DrawHost
 
-class DrawingView(context: Context,
-                  attributeSet: AttributeSet)
-    : View(context, attributeSet), BitmapHost by BitmapDrawHost(BITMAP_WIDTH, BITMAP_HEIGHT), DrawHost {
+class DrawingView(
+        context: Context,
+        attributeSet: AttributeSet
+) : View(context, attributeSet), BitmapHost by BitmapDrawHost(), DrawHost {
 
     private var dst: Rect? = null
 
@@ -30,8 +31,8 @@ class DrawingView(context: Context,
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        val eventX = (BITMAP_WIDTH * event.x / width).toInt()
-        val eventY = (BITMAP_HEIGHT * event.y / height).toInt()
+        val eventX = (bitmap.width * event.x / width).toInt()
+        val eventY = (bitmap.height * event.y / height).toInt()
         drawingListener?.onTouchEvent(TouchEvent(eventX, eventY, event.action))
         invalidate()
         return true
@@ -43,6 +44,3 @@ class DrawingView(context: Context,
     }
 
 }
-
-const val BITMAP_WIDTH = 720
-const val BITMAP_HEIGHT = 720

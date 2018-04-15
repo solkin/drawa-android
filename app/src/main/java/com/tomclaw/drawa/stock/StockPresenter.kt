@@ -1,8 +1,8 @@
 package com.tomclaw.drawa.stock
 
 import android.os.Bundle
-import com.tomclaw.drawa.draw.view.BITMAP_HEIGHT
-import com.tomclaw.drawa.draw.view.BITMAP_WIDTH
+import com.tomclaw.drawa.core.BITMAP_HEIGHT
+import com.tomclaw.drawa.core.BITMAP_WIDTH
 import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.dto.Size
 import com.tomclaw.drawa.util.DataProvider
