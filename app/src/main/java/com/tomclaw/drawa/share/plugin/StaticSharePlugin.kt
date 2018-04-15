@@ -16,6 +16,8 @@ class StaticSharePlugin(
         private val outputDirectory: File
 ) : SharePlugin {
 
+    override val weight: Int
+        get() = 1
     override val image: Int
         get() = R.drawable.image
     override val title: Int

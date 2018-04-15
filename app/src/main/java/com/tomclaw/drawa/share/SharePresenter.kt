@@ -85,9 +85,8 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
     }
 
     private fun onLoaded() {
-        var id = 0
         itemsMap = sharePlugins.associate {
-            Pair(id++, it)
+            Pair(it.weight, it)
         }
         val shareItems = itemsMap.entries.map { entry ->
             val plugin = entry.value
@@ -97,23 +96,18 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
                     title = plugin.title,
                     description = plugin.description
             )
-        }
+        }.sortedBy { it.id }
         dataProvider.setData(shareItems)
     }
 
     private fun runPlugin(plugin: SharePlugin) {
-        // TODO: implement plugin invocation
-        logger.log("run plugin $plugin")
-        val time = System.currentTimeMillis()
         subscriptions += plugin.operation
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.mainThread())
                 .doOnSubscribe { view?.showOverlayProgress() }
                 .doAfterTerminate { view?.showContent() }
                 .subscribe({ file ->
-                    logger.log("plugin operation completed")
                     router?.shareFile(file)
-                    view?.showMessage((System.currentTimeMillis() - time).toString() + " ms")
                 }, {
                     onError()
                 })

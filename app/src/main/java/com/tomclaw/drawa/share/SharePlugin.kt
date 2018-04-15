@@ -5,6 +5,8 @@ import java.io.File
 
 interface SharePlugin {
 
+    val weight: Int
+
     val image: Int
 
     val title: Int

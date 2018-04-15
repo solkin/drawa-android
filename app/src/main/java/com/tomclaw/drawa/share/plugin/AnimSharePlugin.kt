@@ -29,6 +29,8 @@ class AnimSharePlugin(
         toolProvider.listTools().forEach { it.initialize(drawHost, metricsProvider) }
     }
 
+    override val weight: Int
+        get() = 2
     override val image: Int
         get() = R.drawable.animation
     override val title: Int
