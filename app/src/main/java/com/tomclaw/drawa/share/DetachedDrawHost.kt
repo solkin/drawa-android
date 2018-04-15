@@ -18,7 +18,7 @@ class DetachedDrawHost(width: Int, height: Int) : DrawHost, BitmapHost by Bitmap
     override val bitmap: Bitmap = Bitmap.createBitmap(
             width,
             height,
-            Bitmap.Config.RGB_565
+            Bitmap.Config.ARGB_8888
     )
 
     override val canvas: Canvas = Canvas(bitmap)

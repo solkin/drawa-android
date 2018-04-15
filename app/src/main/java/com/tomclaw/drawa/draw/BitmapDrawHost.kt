@@ -13,13 +13,13 @@ class BitmapDrawHost(width: Int = BITMAP_WIDTH, height: Int = BITMAP_HEIGHT) : B
     private val hiddenBitmap: Bitmap = Bitmap.createBitmap(
             width,
             height,
-            Bitmap.Config.RGB_565
+            Bitmap.Config.ARGB_8888
     )
 
     override val normalBitmap: Bitmap = Bitmap.createBitmap(
             width,
             height,
-            Bitmap.Config.RGB_565
+            Bitmap.Config.ARGB_8888
     )
 
     private val hiddenCanvas: Canvas = Canvas(hiddenBitmap)
