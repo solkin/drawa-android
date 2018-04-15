@@ -16,7 +16,6 @@ import com.tomclaw.drawa.share.SharePresenterImpl
 import com.tomclaw.drawa.share.plugin.AnimSharePlugin
 import com.tomclaw.drawa.share.plugin.StaticSharePlugin
 import com.tomclaw.drawa.util.DataProvider
-import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.MetricsProvider
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
@@ -37,14 +36,12 @@ class ShareModule(
     fun provideSharePresenter(interactor: ShareInteractor,
                               dataProvider: DataProvider<ShareItem>,
                               sharePlugins: Set<@JvmSuppressWildcards SharePlugin>,
-                              logger: Logger,
                               schedulers: SchedulersFactory
     ): SharePresenter {
         return SharePresenterImpl(
                 interactor,
                 dataProvider,
                 sharePlugins,
-                logger,
                 schedulers,
                 presenterState
         )

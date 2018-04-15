@@ -11,6 +11,7 @@ import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.HistoryImpl
 import com.tomclaw.drawa.draw.ImageProvider
 import com.tomclaw.drawa.draw.ToolProvider
+import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.historyFile
@@ -59,9 +60,9 @@ class DrawModule(
 
     @Provides
     @PerActivity
-    fun provideHistory(filesDir: File): History {
+    fun provideHistory(filesDir: File, logger: Logger): History {
         val file = historyFile(recordId, filesDir)
-        return HistoryImpl(file)
+        return HistoryImpl(file, logger)
     }
 
 }

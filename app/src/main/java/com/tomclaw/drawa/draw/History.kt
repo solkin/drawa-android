@@ -1,8 +1,8 @@
 package com.tomclaw.drawa.draw
 
-import android.util.Log
 import android.view.MotionEvent
 import com.tomclaw.drawa.draw.tools.Tool
+import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
 import java.io.BufferedInputStream
@@ -34,7 +34,10 @@ interface History {
 
 }
 
-class HistoryImpl(private val file: File) : History {
+class HistoryImpl(
+        private val file: File,
+        private val logger: Logger
+) : History {
 
     private val events: Deque<Event> = ArrayDeque<Event>()
     private var eventIndex = 0
@@ -86,8 +89,10 @@ class HistoryImpl(private val file: File) : History {
                 flush()
             }
             time = System.currentTimeMillis() - time
-            Log.d("Drawa", String.format("total %d events (%d bytes) written in %d ms",
-                    events.size, file.length(), time))
+            logger.log(
+                    String.format("total %d events (%d bytes) written in %d ms",
+                            events.size, file.length(), time)
+            )
             emitter.onSuccess(Unit)
         } finally {
             output.safeClose()
@@ -129,8 +134,10 @@ class HistoryImpl(private val file: File) : History {
                 this.eventIndex = eventIndex
                 this.events.addAll(eventList)
                 time = System.currentTimeMillis() - time
-                Log.d("Drawa", String.format("total %d events (%d bytes read) in %d ms",
-                        eventsCount, file.length(), time))
+                logger.log(
+                        String.format("total %d events (%d bytes read) in %d ms",
+                                eventsCount, file.length(), time)
+                )
                 emitter.onSuccess(Unit)
             } else {
                 emitter.onError(IOException("backup format of unknown version"))

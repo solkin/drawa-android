@@ -33,7 +33,6 @@ interface SharePresenter {
 class SharePresenterImpl(private val interactor: ShareInteractor,
                          private val dataProvider: DataProvider<ShareItem>,
                          private val sharePlugins: Set<SharePlugin>,
-                         private val logger: Logger,
                          private val schedulers: SchedulersFactory,
                          state: Bundle?) : SharePresenter {
 
@@ -77,24 +76,20 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
                 .observeOn(schedulers.mainThread())
                 .doOnSubscribe { view?.showProgress() }
                 .doAfterTerminate { view?.showContent() }
-                .subscribe({
-                    onLoaded()
-                }, {
-                    onError()
-                })
+                .subscribe(
+                        { onLoaded() },
+                        { onError() }
+                )
     }
 
     private fun onLoaded() {
-        itemsMap = sharePlugins.associate {
-            Pair(it.weight, it)
-        }
+        itemsMap = sharePlugins.associate { Pair(it.weight, it) }
         val shareItems = itemsMap.entries.map { entry ->
-            val plugin = entry.value
             ShareItem(
                     id = entry.key,
-                    image = plugin.image,
-                    title = plugin.title,
-                    description = plugin.description
+                    image = entry.value.image,
+                    title = entry.value.title,
+                    description = entry.value.description
             )
         }.sortedBy { it.id }
         dataProvider.setData(shareItems)
@@ -106,11 +101,10 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
                 .observeOn(schedulers.mainThread())
                 .doOnSubscribe { view?.showOverlayProgress() }
                 .doAfterTerminate { view?.showContent() }
-                .subscribe({ file ->
-                    router?.shareFile(file)
-                }, {
-                    onError()
-                })
+                .subscribe(
+                        { router?.shareFile(it) },
+                        { onError() }
+                )
     }
 
     private fun onError() {
