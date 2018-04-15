@@ -15,9 +15,9 @@ import java.io.OutputStream
 
 interface ImageProvider {
 
-    fun readImage(record: Record): Single<Bitmap>
+    fun readImage(recordId: Int): Single<Bitmap>
 
-    fun saveImage(record: Record, bitmap: Bitmap): Single<Record>
+    fun saveImage(recordId: Int, bitmap: Bitmap): Single<Record>
 
 }
 
@@ -26,10 +26,10 @@ class ImageProviderImpl(
         private val journal: Journal
 ) : ImageProvider {
 
-    override fun readImage(record: Record): Single<Bitmap> = Single.create { emitter ->
+    override fun readImage(recordId: Int): Single<Bitmap> = Single.create { emitter ->
         var stream: InputStream? = null
         try {
-            val imageFile = record.imageFile(filesDir)
+            val imageFile = journal.get(recordId).imageFile(filesDir)
             stream = FileInputStream(imageFile)
             emitter.onSuccess(BitmapFactory.decodeStream(stream))
         } catch (ex: Throwable) {
@@ -39,22 +39,24 @@ class ImageProviderImpl(
         }
     }
 
-    override fun saveImage(record: Record, bitmap: Bitmap): Single<Record> = Single
+    override fun saveImage(recordId: Int, bitmap: Bitmap): Single<Record> = Single
             .create<Unit> {
-                record.imageFile(filesDir).delete()
+                journal.get(recordId)
+                        .imageFile(filesDir)
+                        .delete()
                 it.onSuccess(Unit)
             }
-            .flatMap { journal.touch(record.id) }
-            .map { touchedRecord ->
+            .flatMap { journal.touch(recordId) }
+            .map { record ->
                 var stream: OutputStream? = null
                 try {
-                    val imageFile = touchedRecord.imageFile(filesDir)
+                    val imageFile = record.imageFile(filesDir)
                     stream = FileOutputStream(imageFile)
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
                 } finally {
                     stream.safeClose()
                 }
-                touchedRecord
+                record
             }
 
 }

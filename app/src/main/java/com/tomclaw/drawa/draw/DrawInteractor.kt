@@ -24,14 +24,12 @@ class DrawInteractorImpl(private val recordId: Int,
                          private val drawHostHolder: DrawHostHolder,
                          private val schedulers: SchedulersFactory) : DrawInteractor {
 
-    private var record = journal.get(recordId)
-
     private var isDeleted = false
 
     override fun loadHistory(): Observable<Unit> {
         return resolve({
             history.load()
-                    .flatMap { imageProvider.readImage(record) }
+                    .flatMap { imageProvider.readImage(recordId) }
                     .map { bitmap ->
                         drawHostHolder.drawHost.applyBitmap(bitmap)
                         bitmap.recycle()
@@ -48,11 +46,11 @@ class DrawInteractorImpl(private val recordId: Int,
             history.save()
                     .flatMap {
                         imageProvider.saveImage(
-                                record,
+                                recordId,
                                 drawHostHolder.drawHost.bitmap
                         )
                     }
-                    .map { record = it }
+                    .map { Unit }
                     .toObservable()
                     .subscribeOn(schedulers.io())
         }, {

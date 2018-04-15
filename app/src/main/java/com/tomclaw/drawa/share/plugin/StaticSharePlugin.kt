@@ -1,12 +1,20 @@
 package com.tomclaw.drawa.share.plugin
 
+import android.graphics.Bitmap
 import com.tomclaw.drawa.R
+import com.tomclaw.drawa.draw.ImageProvider
 import com.tomclaw.drawa.share.SharePlugin
+import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
 import java.io.File
-import java.util.concurrent.TimeUnit
+import java.io.FileOutputStream
+import java.io.OutputStream
 
-class StaticSharePlugin : SharePlugin {
+class StaticSharePlugin(
+        recordId: Int,
+        imageProvider: ImageProvider,
+        private val outputDirectory: File
+) : SharePlugin {
 
     override val image: Int
         get() = R.drawable.image
@@ -15,8 +23,18 @@ class StaticSharePlugin : SharePlugin {
     override val description: Int
         get() = R.string.static_share_description
 
-    override val operation: Single<File> = Single
-            .timer(1, TimeUnit.SECONDS)
-            .map { createTempFile() }
+    override val operation: Single<File> = imageProvider.readImage(recordId)
+            .map { bitmap ->
+                outputDirectory.mkdirs()
+                val imageFile: File = createTempFile("stat", ".jpg", outputDirectory)
+                var stream: OutputStream? = null
+                try {
+                    stream = FileOutputStream(imageFile)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+                } finally {
+                    stream.safeClose()
+                }
+                imageFile
+            }
 
 }

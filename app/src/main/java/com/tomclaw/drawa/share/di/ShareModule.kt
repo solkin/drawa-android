@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tomclaw.drawa.draw.DrawHost
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.HistoryImpl
+import com.tomclaw.drawa.draw.ImageProvider
 import com.tomclaw.drawa.draw.ToolProvider
 import com.tomclaw.drawa.share.DetachedDrawHost
 import com.tomclaw.drawa.share.ShareInteractor
@@ -92,8 +93,9 @@ class ShareModule(
 
     @Provides
     @IntoSet
-    fun provideStaticSharePlugin(): SharePlugin {
-        return StaticSharePlugin()
+    fun provideStaticSharePlugin(filesDir: File, imageProvider: ImageProvider): SharePlugin {
+        val outputDirectory = File(filesDir, "share")
+        return StaticSharePlugin(recordId, imageProvider, outputDirectory)
     }
 
     @Provides
