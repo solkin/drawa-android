@@ -8,12 +8,14 @@ import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.ToolProvider
 import com.tomclaw.drawa.draw.view.BITMAP_HEIGHT
 import com.tomclaw.drawa.draw.view.BITMAP_WIDTH
+import com.tomclaw.drawa.gif.GifEncoder
 import com.tomclaw.drawa.share.SharePlugin
 import com.tomclaw.drawa.util.MetricsProvider
-import com.waynejo.androidndkgif.GifEncoder
-import com.waynejo.androidndkgif.GifEncoder.EncodingType
+import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 class AnimSharePlugin(
         private val toolProvider: ToolProvider,
@@ -44,17 +46,17 @@ class AnimSharePlugin(
     }
 
     private fun applyHistory(file: File) {
-        /*var stream: OutputStream? = null
+        var stream: OutputStream? = null
         try {
             stream = FileOutputStream(file)
-            val encoder = AnimatedGifEncoder().apply {
-                setDelay(100)
+            val encoder = GifEncoder().apply {
                 start(stream)
+                setRepeat(0)
             }
             drawHost.clearBitmap()
-            history.getEvents().forEach {
-                processToolEvent(it)
-                if (it.action == MotionEvent.ACTION_UP) {
+            history.getEvents().forEach { event ->
+                processToolEvent(event)
+                if (event.action == MotionEvent.ACTION_UP) {
                     encoder.setDelay(100)
                     encoder.addFrame(drawHost.bitmap)
                 }
@@ -62,25 +64,6 @@ class AnimSharePlugin(
             encoder.finish()
         } finally {
             stream.safeClose()
-        }*/
-
-        val encoder = GifEncoder()
-        try {
-            encoder.init(
-                    drawHost.bitmap.width,
-                    drawHost.bitmap.height,
-                    file.path,
-                    EncodingType.ENCODING_TYPE_FAST
-            )
-            drawHost.clearBitmap()
-            history.getEvents().forEach {
-                processToolEvent(it)
-                if (it.action == MotionEvent.ACTION_UP) {
-                    encoder.encodeFrame(drawHost.bitmap, 100)
-                }
-            }
-        } finally {
-            encoder.close()
         }
     }
 
