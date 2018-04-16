@@ -18,7 +18,7 @@ import java.io.IOException
 
 interface Journal {
 
-    val nextId: Int
+    fun create(): Record
 
     fun isLoaded(): Boolean
 
@@ -41,9 +41,14 @@ class JournalImpl(private val journalFile: File) : Journal {
 
     private var records: List<Record>? = null
 
-    override var nextId: Int = 0
+    private var nextId: Int = 0
         get() = field++
-        private set
+
+    override fun create(): Record {
+        val id = nextId
+        val size = Size(BITMAP_WIDTH, BITMAP_HEIGHT)
+        return Record(id, size)
+    }
 
     override fun isLoaded(): Boolean {
         return records != null

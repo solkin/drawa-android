@@ -7,7 +7,7 @@ import io.reactivex.Observable
 
 interface StockInteractor {
 
-    fun nextId(): Int
+    fun create(): Record
 
     fun isLoaded(): Boolean
 
@@ -26,7 +26,7 @@ interface StockInteractor {
 class StockInteractorImpl(private val journal: Journal,
                           private val schedulers: SchedulersFactory) : StockInteractor {
 
-    override fun nextId() = journal.nextId
+    override fun create() = journal.create()
 
     override fun isLoaded() = journal.isLoaded()
 

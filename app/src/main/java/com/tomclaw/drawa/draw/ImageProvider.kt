@@ -19,6 +19,8 @@ interface ImageProvider {
 
     fun saveImage(recordId: Int, bitmap: Bitmap): Single<Record>
 
+    fun duplicateImage(sourceRecordId: Int, targetRecordId: Int): Single<Unit>
+
 }
 
 class ImageProviderImpl(
@@ -57,6 +59,18 @@ class ImageProviderImpl(
                     stream.safeClose()
                 }
                 record
+            }
+
+    override fun duplicateImage(sourceRecordId: Int, targetRecordId: Int): Single<Unit> = Single
+            .create<Unit> {
+                journal
+                        .get(sourceRecordId)
+                        .imageFile(filesDir)
+                        .copyTo(
+                                target = journal.get(targetRecordId).imageFile(filesDir),
+                                overwrite = true
+                        )
+                it.onSuccess(Unit)
             }
 
 }

@@ -1,10 +1,7 @@
 package com.tomclaw.drawa.stock
 
 import android.os.Bundle
-import com.tomclaw.drawa.core.BITMAP_HEIGHT
-import com.tomclaw.drawa.core.BITMAP_WIDTH
 import com.tomclaw.drawa.dto.Record
-import com.tomclaw.drawa.dto.Size
 import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
@@ -62,9 +59,7 @@ class StockPresenterImpl(private val interactor: StockInteractor,
     }
 
     private fun createStockItem() {
-        val id = interactor.nextId()
-        val size = Size(BITMAP_WIDTH, BITMAP_HEIGHT)
-        val record = Record(id, size)
+        val record = interactor.create()
         val records = interactor.add(record)
         subscriptions += interactor.saveJournal()
                 .observeOn(schedulers.mainThread())

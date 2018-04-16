@@ -74,6 +74,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += view.navigationClicks().subscribe { onBackPressed() }
         subscriptions += view.undoClicks().subscribe { onUndo() }
         subscriptions += view.doneClicks().subscribe { onDone() }
+        subscriptions += view.duplicateClicks().subscribe { onDuplicate() }
         subscriptions += view.deleteClicks().subscribe { onDelete() }
         subscriptions += view.tuneClicks()
                 .observeOn(schedulers.mainThread())
@@ -136,6 +137,14 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
             setColorSelected(tool.color)
             setSizeSelected(tool.size)
         }
+    }
+
+    private fun onDuplicate() {
+        subscriptions += interactor.duplicate()
+                .observeOn(schedulers.mainThread())
+                .doOnSubscribe { view?.showProgress() }
+                .doAfterTerminate { view?.showContent() }
+                .subscribe({ router?.leaveScreen() }, { })
     }
 
     private fun onDelete() {

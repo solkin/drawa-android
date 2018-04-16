@@ -3,6 +3,7 @@ package com.tomclaw.drawa.draw
 import android.view.MotionEvent
 import com.tomclaw.drawa.draw.tools.Tool
 import com.tomclaw.drawa.util.Logger
+import com.tomclaw.drawa.util.historyFile
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
 import java.io.BufferedInputStream
@@ -30,17 +31,21 @@ interface History {
 
     fun load(): Single<Unit>
 
+    fun duplicate(recordId: Int): Single<Unit>
+
     fun delete(): Single<Unit>
 
 }
 
 class HistoryImpl(
-        private val file: File,
+        recordId: Int,
+        private val filesDir: File,
         private val logger: Logger
 ) : History {
 
     private val events: Deque<Event> = ArrayDeque<Event>()
     private var eventIndex = 0
+    private val file: File = historyFile(recordId, filesDir)
 
     override fun add(tool: Tool, x: Int, y: Int, action: Int): Event {
         if (action == MotionEvent.ACTION_DOWN) {
@@ -145,6 +150,12 @@ class HistoryImpl(
         } finally {
             input.safeClose()
         }
+    }
+
+    override fun duplicate(recordId: Int): Single<Unit> = Single.create<Unit> { emitter ->
+        val target = historyFile(recordId, filesDir)
+        file.copyTo(target = target, overwrite = true)
+        emitter.onSuccess(Unit)
     }
 
     override fun delete(): Single<Unit> = Single.create<Unit> { emitter ->

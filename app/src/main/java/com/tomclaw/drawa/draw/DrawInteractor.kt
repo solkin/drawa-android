@@ -1,6 +1,7 @@
 package com.tomclaw.drawa.draw
 
 import com.tomclaw.drawa.core.Journal
+import com.tomclaw.drawa.dto.Record
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -12,6 +13,8 @@ interface DrawInteractor {
     fun saveHistory(): Observable<Unit>
 
     fun undo(): Observable<Unit>
+
+    fun duplicate(): Observable<Unit>
 
     fun delete(): Observable<Unit>
 
@@ -70,6 +73,25 @@ class DrawInteractorImpl(private val recordId: Int,
             Observable.just(Unit)
         }).subscribeOn(schedulers.signle())
     }
+
+    override fun duplicate(): Observable<Unit> = Single
+            .create<Record> { emitter ->
+                val record = journal.create()
+                journal.add(record)
+                emitter.onSuccess(record)
+            }
+            .flatMap { record ->
+                history.duplicate(record.id).map { record }
+            }
+            .flatMap { record ->
+                imageProvider.duplicateImage(
+                        sourceRecordId = recordId,
+                        targetRecordId = record.id
+                )
+            }
+            .flatMap { journal.save() }
+            .toObservable()
+            .subscribeOn(schedulers.io())
 
     override fun delete(): Observable<Unit> {
         isDeleted = true

@@ -36,6 +36,8 @@ interface DrawView : ToolsView {
 
     fun doneClicks(): Observable<Unit>
 
+    fun duplicateClicks(): Observable<Unit>
+
     fun deleteClicks(): Observable<Unit>
 
 }
@@ -57,6 +59,7 @@ class DrawViewImpl(view: View,
     private val navigationRelay = PublishRelay.create<Unit>()
     private val undoRelay = PublishRelay.create<Unit>()
     private val doneRelay = PublishRelay.create<Unit>()
+    private val duplicateRelay = PublishRelay.create<Unit>()
     private val deleteRelay = PublishRelay.create<Unit>()
 
     init {
@@ -68,6 +71,7 @@ class DrawViewImpl(view: View,
         toolbar.inflateMenu(R.menu.main_draw)
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
+                R.id.menu_duplicate -> duplicateRelay.accept(Unit)
                 R.id.menu_delete -> deleteRelay.accept(Unit)
             }
             true
@@ -115,6 +119,8 @@ class DrawViewImpl(view: View,
     override fun undoClicks(): Observable<Unit> = undoRelay
 
     override fun doneClicks(): Observable<Unit> = doneRelay
+
+    override fun duplicateClicks(): Observable<Unit> = duplicateRelay
 
     override fun deleteClicks(): Observable<Unit> = deleteRelay
 

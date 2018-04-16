@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menu_duplicate"
+        android:icon="@drawable/duplicate"
+        android:title="@string/duplicate"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_delete"
         android:icon="@drawable/delete"
         android:title="@string/delete"

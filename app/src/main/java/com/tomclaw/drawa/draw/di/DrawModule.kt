@@ -14,7 +14,6 @@ import com.tomclaw.drawa.draw.ToolProvider
 import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.PerActivity
 import com.tomclaw.drawa.util.SchedulersFactory
-import com.tomclaw.drawa.util.historyFile
 import dagger.Module
 import dagger.Provides
 import java.io.File
@@ -61,8 +60,7 @@ class DrawModule(
     @Provides
     @PerActivity
     fun provideHistory(filesDir: File, logger: Logger): History {
-        val file = historyFile(recordId, filesDir)
-        return HistoryImpl(file, logger)
+        return HistoryImpl(recordId, filesDir, logger)
     }
 
 }
