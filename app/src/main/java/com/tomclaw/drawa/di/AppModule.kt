@@ -49,7 +49,6 @@ class AppModule(private val app: Application) {
     @Singleton
     internal fun provideLogger(): Logger = LoggerImpl()
 
-
     @Provides
     @Singleton
     fun provideMetricsProvider(): MetricsProvider {

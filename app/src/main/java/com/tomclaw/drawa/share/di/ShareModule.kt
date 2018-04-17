@@ -1,5 +1,6 @@
 package com.tomclaw.drawa.share.di
 
+import android.content.Context
 import android.os.Bundle
 import com.tomclaw.drawa.draw.DrawHost
 import com.tomclaw.drawa.draw.History
@@ -71,13 +72,13 @@ class ShareModule(
     @Provides
     @IntoSet
     fun provideAnimSharePlugin(
+            context: Context,
             toolProvider: ToolProvider,
             metricsProvider: MetricsProvider,
             history: History,
-            drawHost: DrawHost,
-            filesDir: File
+            drawHost: DrawHost
     ): SharePlugin {
-        val outputDirectory = File(filesDir, "share")
+        val outputDirectory = File(context.cacheDir, "share")
         return AnimSharePlugin(
                 toolProvider,
                 metricsProvider,
@@ -89,8 +90,8 @@ class ShareModule(
 
     @Provides
     @IntoSet
-    fun provideStaticSharePlugin(filesDir: File, imageProvider: ImageProvider): SharePlugin {
-        val outputDirectory = File(filesDir, "share")
+    fun provideStaticSharePlugin(context: Context, imageProvider: ImageProvider): SharePlugin {
+        val outputDirectory = File(context.cacheDir, "share")
         return StaticSharePlugin(recordId, imageProvider, outputDirectory)
     }
 
