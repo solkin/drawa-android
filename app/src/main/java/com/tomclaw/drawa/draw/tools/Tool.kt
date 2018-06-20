@@ -12,7 +12,7 @@ import com.tomclaw.drawa.util.MetricsProvider
 abstract class Tool {
 
     private lateinit var callback: DrawHost
-    protected lateinit var metricsProvider: MetricsProvider
+    private lateinit var metricsProvider: MetricsProvider
 
     lateinit var paint: Paint
         private set

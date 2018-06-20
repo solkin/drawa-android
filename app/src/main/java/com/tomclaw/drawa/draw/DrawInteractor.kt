@@ -71,7 +71,7 @@ class DrawInteractorImpl(private val recordId: Int,
                     .toObservable()
         }, {
             Observable.just(Unit)
-        }).subscribeOn(schedulers.signle())
+        }).subscribeOn(schedulers.single())
     }
 
     override fun duplicate(): Observable<Unit> = Single

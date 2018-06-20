@@ -2,7 +2,6 @@ package com.tomclaw.drawa.share
 
 import android.os.Bundle
 import com.tomclaw.drawa.util.DataProvider
-import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign

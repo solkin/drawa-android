@@ -8,7 +8,7 @@ interface SchedulersFactory {
 
     fun io(): Scheduler
 
-    fun signle(): Scheduler
+    fun single(): Scheduler
 
     fun mainThread(): Scheduler
 
@@ -20,7 +20,7 @@ class SchedulersFactoryImpl : SchedulersFactory {
         return Schedulers.io()
     }
 
-    override fun signle(): Scheduler {
+    override fun single(): Scheduler {
         return Schedulers.single()
     }
 
