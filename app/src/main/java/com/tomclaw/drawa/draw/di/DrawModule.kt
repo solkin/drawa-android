@@ -1,5 +1,6 @@
 package com.tomclaw.drawa.draw.di
 
+import android.content.res.Resources
 import android.os.Bundle
 import com.tomclaw.drawa.core.Journal
 import com.tomclaw.drawa.draw.DrawHostHolder
@@ -7,6 +8,8 @@ import com.tomclaw.drawa.draw.DrawInteractor
 import com.tomclaw.drawa.draw.DrawInteractorImpl
 import com.tomclaw.drawa.draw.DrawPresenter
 import com.tomclaw.drawa.draw.DrawPresenterImpl
+import com.tomclaw.drawa.draw.DrawResourceProvider
+import com.tomclaw.drawa.draw.DrawResourceProviderImpl
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.HistoryImpl
 import com.tomclaw.drawa.draw.ImageProvider
@@ -20,6 +23,7 @@ import java.io.File
 
 @Module
 class DrawModule(
+        private val resources: Resources,
         private val recordId: Int,
         private val drawHostHolder: DrawHostHolder,
         private val presenterState: Bundle?
@@ -31,6 +35,7 @@ class DrawModule(
             interactor: DrawInteractor,
             toolProvider: ToolProvider,
             history: History,
+            resourceProvider: DrawResourceProvider,
             schedulers: SchedulersFactory
     ): DrawPresenter = DrawPresenterImpl(
             interactor,
@@ -38,6 +43,7 @@ class DrawModule(
             toolProvider,
             history,
             drawHostHolder,
+            resourceProvider,
             presenterState
     )
 
@@ -61,6 +67,12 @@ class DrawModule(
     @PerActivity
     fun provideHistory(filesDir: File, logger: Logger): History {
         return HistoryImpl(recordId, filesDir, logger)
+    }
+
+    @Provides
+    @PerActivity
+    fun provideDrawResourceProvider(): DrawResourceProvider {
+        return DrawResourceProviderImpl(resources)
     }
 
 }

@@ -42,6 +42,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                         private val toolProvider: ToolProvider,
                         private val history: History,
                         private val drawHostHolder: DrawHostHolder,
+                        resourceProvider: DrawResourceProvider,
                         state: Bundle?) : DrawPresenter {
 
     private var view: DrawView? = null
@@ -49,7 +50,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
 
     private val subscriptions = CompositeDisposable()
 
-    private var toolColor = state?.getInt(KEY_TOOL_COLOR) ?: 0x2C82C9
+    private var toolColor = state?.getInt(KEY_TOOL_COLOR) ?: resourceProvider.defaultColor
     private var toolSize = state?.getInt(KEY_TOOL_SIZE) ?: SIZE_M
     private var toolType = state?.getInt(KEY_TOOL_TYPE) ?: TYPE_BRUSH
 
