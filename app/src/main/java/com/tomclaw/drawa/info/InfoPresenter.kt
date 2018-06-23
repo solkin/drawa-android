@@ -21,7 +21,7 @@ interface InfoPresenter {
 
 }
 
-class InfoPresenterImpl(private val schedulers: SchedulersFactory) : InfoPresenter {
+class InfoPresenterImpl : InfoPresenter {
 
     private var view: InfoView? = null
     private var router: InfoPresenter.InfoRouter? = null
