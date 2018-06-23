@@ -15,4 +15,8 @@
     <string name="static_share_title">Картинка</string>
     <string name="static_share_description">Поделитесь статической картинкой</string>
     <string name="info">Информация</string>
+    <string name="vendor">TomClaw Software</string>
+    <string name="rate_app">Оценить приложение</string>
+    <string name="other_projects">Другие проекты</string>
+    <string name="info_extended">Главный автор и программист - Солкин Игорь Викторович.\nПо любым вопросам обращайтесь по почте\ninbox@tomclaw.com</string>
 </resources>
