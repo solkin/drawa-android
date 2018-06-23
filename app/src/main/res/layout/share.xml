@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <ViewFlipper
         android:id="@+id/flipper"
         android:layout_width="match_parent"

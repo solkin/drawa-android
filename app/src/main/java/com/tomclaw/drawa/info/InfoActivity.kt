@@ -20,7 +20,7 @@ class InfoActivity : AppCompatActivity(), InfoPresenter.InfoRouter {
                 .inject(activity = this)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.share)
+        setContentView(R.layout.info)
 
         val view = InfoViewImpl(window.decorView)
 
