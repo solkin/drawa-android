@@ -22,6 +22,8 @@ interface StockView {
 
     fun createClicks(): Observable<Unit>
 
+    fun infoClicks(): Observable<Unit>
+
 }
 
 class StockViewImpl(view: View,
@@ -35,6 +37,7 @@ class StockViewImpl(view: View,
 
     private val itemsRelay = PublishRelay.create<StockItem>()
     private val createRelay = PublishRelay.create<Unit>()
+    private val infoRelay = PublishRelay.create<Unit>()
 
     init {
         val layoutManager = GridLayoutManager(
@@ -49,10 +52,17 @@ class StockViewImpl(view: View,
         recycler.layoutManager = layoutManager
 
         toolbar.setTitle(R.string.stock)
+        toolbar.inflateMenu(R.menu.stock)
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menu_info -> infoRelay.accept(Unit)
+            }
+            true
+        }
 
-        createButton.setOnClickListener({
+        createButton.setOnClickListener {
             createRelay.accept(Unit)
-        })
+        }
     }
 
     override fun showProgress() {
@@ -73,6 +83,10 @@ class StockViewImpl(view: View,
 
     override fun createClicks(): Observable<Unit> {
         return createRelay
+    }
+
+    override fun infoClicks(): Observable<Unit> {
+        return infoRelay
     }
 
 }

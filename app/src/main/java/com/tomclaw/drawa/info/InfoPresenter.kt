@@ -30,6 +30,8 @@ class InfoPresenterImpl(private val schedulers: SchedulersFactory) : InfoPresent
 
     override fun attachView(view: InfoView) {
         this.view = view
+
+        view.navigationClicks().subscribe { router?.leaveScreen() }
     }
 
     override fun detachView() {

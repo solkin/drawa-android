@@ -42,9 +42,10 @@ interface DrawView : ToolsView {
 
 }
 
-class DrawViewImpl(view: View,
-                   drawHostHolder: DrawHostHolder,
-                   private val metricsProvider: MetricsProvider
+class DrawViewImpl(
+        view: View,
+        drawHostHolder: DrawHostHolder,
+        private val metricsProvider: MetricsProvider
 ) : DrawView, ToolsView by ToolsViewImpl(view) {
 
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
@@ -68,7 +69,7 @@ class DrawViewImpl(view: View,
         toolbar.setNavigationOnClickListener {
             navigationRelay.accept(Unit)
         }
-        toolbar.inflateMenu(R.menu.main_draw)
+        toolbar.inflateMenu(R.menu.draw)
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_duplicate -> duplicateRelay.accept(Unit)

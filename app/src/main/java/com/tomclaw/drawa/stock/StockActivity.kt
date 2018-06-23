@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.createDrawActivityIntent
 import com.tomclaw.drawa.dto.Record
+import com.tomclaw.drawa.info.createInfoActivityIntent
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.stock.di.StockModule
 import com.tomclaw.drawa.util.DataProvider
@@ -68,6 +69,11 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
     override fun showDrawingScreen(record: Record) {
         val intent = createDrawActivityIntent(context = this, recordId = record.id)
         startActivityForResult(intent, REQUEST_DRAW)
+    }
+
+    override fun showInfoScreen() {
+        val intent = createInfoActivityIntent(context = this)
+        startActivity(intent)
     }
 
 }

@@ -14,4 +14,5 @@
     <string name="anim_share_description">Поделитесь анимацией процесса рисования изображения</string>
     <string name="static_share_title">Картинка</string>
     <string name="static_share_description">Поделитесь статической картинкой</string>
+    <string name="info">Информация</string>
 </resources>

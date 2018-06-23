@@ -24,6 +24,8 @@ interface StockPresenter {
     interface StockRouter {
 
         fun showDrawingScreen(record: Record)
+        
+        fun showInfoScreen()
 
     }
 
@@ -50,6 +52,7 @@ class StockPresenterImpl(private val interactor: StockInteractor,
         }
 
         subscriptions += view.createClicks().subscribe { createStockItem() }
+        subscriptions += view.infoClicks().subscribe { router?.showInfoScreen() }
 
         if (interactor.isLoaded()) {
             bindRecords(interactor.get())
