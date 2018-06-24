@@ -52,8 +52,8 @@ class InfoActivity : AppCompatActivity(), InfoPresenter.InfoRouter {
 
     override fun openProjects() {
         openUriSafe(
-                uri = MARKET_URI_PROJECTS + packageName,
-                fallback = WEB_URI_PROJECTS + packageName
+                uri = MARKET_URI_PROJECTS + VENDOR_ID,
+                fallback = WEB_URI_PROJECTS + VENDOR_ID
         )
     }
 
@@ -74,6 +74,7 @@ class InfoActivity : AppCompatActivity(), InfoPresenter.InfoRouter {
 fun createInfoActivityIntent(context: Context): Intent =
         Intent(context, InfoActivity::class.java)
 
+private const val VENDOR_ID = "TomClaw"
 private const val MARKET_URI_RATE = "market://details?id="
 private const val MARKET_URI_PROJECTS = "market://search?q="
 private const val WEB_URI_RATE = "https://play.google.com/store/apps/details?id="
