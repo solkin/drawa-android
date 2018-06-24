@@ -1,5 +1,6 @@
 package com.tomclaw.drawa.info
 
+import android.net.Uri
 import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
 
@@ -14,6 +15,10 @@ interface InfoPresenter {
     fun detachRouter()
 
     interface InfoRouter {
+
+        fun openRate()
+
+        fun openProjects()
 
         fun leaveScreen()
 
@@ -32,6 +37,8 @@ class InfoPresenterImpl : InfoPresenter {
         this.view = view
 
         view.navigationClicks().subscribe { router?.leaveScreen() }
+        view.rateClicks().subscribe { router?.openRate() }
+        view.projectsClicks().subscribe { router?.openProjects() }
     }
 
     override fun detachView() {

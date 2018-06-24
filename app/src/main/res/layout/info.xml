@@ -40,7 +40,7 @@
                 android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/rate_application"
+                    android:id="@+id/rate_button"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                     android:text="@string/rate_app" />
 
                 <Button
-                    android:id="@+id/all_projects"
+                    android:id="@+id/projects_button"
                     style="@style/Widget.AppCompat.Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -59,6 +59,7 @@
                     android:layout_marginRight="32dp"
                     android:layout_weight="1"
                     android:text="@string/other_projects" />
+
             </LinearLayout>
 
             <android.support.v7.widget.AppCompatTextView
@@ -94,6 +95,7 @@
                 android:text="@string/info_extended"
                 android:textSize="12sp"
                 tools:targetApi="jelly_bean" />
+
         </LinearLayout>
 
     </LinearLayout>

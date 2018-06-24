@@ -2,6 +2,7 @@ package com.tomclaw.drawa.info
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.tomclaw.drawa.R
@@ -42,11 +43,38 @@ class InfoActivity : AppCompatActivity(), InfoPresenter.InfoRouter {
         super.onDestroy()
     }
 
+    override fun openRate() {
+        openUriSafe(
+                uri = MARKET_URI_RATE + packageName,
+                fallback = WEB_URI_RATE + packageName
+        )
+    }
+
+    override fun openProjects() {
+        openUriSafe(
+                uri = MARKET_URI_PROJECTS + packageName,
+                fallback = WEB_URI_PROJECTS + packageName
+        )
+    }
+
     override fun leaveScreen() {
         finish()
+    }
+
+    private fun openUriSafe(uri: String, fallback: String) {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)))
+        } catch (ignored: android.content.ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(fallback)))
+        }
     }
 
 }
 
 fun createInfoActivityIntent(context: Context): Intent =
         Intent(context, InfoActivity::class.java)
+
+private const val MARKET_URI_RATE = "market://details?id="
+private const val MARKET_URI_PROJECTS = "market://search?q="
+private const val WEB_URI_RATE = "https://play.google.com/store/apps/details?id="
+private const val WEB_URI_PROJECTS = "https://play.google.com/store/apps/search?q="
