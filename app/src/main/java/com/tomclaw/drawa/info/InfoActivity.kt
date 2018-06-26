@@ -2,6 +2,7 @@ package com.tomclaw.drawa.info
 
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -17,7 +18,7 @@ class InfoActivity : AppCompatActivity(), InfoPresenter.InfoRouter {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         application.getComponent()
-                .infoComponent(InfoModule())
+                .infoComponent(InfoModule(context = this))
                 .inject(activity = this)
 
         super.onCreate(savedInstanceState)
@@ -30,7 +31,7 @@ class InfoActivity : AppCompatActivity(), InfoPresenter.InfoRouter {
 
     override fun onStart() {
         super.onStart()
-        presenter.attachRouter(this)
+        presenter.attachRouter(router = this)
     }
 
     override fun onStop() {
@@ -63,9 +64,9 @@ class InfoActivity : AppCompatActivity(), InfoPresenter.InfoRouter {
 
     private fun openUriSafe(uri: String, fallback: String) {
         try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)))
+            startActivity(Intent(ACTION_VIEW, Uri.parse(uri)))
         } catch (ignored: android.content.ActivityNotFoundException) {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(fallback)))
+            startActivity(Intent(ACTION_VIEW, Uri.parse(fallback)))
         }
     }
 

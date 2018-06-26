@@ -2,6 +2,7 @@ package com.tomclaw.drawa.info
 
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.TextView
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
 import io.reactivex.Observable
@@ -14,6 +15,8 @@ interface InfoView {
 
     fun projectsClicks(): Observable<Unit>
 
+    fun setVersion(version: String)
+
 }
 
 class InfoViewImpl(view: View) : InfoView {
@@ -21,6 +24,7 @@ class InfoViewImpl(view: View) : InfoView {
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private val rateButton: View = view.findViewById(R.id.rate_button)
     private val projectsButton: View = view.findViewById(R.id.projects_button)
+    private val versionText: TextView = view.findViewById(R.id.app_version)
 
     private val navigationRelay = PublishRelay.create<Unit>()
     private val rateRelay = PublishRelay.create<Unit>()
@@ -38,5 +42,9 @@ class InfoViewImpl(view: View) : InfoView {
     override fun rateClicks(): Observable<Unit> = rateRelay
 
     override fun projectsClicks(): Observable<Unit> = projectsRelay
+
+    override fun setVersion(version: String) {
+        versionText.text = version
+    }
 
 }

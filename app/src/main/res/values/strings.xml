@@ -18,5 +18,6 @@
     <string name="vendor">TomClaw Software</string>
     <string name="rate_app">Оценить приложение</string>
     <string name="other_projects">Другие проекты</string>
+    <string name="app_version">Версия %1$s (%2$d)</string>
     <string name="info_extended">Главный автор и программист - Солкин Игорь Викторович.\nПо любым вопросам обращайтесь по почте\ninbox@tomclaw.com</string>
 </resources>
