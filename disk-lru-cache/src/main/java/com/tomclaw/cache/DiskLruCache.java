@@ -29,7 +29,7 @@ public class DiskLruCache {
         return new DiskLruCache(cacheDir, journal, cacheSize);
     }
 
-    public void put(String key, File file) throws IOException {
+    public File put(String key, File file) throws IOException {
         String name = file.getName();
         long time = System.currentTimeMillis();
         long fileSize = file.length();
@@ -38,6 +38,7 @@ public class DiskLruCache {
         if ((cacheFile.exists() && cacheFile.delete()) | file.renameTo(cacheFile)) {
             journal.put(record, cacheSize, cacheDir);
             journal.writeJournal();
+            return cacheFile;
         } else {
             throw new IOException(String.format("Unable to move file %s to the cache directory", name));
         }

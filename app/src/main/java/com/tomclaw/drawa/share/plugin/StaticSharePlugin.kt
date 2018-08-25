@@ -1,6 +1,7 @@
 package com.tomclaw.drawa.share.plugin
 
 import android.graphics.Bitmap
+import com.tomclaw.cache.DiskLruCache
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.ImageProvider
 import com.tomclaw.drawa.share.SharePlugin
@@ -13,7 +14,7 @@ import java.io.OutputStream
 class StaticSharePlugin(
         recordId: Int,
         imageProvider: ImageProvider,
-        private val outputDirectory: File
+        private val cache: DiskLruCache
 ) : SharePlugin {
 
     override val weight: Int
@@ -27,8 +28,7 @@ class StaticSharePlugin(
 
     override val operation: Single<File> = imageProvider.readImage(recordId)
             .map { bitmap ->
-                outputDirectory.mkdirs()
-                val imageFile: File = createTempFile("stat", ".jpg", outputDirectory)
+                val imageFile: File = createTempFile("stat", ".jpg")
                 var stream: OutputStream? = null
                 try {
                     stream = FileOutputStream(imageFile)
@@ -36,7 +36,7 @@ class StaticSharePlugin(
                 } finally {
                     stream.safeClose()
                 }
-                imageFile
+                cache.put(imageFile.name, imageFile)
             }
 
 }

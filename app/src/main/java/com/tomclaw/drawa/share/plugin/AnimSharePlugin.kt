@@ -1,6 +1,7 @@
 package com.tomclaw.drawa.share.plugin
 
 import android.view.MotionEvent
+import com.tomclaw.cache.DiskLruCache
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.core.BITMAP_HEIGHT
 import com.tomclaw.drawa.core.BITMAP_WIDTH
@@ -22,7 +23,7 @@ class AnimSharePlugin(
         private val metricsProvider: MetricsProvider,
         private val history: History,
         private val drawHost: DrawHost,
-        private val outputDirectory: File
+        private val cache: DiskLruCache
 ) : SharePlugin {
 
     init {
@@ -39,9 +40,9 @@ class AnimSharePlugin(
         get() = R.string.anim_share_description
 
     override val operation: Single<File> = Single.create { emitter ->
-        outputDirectory.mkdirs()
-        val file: File = createTempFile("anim", ".gif", outputDirectory)
-        applyHistory(file)
+        val animFile: File = createTempFile("anim", ".gif")
+        applyHistory(animFile)
+        val file = cache.put(animFile.name, animFile)
         emitter.onSuccess(file)
     }
 

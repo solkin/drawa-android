@@ -2,6 +2,7 @@ package com.tomclaw.drawa.di
 
 import android.app.Application
 import android.content.Context
+import com.tomclaw.cache.DiskLruCache
 import com.tomclaw.drawa.core.Journal
 import com.tomclaw.drawa.core.JournalImpl
 import com.tomclaw.drawa.draw.ImageProvider
@@ -55,4 +56,13 @@ class AppModule(private val app: Application) {
         return MetricsProviderImpl(app)
     }
 
+    @Provides
+    @Singleton
+    fun provideLruCache(): DiskLruCache {
+        val cacheDir = File(app.cacheDir, "share")
+        return DiskLruCache.create(cacheDir, LRU_CACHE_SIZE)
+    }
+
 }
+
+val LRU_CACHE_SIZE = 100L * 1024 * 1024
