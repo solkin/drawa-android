@@ -65,4 +65,4 @@ class AppModule(private val app: Application) {
 
 }
 
-val LRU_CACHE_SIZE = 100L * 1024 * 1024
+val LRU_CACHE_SIZE = 20L * 1024 * 1024
