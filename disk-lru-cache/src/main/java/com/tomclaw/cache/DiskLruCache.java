@@ -101,7 +101,7 @@ public class DiskLruCache {
             log("[?] Check total %d bytes with new file %d bytes is more than cache size %d bytes", totalSize, fileSize, totalSize + fileSize, cacheSize);
             if (totalSize + fileSize > cacheSize) {
                 List<LruRecord> records = new ArrayList<>(map.values());
-                records.sort(new LruRecordComparator());
+                Collections.sort(records, new LruRecordComparator());
                 for (int c = records.size() - 1; c > 0; c--) {
                     LruRecord record = records.remove(c);
                     long nextTotalSize = totalSize - record.size;
