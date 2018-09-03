@@ -5,6 +5,7 @@ import com.tomclaw.cache.DiskLruCache
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.ImageProvider
 import com.tomclaw.drawa.share.SharePlugin
+import com.tomclaw.drawa.share.ShareResult
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
 import java.io.File
@@ -26,7 +27,7 @@ class StaticSharePlugin(
     override val description: Int
         get() = R.string.static_share_description
 
-    override val operation: Single<File> = imageProvider.readImage(recordId)
+    override val operation: Single<ShareResult> = imageProvider.readImage(recordId)
             .map { bitmap ->
                 val imageFile: File = createTempFile("stat", ".jpg")
                 var stream: OutputStream? = null
@@ -37,7 +38,8 @@ class StaticSharePlugin(
                     stream.safeClose()
                 }
                 val key = imageFile.absolutePath
-                cache.put(key, imageFile)
+                val file = cache.put(key, imageFile)
+                ShareResult(file, "image/jpeg")
             }
 
 }

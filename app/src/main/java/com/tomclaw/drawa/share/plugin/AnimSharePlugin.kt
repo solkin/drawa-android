@@ -11,6 +11,7 @@ import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.ToolProvider
 import com.tomclaw.drawa.gif.GifEncoder
 import com.tomclaw.drawa.share.SharePlugin
+import com.tomclaw.drawa.share.ShareResult
 import com.tomclaw.drawa.util.MetricsProvider
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
@@ -39,12 +40,12 @@ class AnimSharePlugin(
     override val description: Int
         get() = R.string.anim_share_description
 
-    override val operation: Single<File> = Single.create { emitter ->
+    override val operation: Single<ShareResult> = Single.create { emitter ->
         val animFile: File = createTempFile("anim", ".gif")
         applyHistory(animFile)
         val key = animFile.absolutePath
         val file = cache.put(key, animFile)
-        emitter.onSuccess(file)
+        emitter.onSuccess(ShareResult(file, "image/gif"))
     }
 
     private fun applyHistory(file: File) {

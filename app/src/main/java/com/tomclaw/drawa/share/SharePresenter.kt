@@ -23,7 +23,7 @@ interface SharePresenter {
 
         fun leaveScreen()
 
-        fun shareFile(file: File)
+        fun shareFile(file: File, mime: String)
 
     }
 
@@ -101,7 +101,7 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
                 .doOnSubscribe { view?.showOverlayProgress() }
                 .doAfterTerminate { view?.showContent() }
                 .subscribe(
-                        { router?.shareFile(it) },
+                        { router?.shareFile(it.file, it.mime) },
                         { onError() }
                 )
     }
