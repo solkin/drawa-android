@@ -12,7 +12,6 @@ import com.tomclaw.drawa.draw.ToolProvider
 import com.tomclaw.drawa.gif.GifEncoder
 import com.tomclaw.drawa.share.SharePlugin
 import com.tomclaw.drawa.util.MetricsProvider
-import com.tomclaw.drawa.util.calculateMd5
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
 import java.io.File
@@ -43,8 +42,8 @@ class AnimSharePlugin(
     override val operation: Single<File> = Single.create { emitter ->
         val animFile: File = createTempFile("anim", ".gif")
         applyHistory(animFile)
-        val md5 = animFile.calculateMd5()
-        val file = cache.put(md5, animFile)
+        val key = animFile.absolutePath
+        val file = cache.put(key, animFile)
         emitter.onSuccess(file)
     }
 

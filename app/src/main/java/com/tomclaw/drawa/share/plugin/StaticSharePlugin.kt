@@ -5,7 +5,6 @@ import com.tomclaw.cache.DiskLruCache
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.ImageProvider
 import com.tomclaw.drawa.share.SharePlugin
-import com.tomclaw.drawa.util.calculateMd5
 import com.tomclaw.drawa.util.safeClose
 import io.reactivex.Single
 import java.io.File
@@ -37,8 +36,8 @@ class StaticSharePlugin(
                 } finally {
                     stream.safeClose()
                 }
-                val md5 = imageFile.calculateMd5()
-                cache.put(md5, imageFile)
+                val key = imageFile.absolutePath
+                cache.put(key, imageFile)
             }
 
 }
