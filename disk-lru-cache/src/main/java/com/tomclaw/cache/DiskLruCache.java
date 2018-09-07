@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("unused")
@@ -35,61 +36,79 @@ public class DiskLruCache {
     }
 
     public File put(String key, File file) throws IOException {
-        assertKeyValid(key);
-        String name = generateName(key);
-        long time = System.currentTimeMillis();
-        long fileSize = file.length();
-        Record record = new Record(key, name, time, fileSize);
-        File cacheFile = new File(cacheDir, name);
-        if ((cacheDir.exists() || cacheDir.mkdirs())
-                | (cacheFile.exists() && cacheFile.delete())
-                | file.renameTo(cacheFile)) {
-            journal.delete(key);
-            journal.put(record, cacheSize, cacheDir);
-            journal.writeJournal();
-            return cacheFile;
-        } else {
-            throw new IOException(String.format("Unable to move file %s to the cache",
-                    file.getName()));
+        synchronized (journal) {
+            assertKeyValid(key);
+            String name = keyHash(key);
+            long time = System.currentTimeMillis();
+            long fileSize = file.length();
+            Record record = new Record(key, name, time, fileSize);
+            File cacheFile = new File(cacheDir, name);
+            if ((cacheDir.exists() || cacheDir.mkdirs())
+                    | (cacheFile.exists() && cacheFile.delete())
+                    | file.renameTo(cacheFile)) {
+                journal.delete(key);
+                journal.put(record, cacheSize, cacheDir);
+                journal.writeJournal();
+                return cacheFile;
+            } else {
+                throw new IOException(String.format("Unable to move file %s to the cache",
+                        file.getName()));
+            }
         }
     }
 
     public File get(String key) {
-        assertKeyValid(key);
-        Record record = journal.get(key);
-        if (record != null) {
-            File file = new File(cacheDir, record.getName());
-            if (!file.exists()) {
-                journal.delete(key);
-                file = null;
+        synchronized (journal) {
+            assertKeyValid(key);
+            Record record = journal.get(key);
+            if (record != null) {
+                File file = new File(cacheDir, record.getName());
+                if (!file.exists()) {
+                    journal.delete(key);
+                    file = null;
+                }
+                journal.writeJournal();
+                return file;
+            } else {
+                log("[-] No requested file with key %s in cache", key);
+                return null;
             }
-            journal.writeJournal();
-            return file;
-        } else {
-            log("[-] No requested file with key %s in cache", key);
-            return null;
         }
     }
 
     public boolean delete(String key) {
-        assertKeyValid(key);
-        Record record = journal.delete(key);
-        if (record != null) {
-            journal.writeJournal();
-            File file = new File(cacheDir, record.getName());
-            return file.delete();
-        }
-        return false;
+        return delete(key, true);
     }
 
-    private void assertKeyValid(String key) {
-        if (key == null || key.length() == 0) {
-            throw new IllegalArgumentException(String.format("Invalid key value: '%s'", key));
+    private boolean delete(String key, boolean writeJournal) {
+        synchronized (journal) {
+            assertKeyValid(key);
+            Record record = journal.delete(key);
+            if (record != null) {
+                if (writeJournal) {
+                    journal.writeJournal();
+                }
+                File file = new File(cacheDir, record.getName());
+                return file.delete();
+            }
+            return false;
+        }
+    }
+
+    public void clearCache() {
+        synchronized (journal) {
+            Set<String> keys = new HashSet<>(journal.keySet());
+            for (String key : keys) {
+                delete(key, false);
+            }
+            journal.writeJournal();
         }
     }
 
     public Set<String> keySet() {
-        return journal.keySet();
+        synchronized (journal) {
+            return journal.keySet();
+        }
     }
 
     public long getCacheSize() {
@@ -97,19 +116,27 @@ public class DiskLruCache {
     }
 
     public long getUsedSpace() {
-        return journal.getTotalSize();
+        synchronized (journal) {
+            return journal.getTotalSize();
+        }
     }
 
     public long getFreeSpace() {
-        return cacheSize - journal.getTotalSize();
+        synchronized (journal) {
+            return cacheSize - journal.getTotalSize();
+        }
     }
 
     public long getJournalSize() {
-        return journal.getJournalSize();
+        synchronized (journal) {
+            return journal.getJournalSize();
+        }
     }
 
-    private static String generateName(String key) {
-        return keyHash(key) + '.' + fileExtension(key);
+    private void assertKeyValid(String key) {
+        if (key == null || key.length() == 0) {
+            throw new IllegalArgumentException(String.format("Invalid key value: '%s'", key));
+        }
     }
 
     private static String keyHash(String base) {
@@ -128,17 +155,6 @@ public class DiskLruCache {
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ignored) {
         }
         throw new IllegalArgumentException("Unable to hash key");
-    }
-
-    private static String fileExtension(String path) {
-        String suffix = "";
-        if (path != null && !path.isEmpty()) {
-            int index = path.lastIndexOf(".");
-            if (index != -1) {
-                suffix = path.substring(index + 1);
-            }
-        }
-        return suffix;
     }
 
     public static void log(String format, Object... args) {
