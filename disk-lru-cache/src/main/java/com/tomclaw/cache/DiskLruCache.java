@@ -38,7 +38,7 @@ public class DiskLruCache {
     public File put(String key, File file) throws IOException {
         synchronized (journal) {
             assertKeyValid(key);
-            String name = keyHash(key);
+            String name = generateName(key);
             long time = System.currentTimeMillis();
             long fileSize = file.length();
             Record record = new Record(key, name, time, fileSize);
@@ -155,6 +155,21 @@ public class DiskLruCache {
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ignored) {
         }
         throw new IllegalArgumentException("Unable to hash key");
+    }
+
+    private static String generateName(String key) {
+        return keyHash(key) + fileExtension(key);
+    }
+
+    private static String fileExtension(String path) {
+        String suffix = "";
+        if (path != null && !path.isEmpty()) {
+            int index = path.lastIndexOf(".");
+            if (index != -1) {
+                suffix = path.substring(index);
+            }
+        }
+        return suffix;
     }
 
     public static void log(String format, Object... args) {
