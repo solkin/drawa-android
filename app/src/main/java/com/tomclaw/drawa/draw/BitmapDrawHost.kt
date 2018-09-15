@@ -34,8 +34,8 @@ class BitmapDrawHost(width: Int = BITMAP_WIDTH, height: Int = BITMAP_HEIGHT) : B
 
     private val paint: Paint = Paint().apply {
         isAntiAlias = true
-        isFilterBitmap = true
         isDither = true
+        isFilterBitmap = true
     }
 
     override var hidden = false

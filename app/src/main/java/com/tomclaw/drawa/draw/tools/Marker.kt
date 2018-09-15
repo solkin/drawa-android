@@ -17,7 +17,9 @@ class Marker : Tool() {
     override val alpha = 0x50
     override val type = TYPE_MARKER
 
-    override fun initPaint() = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    override fun initPaint() = Paint().apply {
+        isAntiAlias = true
+        isDither = true
         style = Paint.Style.STROKE
         strokeJoin = Paint.Join.MITER
         strokeCap = Paint.Cap.BUTT

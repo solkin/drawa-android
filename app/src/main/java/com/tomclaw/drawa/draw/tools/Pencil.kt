@@ -14,8 +14,9 @@ class Pencil : Tool() {
     override val alpha = 0xff
     override val type = TYPE_PENCIL
 
-    override fun initPaint() = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    override fun initPaint() = Paint().apply {
         isAntiAlias = true
+        isDither = true
         style = Paint.Style.STROKE
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND

@@ -5,6 +5,7 @@ import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_DOWN
@@ -16,8 +17,8 @@ import com.tomclaw.drawa.R
 class PaletteView(context: Context, attributes: AttributeSet)
     : View(context, attributes) {
 
-    private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val shadowPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val fillPaint = Paint(ANTI_ALIAS_FLAG)
+    private val shadowPaint = Paint(ANTI_ALIAS_FLAG)
 
     private var cellSize: Float = 0f
     private var padding: Float = 0f

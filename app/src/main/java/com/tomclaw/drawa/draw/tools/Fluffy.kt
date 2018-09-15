@@ -17,8 +17,9 @@ class Fluffy : Tool() {
     override val alpha = 0x20
     override val type = TYPE_FLUFFY
 
-    override fun initPaint() = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    override fun initPaint() = Paint().apply {
         isAntiAlias = true
+        isDither = true
         style = Paint.Style.STROKE
         strokeJoin = Paint.Join.MITER
         strokeCap = Paint.Cap.SQUARE
