@@ -35,6 +35,7 @@ interface Journal {
     fun load(): Single<List<Record>>
 
     fun delete(id: Int): Single<Unit>
+
 }
 
 class JournalImpl(private val journalFile: File) : Journal {

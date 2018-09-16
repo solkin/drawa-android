@@ -1,8 +1,8 @@
 package com.tomclaw.drawa.share.di
 
-import android.content.Context
 import android.os.Bundle
 import com.tomclaw.cache.DiskLruCache
+import com.tomclaw.drawa.core.Journal
 import com.tomclaw.drawa.draw.DrawHost
 import com.tomclaw.drawa.draw.History
 import com.tomclaw.drawa.draw.HistoryImpl
@@ -91,9 +91,10 @@ class ShareModule(
     @Provides
     @IntoSet
     fun provideStaticSharePlugin(
+            journal: Journal,
             imageProvider: ImageProvider,
             cache: DiskLruCache): SharePlugin {
-        return StaticSharePlugin(recordId, imageProvider, cache)
+        return StaticSharePlugin(recordId, journal, imageProvider, cache)
     }
 
     @Provides

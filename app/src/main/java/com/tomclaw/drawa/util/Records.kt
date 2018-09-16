@@ -11,4 +11,8 @@ fun Record.touch() {
 
 fun Record.imageFile(dir: File): File = File(dir, recordName(id) + "-" + time + ".png")
 
+fun Record.uniqueKey(): String {
+    return "draw-$id-${size.width}-${size.height}-$time"
+}
+
 fun historyFile(recordId: Int, dir: File): File = File(dir, recordName(recordId) + ".bin")

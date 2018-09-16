@@ -3,9 +3,11 @@ package com.tomclaw.drawa.dto
 import android.os.Parcel
 import android.os.Parcelable
 
-class Record(val id: Int,
-             val size: Size,
-             var time: Long = System.currentTimeMillis()) : Parcelable {
+class Record(
+        val id: Int,
+        val size: Size,
+        var time: Long = System.currentTimeMillis()
+) : Parcelable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(id)
