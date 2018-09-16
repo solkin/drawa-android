@@ -1,6 +1,7 @@
 package com.tomclaw.drawa.share.plugin
 
 import android.view.MotionEvent
+import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.cache.DiskLruCache
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.core.BITMAP_HEIGHT
@@ -16,6 +17,7 @@ import com.tomclaw.drawa.share.ShareResult
 import com.tomclaw.drawa.util.MetricsProvider
 import com.tomclaw.drawa.util.safeClose
 import com.tomclaw.drawa.util.uniqueKey
+import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.File
 import java.io.FileOutputStream
@@ -44,22 +46,25 @@ class AnimSharePlugin(
     override val description: Int
         get() = R.string.anim_share_description
 
+    override val progress: Observable<Float>
+        get() = progressRelay
+    private val progressRelay = PublishRelay.create<Float>()
+
     override val operation: Single<ShareResult> = journal.load()
             .map { journal.get(recordId) }
             .flatMap { record ->
                 val key = "anim-${record.uniqueKey()}"
                 val cached = cache.get(key)
-                if (cached != null) {
-                    Single.just(cached)
-                    Single.just(ShareResult(cached, MIME_TYPE))
-                } else {
-                    Single.create { emitter ->
+                val result = when {
+                    cached != null -> Single.just(ShareResult(cached, MIME_TYPE))
+                    else -> Single.create { emitter ->
                         val animFile: File = createTempFile("anim", ".gif")
                         applyHistory(animFile)
                         val file = cache.put(key, animFile)
                         emitter.onSuccess(ShareResult(file, MIME_TYPE))
                     }
                 }
+                result
             }
 
     private fun applyHistory(file: File) {
@@ -71,6 +76,7 @@ class AnimSharePlugin(
                 setRepeat(0)
             }
             drawHost.clearBitmap()
+            val totalEventsCount = history.getEventsCount()
             var eventCount = 0
             history.getEvents().forEach { event ->
                 processToolEvent(event)
@@ -78,6 +84,7 @@ class AnimSharePlugin(
                 if ((eventCount % 10) == 0 || event.action == MotionEvent.ACTION_UP) {
                     encoder.setDelay(100)
                     encoder.addFrame(drawHost.bitmap)
+                    updateProgress(value = eventCount.toFloat() / totalEventsCount.toFloat())
                 }
             }
             encoder.finish()
@@ -102,6 +109,10 @@ class AnimSharePlugin(
             }
             onDraw()
         }
+    }
+
+    private fun updateProgress(value: Float) {
+        progressRelay.accept(value)
     }
 
 }

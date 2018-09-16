@@ -25,6 +25,8 @@ interface History {
 
     fun clear()
 
+    fun getEventsCount(): Int
+
     fun getEvents(): Iterator<Event>
 
     fun save(): Single<Unit>
@@ -69,6 +71,8 @@ class HistoryImpl(
         eventIndex = 0
         events.clear()
     }
+
+    override fun getEventsCount(): Int = events.size
 
     override fun getEvents(): Iterator<Event> = events.descendingIterator()
 

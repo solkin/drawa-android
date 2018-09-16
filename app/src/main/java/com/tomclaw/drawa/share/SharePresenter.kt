@@ -6,6 +6,7 @@ import com.tomclaw.drawa.util.SchedulersFactory
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 interface SharePresenter {
 
@@ -83,18 +84,26 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
 
     private fun onLoaded() {
         itemsMap = sharePlugins.associate { Pair(it.weight, it) }
-        val shareItems = itemsMap.entries.map { entry ->
-            ShareItem(
-                    id = entry.key,
-                    image = entry.value.image,
-                    title = entry.value.title,
-                    description = entry.value.description
-            )
-        }.sortedBy { it.id }
+        val shareItems = itemsMap.entries.asSequence()
+                .map { entry ->
+                    ShareItem(
+                            id = entry.key,
+                            image = entry.value.image,
+                            title = entry.value.title,
+                            description = entry.value.description
+                    )
+                }
+                .sortedBy { it.id }
+                .toList()
         dataProvider.setData(shareItems)
     }
 
     private fun runPlugin(plugin: SharePlugin) {
+        subscriptions += plugin.progress
+                .throttleLast(PROGRESS_DEBOUNCE_DELAY, TimeUnit.MILLISECONDS)
+                .doOnSubscribe { view?.setOverlayProgress(0f) }
+                .observeOn(schedulers.mainThread())
+                .subscribe { view?.setOverlayProgress(it) }
         subscriptions += plugin.operation
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.mainThread())
@@ -110,3 +119,5 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
     }
 
 }
+
+private const val PROGRESS_DEBOUNCE_DELAY: Long = 500

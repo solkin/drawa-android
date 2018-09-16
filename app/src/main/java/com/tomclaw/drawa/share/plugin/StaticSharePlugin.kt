@@ -9,6 +9,7 @@ import com.tomclaw.drawa.share.SharePlugin
 import com.tomclaw.drawa.share.ShareResult
 import com.tomclaw.drawa.util.safeClose
 import com.tomclaw.drawa.util.uniqueKey
+import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.File
 import java.io.FileOutputStream
@@ -29,6 +30,8 @@ class StaticSharePlugin(
         get() = R.string.static_share_title
     override val description: Int
         get() = R.string.static_share_description
+    override val progress: Observable<Float>
+        get() = Single.just(1f).toObservable()
 
     override val operation: Single<ShareResult> = journal.load()
             .map { journal.get(recordId) }
