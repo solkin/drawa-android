@@ -143,7 +143,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     private fun onDuplicate() {
         subscriptions += interactor.duplicate()
                 .observeOn(schedulers.mainThread())
-                .doOnSubscribe { view?.showProgress() }
+                .doOnSubscribe { view?.showOverlayProgress() }
                 .doAfterTerminate { view?.showContent() }
                 .subscribe({ router?.leaveScreen() }, { })
     }
@@ -151,7 +151,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
     private fun onDelete() {
         subscriptions += interactor.delete()
                 .observeOn(schedulers.mainThread())
-                .doOnSubscribe { view?.showProgress() }
+                .doOnSubscribe { view?.showOverlayProgress() }
                 .doAfterTerminate { view?.showContent() }
                 .subscribe({ router?.leaveScreen() }, { })
     }
@@ -229,7 +229,11 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         if (view?.isToolContainerShown == true) {
             view?.hideChooser()
         } else {
-            addOnSavedAction { router?.leaveScreen() }
+            if (history.isEmpty()) {
+                onDelete()
+            } else {
+                addOnSavedAction { router?.leaveScreen() }
+            }
         }
     }
 

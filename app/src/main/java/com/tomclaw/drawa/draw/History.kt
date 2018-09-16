@@ -25,6 +25,8 @@ interface History {
 
     fun clear()
 
+    fun isEmpty(): Boolean
+
     fun getEventsCount(): Int
 
     fun getEvents(): Iterator<Event>
@@ -71,6 +73,8 @@ class HistoryImpl(
         eventIndex = 0
         events.clear()
     }
+
+    override fun isEmpty(): Boolean = events.isEmpty()
 
     override fun getEventsCount(): Int = events.size
 
