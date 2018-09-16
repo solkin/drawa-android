@@ -11,6 +11,6 @@ interface DrawResourceProvider {
 
 class DrawResourceProviderImpl(val resources: Resources) : DrawResourceProvider {
 
-    override val defaultColor = resources.getColor(R.color.color5)
+    override val defaultColor = resources.getColor(R.color.color10)
 
 }
