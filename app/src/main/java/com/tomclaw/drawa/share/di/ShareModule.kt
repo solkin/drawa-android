@@ -75,13 +75,16 @@ class ShareModule(
     fun provideAnimSharePlugin(
             toolProvider: ToolProvider,
             metricsProvider: MetricsProvider,
+            journal: Journal,
             history: History,
             drawHost: DrawHost,
             cache: DiskLruCache
     ): SharePlugin {
         return AnimSharePlugin(
+                recordId,
                 toolProvider,
                 metricsProvider,
+                journal,
                 history,
                 drawHost,
                 cache

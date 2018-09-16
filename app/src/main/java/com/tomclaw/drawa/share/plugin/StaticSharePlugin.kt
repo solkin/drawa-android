@@ -33,7 +33,7 @@ class StaticSharePlugin(
     override val operation: Single<ShareResult> = journal.load()
             .map { journal.get(recordId) }
             .flatMap { record ->
-                val key = record.uniqueKey()
+                val key = "static-${record.uniqueKey()}"
                 val cached = cache.get(key)
                 if (cached != null) {
                     Single.just(cached)

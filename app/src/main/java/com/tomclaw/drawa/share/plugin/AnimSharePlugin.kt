@@ -5,6 +5,7 @@ import com.tomclaw.cache.DiskLruCache
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.core.BITMAP_HEIGHT
 import com.tomclaw.drawa.core.BITMAP_WIDTH
+import com.tomclaw.drawa.core.Journal
 import com.tomclaw.drawa.draw.DrawHost
 import com.tomclaw.drawa.draw.Event
 import com.tomclaw.drawa.draw.History
@@ -14,14 +15,17 @@ import com.tomclaw.drawa.share.SharePlugin
 import com.tomclaw.drawa.share.ShareResult
 import com.tomclaw.drawa.util.MetricsProvider
 import com.tomclaw.drawa.util.safeClose
+import com.tomclaw.drawa.util.uniqueKey
 import io.reactivex.Single
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
 class AnimSharePlugin(
+        private val recordId: Int,
         private val toolProvider: ToolProvider,
         private val metricsProvider: MetricsProvider,
+        private val journal: Journal,
         private val history: History,
         private val drawHost: DrawHost,
         private val cache: DiskLruCache
@@ -40,13 +44,23 @@ class AnimSharePlugin(
     override val description: Int
         get() = R.string.anim_share_description
 
-    override val operation: Single<ShareResult> = Single.create { emitter ->
-        val animFile: File = createTempFile("anim", ".gif")
-        applyHistory(animFile)
-        val key = animFile.absolutePath
-        val file = cache.put(key, animFile)
-        emitter.onSuccess(ShareResult(file, "image/gif"))
-    }
+    override val operation: Single<ShareResult> = journal.load()
+            .map { journal.get(recordId) }
+            .flatMap { record ->
+                val key = "anim-${record.uniqueKey()}"
+                val cached = cache.get(key)
+                if (cached != null) {
+                    Single.just(cached)
+                    Single.just(ShareResult(cached, MIME_TYPE))
+                } else {
+                    Single.create { emitter ->
+                        val animFile: File = createTempFile("anim", ".gif")
+                        applyHistory(animFile)
+                        val file = cache.put(key, animFile)
+                        emitter.onSuccess(ShareResult(file, MIME_TYPE))
+                    }
+                }
+            }
 
     private fun applyHistory(file: File) {
         var stream: OutputStream? = null
@@ -91,3 +105,5 @@ class AnimSharePlugin(
     }
 
 }
+
+private const val MIME_TYPE = "image/gif"
