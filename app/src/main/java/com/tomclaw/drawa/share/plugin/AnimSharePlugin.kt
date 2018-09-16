@@ -73,7 +73,7 @@ class AnimSharePlugin(
             stream = FileOutputStream(file)
             val encoder = GifEncoder().apply {
                 start(stream)
-                setRepeat(0)
+                setRepeat(1)
             }
             drawHost.clearBitmap()
             val totalEventsCount = history.getEventsCount()
