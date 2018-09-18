@@ -18,7 +18,11 @@ class DrawingView(
 
     private var dst: Rect? = null
 
-    private val paint: Paint = Paint()
+    private val paint: Paint = Paint().apply {
+        isAntiAlias = true
+        isDither = true
+        isFilterBitmap = true
+    }
 
     var drawingListener: DrawingListener? = null
 

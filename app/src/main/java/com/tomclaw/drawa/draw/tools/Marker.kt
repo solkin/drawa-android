@@ -18,6 +18,8 @@ class Marker : Tool() {
     override val type = TYPE_MARKER
 
     override fun initPaint() = Paint().apply {
+        isAntiAlias = true
+        isDither = true
         style = Paint.Style.STROKE
         strokeJoin = Paint.Join.MITER
         strokeCap = Paint.Cap.BUTT
