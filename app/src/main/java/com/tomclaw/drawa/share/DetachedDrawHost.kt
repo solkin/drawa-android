@@ -13,11 +13,7 @@ class DetachedDrawHost(width: Int, height: Int) : DrawHost, BitmapHost by Bitmap
 
     private var dst: Rect = Rect(0, 0, width, height)
 
-    private val paint: Paint = Paint().apply {
-        isAntiAlias = true
-        isDither = true
-        isFilterBitmap = true
-    }
+    private val paint: Paint = Paint()
 
     override val bitmap: Bitmap = Bitmap.createBitmap(
             width,

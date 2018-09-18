@@ -17,8 +17,6 @@ class Brush : Tool() {
     override val type = TYPE_BRUSH
 
     override fun initPaint() = Paint().apply {
-        isAntiAlias = true
-        isDither = true
         style = Paint.Style.STROKE
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
