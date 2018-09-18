@@ -18,7 +18,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 class Journal {
 
-    private static final int BUFFER_SIZE = 512 * 1024;
+    private static final int BUFFER_SIZE = 256 * 1024;
 
     private final File file;
     private final Map<String, Record> map = new HashMap<>();
@@ -107,7 +107,9 @@ class Journal {
     public void writeJournal() {
         DataOutputStream stream = null;
         try {
-            stream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file), BUFFER_SIZE));
+            stream = new DataOutputStream(
+                    new BufferedOutputStream(new FileOutputStream(file), BUFFER_SIZE)
+            );
             stream.writeShort(DiskLruCache.JOURNAL_FORMAT_VERSION);
             stream.writeInt(map.size());
             for (Record record : map.values()) {
@@ -131,7 +133,9 @@ class Journal {
         Journal journal = new Journal(file);
         DataInputStream stream = null;
         try {
-            stream = new DataInputStream(new BufferedInputStream(new FileInputStream(file), BUFFER_SIZE));
+            stream = new DataInputStream(
+                    new BufferedInputStream(new FileInputStream(file), BUFFER_SIZE)
+            );
             int version = stream.readShort();
             if (version != DiskLruCache.JOURNAL_FORMAT_VERSION) {
                 throw new IllegalArgumentException("Invalid journal format version");

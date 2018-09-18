@@ -19,7 +19,6 @@ import com.tomclaw.drawa.util.safeClose
 import com.tomclaw.drawa.util.uniqueKey
 import io.reactivex.Observable
 import io.reactivex.Single
-import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -71,8 +70,9 @@ class AnimSharePlugin(
     private fun applyHistory(file: File) {
         var stream: OutputStream? = null
         try {
-            stream = BufferedOutputStream(FileOutputStream(file), BUFFER_SIZE)
+            stream = FileOutputStream(file)
             val encoder = GifEncoder().apply {
+                setQuality(15)
                 start(stream)
                 setRepeat(1)
             }
@@ -119,4 +119,3 @@ class AnimSharePlugin(
 }
 
 private const val MIME_TYPE = "image/gif"
-private const val BUFFER_SIZE = 512 * 1024
