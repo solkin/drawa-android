@@ -24,7 +24,9 @@ interface ShareView {
 
     fun showOverlayProgress()
 
-    fun setOverlayProgress(value: Float = 0f)
+    fun resetOverlayProgress()
+
+    fun setOverlayProgress(value: Float)
 
     fun showContent()
 
@@ -84,6 +86,10 @@ class ShareViewImpl(view: View,
             fillAfter = true
             interpolator = LinearInterpolator()
         }
+    }
+
+    override fun resetOverlayProgress() {
+        progress.progress = 0f
     }
 
     override fun setOverlayProgress(value: Float) {

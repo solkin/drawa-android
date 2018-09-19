@@ -56,7 +56,10 @@ class AnimSharePlugin(
                 val key = "anim-${record.uniqueKey()}"
                 val cached = cache.get(key)
                 val result = when {
-                    cached != null -> Single.just(ShareResult(cached, MIME_TYPE))
+                    cached != null -> {
+                        updateProgress(value = 1f)
+                        Single.just(ShareResult(cached, MIME_TYPE))
+                    }
                     else -> Single.create { emitter ->
                         val animFile: File = createTempFile("anim", ".gif")
                         applyHistory(animFile)

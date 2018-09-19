@@ -101,7 +101,7 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
     private fun runPlugin(plugin: SharePlugin) {
         subscriptions += plugin.progress
                 .throttleLast(PROGRESS_DEBOUNCE_DELAY, TimeUnit.MILLISECONDS)
-                .doOnSubscribe { view?.setOverlayProgress(0f) }
+                .doOnSubscribe { view?.resetOverlayProgress() }
                 .observeOn(schedulers.mainThread())
                 .subscribe { view?.setOverlayProgress(it) }
         subscriptions += plugin.operation
