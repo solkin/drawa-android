@@ -118,6 +118,7 @@ class Journal {
                 stream.writeLong(record.getTime());
                 stream.writeLong(record.getSize());
             }
+            stream.flush();
         } catch (IOException ex) {
             if (stream != null) {
                 try {
