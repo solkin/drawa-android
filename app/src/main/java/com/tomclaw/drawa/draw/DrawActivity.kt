@@ -3,7 +3,7 @@ package com.tomclaw.drawa.draw
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.di.DrawModule
 import com.tomclaw.drawa.main.getComponent

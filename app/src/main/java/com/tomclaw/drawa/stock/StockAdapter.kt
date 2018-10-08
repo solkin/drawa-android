@@ -1,7 +1,7 @@
 package com.tomclaw.drawa.stock
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.jakewharton.rxrelay2.PublishRelay
@@ -11,7 +11,7 @@ import com.tomclaw.drawa.util.DataProvider
 class StockAdapter(
         private val context: Context,
         private val dataProvider: DataProvider<StockItem>
-) : RecyclerView.Adapter<StockItemHolder>() {
+) : androidx.recyclerview.widget.RecyclerView.Adapter<StockItemHolder>() {
 
     var itemsRelay: PublishRelay<StockItem>? = null
 

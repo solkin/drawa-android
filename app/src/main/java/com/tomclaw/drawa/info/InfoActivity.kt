@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.info.di.InfoModule
 import com.tomclaw.drawa.main.getComponent

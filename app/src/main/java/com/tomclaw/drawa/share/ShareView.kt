@@ -1,8 +1,8 @@
 package com.tomclaw.drawa.share
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
@@ -46,7 +46,7 @@ class ShareViewImpl(view: View,
     private val overlayProgress: View = view.findViewById(R.id.overlay_progress)
     private val progress: CircleProgressView = view.findViewById(R.id.progress)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
-    private val recycler: RecyclerView = view.findViewById(R.id.recycler)
+    private val recycler: androidx.recyclerview.widget.RecyclerView = view.findViewById(R.id.recycler)
 
     private val navigationRelay = PublishRelay.create<Unit>()
     private val itemRelay = PublishRelay.create<ShareItem>()
@@ -56,9 +56,9 @@ class ShareViewImpl(view: View,
         toolbar.setNavigationOnClickListener {
             navigationRelay.accept(Unit)
         }
-        val layoutManager = LinearLayoutManager(
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
                 context,
-                LinearLayoutManager.VERTICAL,
+                androidx.recyclerview.widget.LinearLayoutManager.VERTICAL,
                 false
         )
         adapter.setHasStableIds(true)

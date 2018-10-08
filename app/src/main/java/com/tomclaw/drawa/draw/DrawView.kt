@@ -1,6 +1,6 @@
 package com.tomclaw.drawa.draw
 
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.ViewFlipper
 import com.jakewharton.rxrelay2.PublishRelay

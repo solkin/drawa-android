@@ -1,9 +1,9 @@
 package com.tomclaw.drawa.stock
 
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.ViewFlipper
 import com.jakewharton.rxrelay2.PublishRelay
@@ -33,17 +33,17 @@ class StockViewImpl(view: View,
     private val toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private val createButton: FloatingActionButton = view.findViewById(R.id.create_button)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
-    private val recycler: RecyclerView = view.findViewById(R.id.recycler)
+    private val recycler: androidx.recyclerview.widget.RecyclerView = view.findViewById(R.id.recycler)
 
     private val itemsRelay = PublishRelay.create<StockItem>()
     private val createRelay = PublishRelay.create<Unit>()
     private val infoRelay = PublishRelay.create<Unit>()
 
     init {
-        val layoutManager = GridLayoutManager(
+        val layoutManager = androidx.recyclerview.widget.GridLayoutManager(
                 context,
                 2,
-                GridLayoutManager.VERTICAL,
+                androidx.recyclerview.widget.GridLayoutManager.VERTICAL,
                 false
         )
         adapter.setHasStableIds(true)

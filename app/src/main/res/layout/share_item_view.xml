@@ -30,10 +30,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingEnd="0dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="0dp"
                 android:paddingStart="12dp"
+                android:paddingLeft="12dp"
+                android:paddingEnd="0dp"
+                android:paddingRight="0dp"
                 android:textColor="?android:textColorPrimary"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -54,7 +54,7 @@
 
     <Button
         android:id="@+id/select_button"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
