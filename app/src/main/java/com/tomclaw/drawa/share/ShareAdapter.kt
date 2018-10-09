@@ -1,8 +1,8 @@
 package com.tomclaw.drawa.share
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.util.DataProvider
@@ -10,7 +10,7 @@ import com.tomclaw.drawa.util.DataProvider
 class ShareAdapter(
         private val layoutInflater: LayoutInflater,
         private val dataProvider: DataProvider<ShareItem>
-) : androidx.recyclerview.widget.RecyclerView.Adapter<ShareItemHolder>() {
+) : RecyclerView.Adapter<ShareItemHolder>() {
 
     var itemRelay: PublishRelay<ShareItem>? = null
 

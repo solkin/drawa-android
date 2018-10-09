@@ -1,7 +1,5 @@
 package com.tomclaw.cache;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -15,29 +13,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.tomclaw.cache.Logger.log;
+
 @SuppressWarnings("unused")
 class Journal {
 
-    private static final int BUFFER_SIZE = 256 * 1024;
-
     private final File file;
+    private FileManager fileManager;
     private final Map<String, Record> map = new HashMap<>();
     private long totalSize = 0;
 
-    private Journal(File file) {
+    private Journal(File file, FileManager fileManager) {
         this.file = file;
+        this.fileManager = fileManager;
     }
 
-    public void put(Record record, long cacheSize, File cacheDir) throws IOException {
+    public void put(Record record, long cacheSize) throws IOException {
         long fileSize = record.getSize();
-        prepare(fileSize, cacheSize, cacheDir);
+        prepare(fileSize, cacheSize);
         put(record);
     }
 
     private void put(Record record) {
         map.put(record.getKey(), record);
         totalSize += record.getSize();
-        DiskLruCache.log("[+] Put %s (%d bytes) and cache size became %d bytes",
+        log("[+] Put %s (%d bytes) and cache size became %d bytes",
                 record.getKey(), record.getSize(), totalSize);
     }
 
@@ -45,7 +45,7 @@ class Journal {
         Record record = map.get(key);
         if (record != null) {
             updateTime(record);
-            DiskLruCache.log("[^] Update time of %s (%d bytes)", record.getKey(), record.getSize());
+            log("[^] Update time of %s (%d bytes)", record.getKey(), record.getSize());
         }
         return record;
     }
@@ -67,21 +67,17 @@ class Journal {
         map.put(record.getKey(), new Record(record, time));
     }
 
-    private void prepare(long fileSize, long cacheSize, File cacheDir) throws IOException {
+    private void prepare(long fileSize, long cacheSize) throws IOException {
         if (totalSize + fileSize > cacheSize) {
-            DiskLruCache.log("[!] File %d bytes is not fit in cache %d bytes", fileSize, totalSize);
+            log("[!] File %d bytes is not fit in cache %d bytes", fileSize, totalSize);
             List<Record> records = new ArrayList<>(map.values());
             Collections.sort(records, new RecordComparator());
             for (int c = records.size() - 1; c > 0; c--) {
                 Record record = records.remove(c);
                 long nextTotalSize = totalSize - record.getSize();
-                DiskLruCache.log("[x] Delete %s [%d ms] %d bytes and free cache to %d bytes",
+                log("[x] Delete %s [%d ms] %d bytes and free cache to %d bytes",
                         record.getKey(), record.getTime(), record.getSize(), nextTotalSize);
-                File file = new File(cacheDir, record.getName());
-                if (file.exists() && !file.delete()) {
-                    throw new IOException(String.format("Unable to delete file %s from cache",
-                            file.getName()));
-                }
+                fileManager.delete(record.getName());
                 map.remove(record.getKey());
                 totalSize = nextTotalSize;
 
@@ -107,9 +103,7 @@ class Journal {
     public void writeJournal() {
         DataOutputStream stream = null;
         try {
-            stream = new DataOutputStream(
-                    new BufferedOutputStream(new FileOutputStream(file), BUFFER_SIZE)
-            );
+            stream = new DataOutputStream(new FileOutputStream(file));
             stream.writeShort(DiskLruCache.JOURNAL_FORMAT_VERSION);
             stream.writeInt(map.size());
             for (Record record : map.values()) {
@@ -118,7 +112,6 @@ class Journal {
                 stream.writeLong(record.getTime());
                 stream.writeLong(record.getSize());
             }
-            stream.flush();
         } catch (IOException ex) {
             if (stream != null) {
                 try {
@@ -129,14 +122,13 @@ class Journal {
         }
     }
 
-    public static Journal readJournal(File file) {
-        DiskLruCache.log("[.] Start journal reading", file.getName());
-        Journal journal = new Journal(file);
+    public static Journal readJournal(FileManager fileManager) {
+        File file = fileManager.journal();
+        log("[.] Start journal reading", file.getName());
+        Journal journal = new Journal(file, fileManager);
         DataInputStream stream = null;
         try {
-            stream = new DataInputStream(
-                    new BufferedInputStream(new FileInputStream(file), BUFFER_SIZE)
-            );
+            stream = new DataInputStream(new FileInputStream(file));
             int version = stream.readShort();
             if (version != DiskLruCache.JOURNAL_FORMAT_VERSION) {
                 throw new IllegalArgumentException("Invalid journal format version");
@@ -153,8 +145,7 @@ class Journal {
                 journal.put(record);
             }
             journal.setTotalSize(totalSize);
-            DiskLruCache.log("[.] Journal read. Files count is %d and total size is %d",
-                    count, totalSize);
+            log("[.] Journal read. Files count is %d and total size is %d", count, totalSize);
         } catch (IOException ex) {
             if (stream != null) {
                 try {

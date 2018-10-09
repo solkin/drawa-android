@@ -1,14 +1,16 @@
 package com.tomclaw.drawa.share
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
 
-class ShareItemHolder(view: View,
-                      private val itemRelay: PublishRelay<ShareItem>?) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+class ShareItemHolder(
+        view: View,
+        private val itemRelay: PublishRelay<ShareItem>?
+) : RecyclerView.ViewHolder(view) {
 
     private val imageView: ImageView = view.findViewById(R.id.type_image)
     private val titleView: TextView = view.findViewById(R.id.type_title)
