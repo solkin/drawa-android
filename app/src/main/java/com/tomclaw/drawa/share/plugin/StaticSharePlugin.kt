@@ -39,7 +39,6 @@ class StaticSharePlugin(
                 val key = "static-${record.uniqueKey()}"
                 val cached = cache.get(key)
                 if (cached != null) {
-                    Single.just(cached)
                     Single.just(ShareResult(cached, MIME_TYPE))
                 } else {
                     imageProvider.readImage(recordId)
