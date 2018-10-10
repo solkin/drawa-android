@@ -29,52 +29,50 @@
             android:layout_height="match_parent"
             android:background="@drawable/background_doodle">
 
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/tunes_height"
                 android:layout_marginTop="?actionBarSize"
-                android:paddingTop="@dimen/buttons_height">
+                android:layout_marginBottom="@dimen/tunes_height"
+                android:orientation="vertical">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/content"
-                    style="@style/CardViewStyle.Light"
-                    android:layout_width="wrap_content"
+                <FrameLayout
+                    android:id="@+id/content_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="2dp"
-                    app:cardElevation="@dimen/cardview_default_elevation">
+                    android:layout_above="@id/controls_container"
+                    android:layout_alignParentTop="true">
 
-                    <com.tomclaw.drawa.draw.view.DrawingView
-                        android:id="@+id/drawing_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/content"
+                        style="@style/CardViewStyle.Light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="8dp"
+                        app:cardCornerRadius="4dp">
 
-                </androidx.cardview.widget.CardView>
+                        <com.tomclaw.drawa.draw.view.DrawingView
+                            android:id="@+id/drawing_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
-            </FrameLayout>
+                    </androidx.cardview.widget.CardView>
 
-            <include layout="@layout/buttons_view" />
+                </FrameLayout>
+
+                <include
+                    android:id="@+id/controls_container"
+                    layout="@layout/controls_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true" />
+
+            </RelativeLayout>
 
             <include layout="@layout/tools_view" />
 
-            <FrameLayout
-                android:id="@+id/overlay_progress"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="?actionBarSize"
-                android:background="@color/color_semitransparent"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone">
-
-                <ProgressBar
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center" />
-
-            </FrameLayout>
+            <include layout="@layout/progress_view" />
 
         </FrameLayout>
 
@@ -87,5 +85,7 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ToolbarTheme"
         app:navigationIcon="?attr/homeAsUpIndicator" />
+
+    <include layout="@layout/shadow_toolbar" />
 
 </FrameLayout>

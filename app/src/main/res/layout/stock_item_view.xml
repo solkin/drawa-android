@@ -2,20 +2,19 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/CardViewStyle.Light"
     android:id="@+id/card_view"
+    style="@style/CardViewStyle.Light"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
     android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"
     android:layout_marginTop="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginBottom="4dp"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="@dimen/cardview_default_elevation">
+    app:cardCornerRadius="4dp">
 
     <com.tomclaw.drawa.util.AspectRatioImageView
         android:id="@+id/image_view"
