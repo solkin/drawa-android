@@ -1,1 +1,1 @@
-include ':app', ':gif-encoder', ':disk-lru-cache'
+include ':app', ':gif-encoder'
