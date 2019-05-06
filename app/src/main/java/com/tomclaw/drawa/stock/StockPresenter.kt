@@ -24,7 +24,7 @@ interface StockPresenter {
     interface StockRouter {
 
         fun showDrawingScreen(record: Record)
-        
+
         fun showInfoScreen()
 
     }

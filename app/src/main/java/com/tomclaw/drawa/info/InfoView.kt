@@ -1,8 +1,8 @@
 package com.tomclaw.drawa.info
 
-import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
 import io.reactivex.Observable

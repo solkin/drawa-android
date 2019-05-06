@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.MATCH_DEFAULT_ONLY
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
-import androidx.appcompat.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.share.di.ShareModule

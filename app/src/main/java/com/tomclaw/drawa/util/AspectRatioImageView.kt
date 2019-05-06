@@ -1,8 +1,8 @@
 package com.tomclaw.drawa.util
 
 import android.content.Context
-import androidx.appcompat.widget.AppCompatImageView
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatImageView
 
 class AspectRatioImageView : AppCompatImageView {
 
