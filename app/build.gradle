@@ -50,7 +50,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
     implementation 'com.google.dagger:dagger:2.23.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    kapt 'com.google.dagger:dagger-compiler:2.21'
-    kapt 'com.google.dagger:dagger-android-processor:2.21'
+    kapt 'com.google.dagger:dagger-compiler:2.23.1'
+    kapt 'com.google.dagger:dagger-android-processor:2.22.1'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
 }
