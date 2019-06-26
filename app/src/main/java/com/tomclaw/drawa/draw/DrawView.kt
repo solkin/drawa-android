@@ -34,7 +34,7 @@ interface DrawView : ToolsView {
 
     fun undoClicks(): Observable<Unit>
 
-    fun doneClicks(): Observable<Unit>
+    fun shareClicks(): Observable<Unit>
 
     fun duplicateClicks(): Observable<Unit>
 
@@ -53,13 +53,12 @@ class DrawViewImpl(
     private val overlayProgress: View = view.findViewById(R.id.overlay_progress)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
     private val undoButton: View = view.findViewById(R.id.undo_button)
-    private val doneButton: View = view.findViewById(R.id.done_button)
 
     private val touchRelay = PublishRelay.create<TouchEvent>()
     private val drawRelay = PublishRelay.create<Unit>()
     private val navigationRelay = PublishRelay.create<Unit>()
     private val undoRelay = PublishRelay.create<Unit>()
-    private val doneRelay = PublishRelay.create<Unit>()
+    private val shareRelay = PublishRelay.create<Unit>()
     private val duplicateRelay = PublishRelay.create<Unit>()
     private val deleteRelay = PublishRelay.create<Unit>()
 
@@ -72,13 +71,13 @@ class DrawViewImpl(
         toolbar.inflateMenu(R.menu.draw)
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
+                R.id.menu_share -> shareRelay.accept(Unit)
                 R.id.menu_duplicate -> duplicateRelay.accept(Unit)
                 R.id.menu_delete -> deleteRelay.accept(Unit)
             }
             true
         }
         undoButton.setOnClickListener { undoRelay.accept(Unit) }
-        doneButton.setOnClickListener { doneRelay.accept(Unit) }
         drawingView.drawingListener = object : DrawingListener {
             override fun onTouchEvent(event: TouchEvent) {
                 touchRelay.accept(event)
@@ -119,7 +118,7 @@ class DrawViewImpl(
 
     override fun undoClicks(): Observable<Unit> = undoRelay
 
-    override fun doneClicks(): Observable<Unit> = doneRelay
+    override fun shareClicks(): Observable<Unit> = shareRelay
 
     override fun duplicateClicks(): Observable<Unit> = duplicateRelay
 

@@ -67,14 +67,14 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += view.touchEvents().subscribe { event ->
             val e = history.add(tool, event.eventX, event.eventY, event.action)
             processToolEvent(e)
-            if (event.action == MotionEvent.ACTION_UP) {
+            if (event.action == ACTION_UP) {
                 scheduleSaveHistory()
             }
         }
         subscriptions += view.drawEvents().subscribe { tool.onDraw() }
         subscriptions += view.navigationClicks().subscribe { onBackPressed() }
         subscriptions += view.undoClicks().subscribe { onUndo() }
-        subscriptions += view.doneClicks().subscribe { onDone() }
+        subscriptions += view.shareClicks().subscribe { onShare() }
         subscriptions += view.duplicateClicks().subscribe { onDuplicate() }
         subscriptions += view.deleteClicks().subscribe { onDelete() }
         subscriptions += view.tuneClicks()
@@ -169,7 +169,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                 }, { })
     }
 
-    private fun onDone() {
+    private fun onShare() {
         addOnSavedAction { router?.showShareScreen() }
     }
 
