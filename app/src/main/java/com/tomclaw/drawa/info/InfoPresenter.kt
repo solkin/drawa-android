@@ -1,6 +1,7 @@
 package com.tomclaw.drawa.info
 
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 
 interface InfoPresenter {
 
@@ -34,9 +35,9 @@ class InfoPresenterImpl(private val resourceProvider: InfoResourceProvider) : In
     override fun attachView(view: InfoView) {
         this.view = view
 
-        view.navigationClicks().subscribe { router?.leaveScreen() }
-        view.rateClicks().subscribe { router?.openRate() }
-        view.projectsClicks().subscribe { router?.openProjects() }
+        subscriptions += view.navigationClicks().subscribe { router?.leaveScreen() }
+        subscriptions += view.rateClicks().subscribe { router?.openRate() }
+        subscriptions += view.projectsClicks().subscribe { router?.openProjects() }
 
         bindVersion()
     }
