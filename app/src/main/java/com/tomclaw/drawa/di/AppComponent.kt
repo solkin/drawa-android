@@ -4,6 +4,8 @@ import com.tomclaw.drawa.draw.di.DrawComponent
 import com.tomclaw.drawa.draw.di.DrawModule
 import com.tomclaw.drawa.info.di.InfoComponent
 import com.tomclaw.drawa.info.di.InfoModule
+import com.tomclaw.drawa.play.di.PlayComponent
+import com.tomclaw.drawa.play.di.PlayModule
 import com.tomclaw.drawa.share.di.ShareComponent
 import com.tomclaw.drawa.share.di.ShareModule
 import com.tomclaw.drawa.stock.di.StockComponent
@@ -22,5 +24,7 @@ interface AppComponent {
     fun shareComponent(module: ShareModule): ShareComponent
 
     fun infoComponent(module: InfoModule): InfoComponent
+
+    fun playComponent(module: PlayModule): PlayComponent
 
 }

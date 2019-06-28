@@ -40,6 +40,10 @@
             android:name=".info.InfoActivity"
             android:label="@string/app_name" />
 
+        <activity
+            android:name=".play.PlayActivity"
+            android:label="@string/app_name" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.tomclaw.drawa"
