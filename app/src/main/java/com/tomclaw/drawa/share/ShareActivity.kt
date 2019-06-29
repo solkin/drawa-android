@@ -92,10 +92,11 @@ class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
 
 }
 
-fun createShareActivityIntent(context: Context,
-                              recordId: Int): Intent =
-        Intent(context, ShareActivity::class.java)
-                .putExtra(EXTRA_RECORD_ID, recordId)
+fun createShareActivityIntent(
+        context: Context,
+        recordId: Int
+): Intent = Intent(context, ShareActivity::class.java)
+        .putExtra(EXTRA_RECORD_ID, recordId)
 
 private const val KEY_PRESENTER_STATE = "presenter_state"
 

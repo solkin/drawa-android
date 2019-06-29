@@ -34,6 +34,8 @@ interface DrawView : ToolsView {
 
     fun undoClicks(): Observable<Unit>
 
+    fun playClicks(): Observable<Unit>
+
     fun shareClicks(): Observable<Unit>
 
     fun duplicateClicks(): Observable<Unit>
@@ -53,11 +55,13 @@ class DrawViewImpl(
     private val overlayProgress: View = view.findViewById(R.id.overlay_progress)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
     private val undoButton: View = view.findViewById(R.id.undo_button)
+    private val playButton: View = view.findViewById(R.id.play_button)
 
     private val touchRelay = PublishRelay.create<TouchEvent>()
     private val drawRelay = PublishRelay.create<Unit>()
     private val navigationRelay = PublishRelay.create<Unit>()
     private val undoRelay = PublishRelay.create<Unit>()
+    private val playRelay = PublishRelay.create<Unit>()
     private val shareRelay = PublishRelay.create<Unit>()
     private val duplicateRelay = PublishRelay.create<Unit>()
     private val deleteRelay = PublishRelay.create<Unit>()
@@ -78,6 +82,7 @@ class DrawViewImpl(
             true
         }
         undoButton.setOnClickListener { undoRelay.accept(Unit) }
+        playButton.setOnClickListener { playRelay.accept(Unit) }
         drawingView.drawingListener = object : DrawingListener {
             override fun onTouchEvent(event: TouchEvent) {
                 touchRelay.accept(event)
@@ -117,6 +122,8 @@ class DrawViewImpl(
     override fun navigationClicks(): Observable<Unit> = navigationRelay
 
     override fun undoClicks(): Observable<Unit> = undoRelay
+
+    override fun playClicks(): Observable<Unit> = playRelay
 
     override fun shareClicks(): Observable<Unit> = shareRelay
 

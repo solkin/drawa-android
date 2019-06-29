@@ -8,7 +8,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class PlayModule(private val context: Context) {
+class PlayModule(private val recordId: Int) {
 
     @Provides
     @PerActivity

@@ -15,8 +15,9 @@ class PlayActivity : AppCompatActivity(), PlayPresenter.PlayRouter {
     lateinit var presenter: PlayPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val recordId = intent.getRecordId()
         application.getComponent()
-                .playComponent(PlayModule(context = this))
+                .playComponent(PlayModule(recordId))
                 .inject(activity = this)
 
         super.onCreate(savedInstanceState)
@@ -46,7 +47,20 @@ class PlayActivity : AppCompatActivity(), PlayPresenter.PlayRouter {
         finish()
     }
 
+    private fun Intent.getRecordId() = getIntExtra(EXTRA_RECORD_ID, RECORD_ID_INVALID).apply {
+        if (this == RECORD_ID_INVALID) {
+            throw IllegalArgumentException("record id must be specified")
+        }
+    }
+
 }
 
-fun createPlayActivityIntent(context: Context): Intent =
-        Intent(context, PlayActivity::class.java)
+fun createPlayActivityIntent(
+        context: Context,
+        recordId: Int
+): Intent = Intent(context, PlayActivity::class.java)
+        .putExtra(EXTRA_RECORD_ID, recordId)
+
+private const val EXTRA_RECORD_ID = "record_id"
+
+private const val RECORD_ID_INVALID = -1

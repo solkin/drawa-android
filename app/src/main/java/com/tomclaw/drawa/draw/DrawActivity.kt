@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.draw.di.DrawModule
 import com.tomclaw.drawa.main.getComponent
+import com.tomclaw.drawa.play.createPlayActivityIntent
 import com.tomclaw.drawa.share.createShareActivityIntent
 import com.tomclaw.drawa.util.MetricsProvider
 import javax.inject.Inject
@@ -74,6 +75,14 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
         startActivity(intent)
     }
 
+    override fun showPlayScreen() {
+        val intent = createPlayActivityIntent(
+                context = this,
+                recordId = intent.getRecordId()
+        )
+        startActivity(intent)
+    }
+
     override fun leaveScreen() {
         setResult(RESULT_OK)
         finish()
@@ -87,10 +96,11 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
 
 }
 
-fun createDrawActivityIntent(context: Context,
-                             recordId: Int): Intent =
-        Intent(context, DrawActivity::class.java)
-                .putExtra(EXTRA_RECORD_ID, recordId)
+fun createDrawActivityIntent(
+        context: Context,
+        recordId: Int
+): Intent = Intent(context, DrawActivity::class.java)
+        .putExtra(EXTRA_RECORD_ID, recordId)
 
 private const val KEY_PRESENTER_STATE = "presenter_state"
 

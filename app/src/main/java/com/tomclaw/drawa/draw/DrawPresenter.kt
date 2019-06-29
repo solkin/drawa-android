@@ -32,6 +32,8 @@ interface DrawPresenter {
 
         fun showShareScreen()
 
+        fun showPlayScreen()
+
         fun leaveScreen()
 
     }
@@ -74,6 +76,7 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
         subscriptions += view.drawEvents().subscribe { tool.onDraw() }
         subscriptions += view.navigationClicks().subscribe { onBackPressed() }
         subscriptions += view.undoClicks().subscribe { onUndo() }
+        subscriptions += view.playClicks().subscribe { onPlay() }
         subscriptions += view.shareClicks().subscribe { onShare() }
         subscriptions += view.duplicateClicks().subscribe { onDuplicate() }
         subscriptions += view.deleteClicks().subscribe { onDelete() }
@@ -167,6 +170,10 @@ class DrawPresenterImpl(private val interactor: DrawInteractor,
                     scheduleSaveHistory()
                     selectTool()
                 }, { })
+    }
+
+    private fun onPlay() {
+        addOnSavedAction { router?.showPlayScreen() }
     }
 
     private fun onShare() {
