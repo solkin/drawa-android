@@ -83,16 +83,16 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
     private val threads = LongSparseArray<ThreadInfo>()
     private var mainHandler: Handler? = null
 
-    private class ThreadInfo {
-        var view: WeakReference<DrawaDrawable>? = null
-        var pause = Semaphore(1)
-        var paused = false
-    }
+    private class ThreadInfo(
+            val drawable: WeakReference<DrawaDrawable>,
+            val pause: Semaphore = Semaphore(1),
+            var paused: Boolean = false
+    )
 
-    private class ThreadParam {
-        var threadId: Long = 0
-        var bitmap: Bitmap? = null
-    }
+    private class ThreadParam(
+            var threadId: Long = 0,
+            var bitmap: Bitmap? = null
+    )
 
     init {
         mainHandler = object : Handler(Looper.getMainLooper()) {
@@ -108,8 +108,7 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
 
         val thread = Thread(Runnable { backgroundThread() })
 
-        val info = ThreadInfo()
-        info.view = WeakReference(view)
+        val info = ThreadInfo(drawable = WeakReference(view))
         threads.put(thread.id, info)
 
         thread.start()
@@ -132,7 +131,7 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
     }
 
     private fun stopThread(info: ThreadInfo) {
-        info.view!!.clear()
+        info.drawable.clear()
         if (info.paused) {
             info.pause.release()
             info.paused = false
@@ -166,18 +165,17 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
     @Synchronized
     private fun getState(view: DrawaDrawable): Int {
         val info = getThreadInfo(view) ?: return STATE_STOPPED
-        return if (info.paused) {
-            STATE_PAUSED
-        } else STATE_PLAYING
+        return if (info.paused) STATE_PAUSED else STATE_PLAYING
     }
 
     @Synchronized
     private fun getThreadInfo(view: DrawaDrawable): ThreadInfo? {
         for (i in 0 until threads.size()) {
             val info = threads.valueAt(i)
-            val threadView = info.view!!.get()
-            if (view == threadView)
+            val threadView = info.drawable.get()
+            if (view == threadView) {
                 return info
+            }
         }
         return null
     }
@@ -206,11 +204,11 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
         var delays: Long = 0
         var diagDone = false
 
-        val view = info.view!!.get()
+        val drawable = info.drawable.get()
         val decoder: DrawaDecoder
-        if (view != null) {
-            decoder = view.decoder
-            val bitmap = view.imageBitmap
+        if (drawable != null) {
+            decoder = drawable.decoder
+            val bitmap = drawable.imageBitmap
             try {
                 while (decoder.hasFrame()) {
                     // decode frame
@@ -233,12 +231,12 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
                     info.pause.acquire()
                     info.pause.release()
 
-                    // check if view still exists
-                    if (info.view!!.get() == null) {
+                    // check if drawable still exists
+                    if (info.drawable.get() == null) {
                         break
                     }
 
-                    // send frame to view
+                    // send frame to drawable
                     bitmap.copyPixelsFromBuffer(IntBuffer.wrap(pixels))
                     sendToMain(threadId, MSG_REDRAW, null)
 
@@ -299,9 +297,9 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
             log(DEBUG, "no thread info")
             return
         }
-        val view = info.view!!.get()
+        val view = info.drawable.get()
         if (view == null) {
-            log(DEBUG, "no view")
+            log(DEBUG, "no drawable")
             return
         }
 

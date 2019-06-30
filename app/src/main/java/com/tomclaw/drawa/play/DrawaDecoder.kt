@@ -1,29 +1,17 @@
 package com.tomclaw.drawa.play
 
-class DrawaDecoder {
+interface DrawaDecoder {
 
-    fun getWidth(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    fun getWidth(): Int
 
-    fun getHeight(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    fun getHeight(): Int
 
-    fun hasFrame(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    fun hasFrame(): Boolean
 
-    fun readFrame(): IntArray? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    fun readFrame(): IntArray?
 
-    fun getDelay(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    fun getDelay(): Int
 
-    fun stop() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    fun stop()
 
 }

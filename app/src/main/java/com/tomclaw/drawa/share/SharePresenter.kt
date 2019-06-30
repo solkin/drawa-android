@@ -83,7 +83,7 @@ class SharePresenterImpl(private val interactor: ShareInteractor,
     }
 
     private fun onLoaded() {
-        itemsMap = sharePlugins.associate { Pair(it.weight, it) }
+        itemsMap = sharePlugins.associateBy { it.weight }
         val shareItems = itemsMap.entries.asSequence()
                 .map { entry ->
                     ShareItem(
