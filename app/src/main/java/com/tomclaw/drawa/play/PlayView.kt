@@ -19,7 +19,7 @@ class PlayViewImpl(view: View) : PlayView {
     private val navigationRelay = PublishRelay.create<Unit>()
 
     init {
-        toolbar.setTitle(R.string.info)
+        toolbar.setTitle(R.string.play)
         toolbar.setNavigationOnClickListener { navigationRelay.accept(Unit) }
     }
 
