@@ -2,9 +2,12 @@ package com.tomclaw.drawa.draw
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.Rect
 
 interface BitmapHost {
+
+    val paint: Paint
 
     val bitmap: Bitmap
 

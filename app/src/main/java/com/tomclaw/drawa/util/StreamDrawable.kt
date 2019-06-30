@@ -5,8 +5,6 @@ import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.Matrix
 import android.graphics.Paint
-import android.graphics.Paint.DITHER_FLAG
-import android.graphics.Paint.FILTER_BITMAP_FLAG
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.RectF
@@ -25,11 +23,11 @@ import kotlin.math.max
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 open class StreamDrawable<F>(
+        private val bitmap: Bitmap,
+        private val paint: Paint,
         private val decoder: StreamDecoder<F>,
         private val renderer: StreamRenderer<F>
 ) : Drawable(), Animatable {
-
-    private var imageBitmap: Bitmap
 
     private val matrix = Matrix()
 
@@ -38,19 +36,6 @@ open class StreamDrawable<F>(
     }
 
     var diagnosticsCallback: DiagnosticsCallback? = null
-
-    private val paint = Paint(FILTER_BITMAP_FLAG or DITHER_FLAG)
-
-    init {
-        paint.isAntiAlias = false
-        paint.isFilterBitmap = false
-        paint.isDither = false
-        imageBitmap = Bitmap.createBitmap(
-                decoder.getWidth(),
-                decoder.getHeight(),
-                Bitmap.Config.ARGB_8888
-        )
-    }
 
     fun getAnimState(): Int {
         return getState(this)
@@ -209,7 +194,7 @@ open class StreamDrawable<F>(
         val drawable = info.drawable.get()
         if (drawable != null) {
             val decoder = drawable.decoder
-            val bitmap = drawable.imageBitmap
+            val bitmap = drawable.bitmap
             try {
                 while (decoder.hasFrame()) {
                     // decode frame
@@ -238,7 +223,7 @@ open class StreamDrawable<F>(
                     }
 
                     // send frame to drawable
-                    renderer.render(bitmap, frame)
+                    renderer.render(frame)
                     sendToMain(threadId, MSG_REDRAW, null)
 
                     delay = decoder.getDelay()
@@ -311,22 +296,22 @@ open class StreamDrawable<F>(
 
     override fun onBoundsChange(bounds: Rect) {
         matrix.setRectToRect(
-                RectF(0f, 0f, imageBitmap.width.toFloat(), imageBitmap.height.toFloat()),
+                RectF(0f, 0f, intrinsicWidth.toFloat(), intrinsicHeight.toFloat()),
                 RectF(getBounds()),
                 Matrix.ScaleToFit.CENTER
         )
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawBitmap(imageBitmap, matrix, paint)
+        canvas.drawBitmap(bitmap, matrix, paint)
     }
 
     override fun getIntrinsicWidth(): Int {
-        return imageBitmap.width
+        return bitmap.width
     }
 
     override fun getIntrinsicHeight(): Int {
-        return imageBitmap.height
+        return bitmap.height
     }
 
     override fun setAlpha(alpha: Int) {

@@ -10,8 +10,10 @@ interface ShareInteractor {
 
 }
 
-class ShareInteractorImpl(private val history: History,
-                          private val schedulers: SchedulersFactory) : ShareInteractor {
+class ShareInteractorImpl(
+        private val history: History,
+        private val schedulers: SchedulersFactory
+) : ShareInteractor {
 
     override fun loadHistory(): Observable<Unit> {
         return history.load()

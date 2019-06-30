@@ -47,7 +47,7 @@ class HistoryImpl(
         private val logger: Logger
 ) : History {
 
-    private val events: Deque<Event> = ArrayDeque<Event>()
+    private val events: Deque<Event> = ArrayDeque()
     private var eventIndex = 0
     private val file: File = historyFile(recordId, filesDir)
 

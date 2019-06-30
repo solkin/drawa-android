@@ -21,7 +21,9 @@ interface PlayPresenter {
 
 }
 
-class PlayPresenterImpl() : PlayPresenter {
+class PlayPresenterImpl(
+        private val drawable: EventsDrawable
+) : PlayPresenter {
 
     private var view: PlayView? = null
     private var router: PlayPresenter.PlayRouter? = null
@@ -32,10 +34,13 @@ class PlayPresenterImpl() : PlayPresenter {
         this.view = view
 
         subscriptions += view.navigationClicks().subscribe { router?.leaveScreen() }
+
+        showDrawable()
     }
 
     override fun detachView() {
         subscriptions.clear()
+        view?.destroy()
         this.view = null
     }
 
@@ -45,6 +50,10 @@ class PlayPresenterImpl() : PlayPresenter {
 
     override fun detachRouter() {
         this.router = null
+    }
+
+    private fun showDrawable() {
+        view?.showDrawable(drawable)
     }
 
 }

@@ -6,11 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tomclaw.drawa.util.AspectRatioImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize"
+        android:layout_gravity="center_vertical"
+        android:background="@color/color_white"
+        android:paddingTop="?actionBarSize"
         tools:ignore="ContentDescription" />
 
     <androidx.appcompat.widget.Toolbar

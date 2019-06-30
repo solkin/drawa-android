@@ -1,24 +1,48 @@
 package com.tomclaw.drawa.play
 
-import com.tomclaw.drawa.core.BITMAP_HEIGHT
-import com.tomclaw.drawa.core.BITMAP_WIDTH
 import com.tomclaw.drawa.draw.Event
+import com.tomclaw.drawa.draw.History
+import com.tomclaw.drawa.play.di.PLAY_HEIGHT
+import com.tomclaw.drawa.play.di.PLAY_WIDTH
+import com.tomclaw.drawa.util.SchedulersFactory
 import com.tomclaw.drawa.util.StreamDecoder
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 
 class EventsProvider(
-        private val events: Iterator<Event>
+        private val history: History,
+        private val schedulers: SchedulersFactory
 ) : StreamDecoder<Event> {
 
-    override fun getWidth(): Int = BITMAP_WIDTH
+    private var events: Iterator<Event>? = null
 
-    override fun getHeight(): Int = BITMAP_HEIGHT
+    private val subscriptions = CompositeDisposable()
 
-    override fun hasFrame(): Boolean = events.hasNext()
+    override fun getWidth(): Int = PLAY_WIDTH
 
-    override fun readFrame(): Event? = events.next()
+    override fun getHeight(): Int = PLAY_HEIGHT
 
-    override fun getDelay(): Int = 100
+    override fun hasFrame(): Boolean = events().hasNext()
 
-    override fun stop() {}
+    override fun readFrame(): Event? = events().next()
+
+    override fun getDelay(): Int = 10
+
+    override fun stop() {
+        subscriptions.clear()
+    }
+
+    private fun events(): Iterator<Event> {
+        return events ?: loadEvents()
+    }
+
+    private fun loadEvents(): Iterator<Event> {
+        subscriptions += history.load()
+                .subscribeOn(schedulers.trampoline())
+                .subscribe()
+        val events = history.getEvents()
+        this.events = events
+        return events
+    }
 
 }

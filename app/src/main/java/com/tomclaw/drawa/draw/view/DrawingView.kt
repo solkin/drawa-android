@@ -19,7 +19,7 @@ class DrawingView(
 
     private var dst: Rect? = null
 
-    private val paint: Paint = Paint().apply {
+    override val paint: Paint = Paint().apply {
         isAntiAlias = true
         isDither = true
         isFilterBitmap = true

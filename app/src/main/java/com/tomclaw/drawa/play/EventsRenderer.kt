@@ -1,6 +1,5 @@
 package com.tomclaw.drawa.play
 
-import android.graphics.Bitmap
 import android.view.MotionEvent
 import com.tomclaw.drawa.core.BITMAP_HEIGHT
 import com.tomclaw.drawa.core.BITMAP_WIDTH
@@ -20,7 +19,7 @@ class EventsRenderer(
         toolProvider.listTools().forEach { it.initialize(drawHost, metricsProvider) }
     }
 
-    override fun render(bitmap: Bitmap, frame: Event) {
+    override fun render(frame: Event) {
         processToolEvent(frame)
     }
 
