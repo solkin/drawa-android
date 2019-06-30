@@ -10,6 +10,7 @@ import android.view.View
 import com.tomclaw.drawa.draw.BitmapDrawHost
 import com.tomclaw.drawa.draw.BitmapHost
 import com.tomclaw.drawa.draw.DrawHost
+import kotlin.math.min
 
 class DrawingView(
         context: Context,
@@ -30,6 +31,7 @@ class DrawingView(
         if (dst == null) {
             dst = Rect(0, 0, width, height)
         }
+        val dst = dst ?: return
         canvas.drawBitmap(normalBitmap, src, dst, paint)
         drawingListener?.onDraw()
     }
@@ -43,7 +45,7 @@ class DrawingView(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val size = Math.min(widthMeasureSpec, heightMeasureSpec)
+        val size = min(widthMeasureSpec, heightMeasureSpec)
         super.onMeasure(size, size)
     }
 

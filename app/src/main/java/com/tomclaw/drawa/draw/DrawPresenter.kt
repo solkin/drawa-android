@@ -1,7 +1,6 @@
 package com.tomclaw.drawa.draw
 
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_MOVE
 import android.view.MotionEvent.ACTION_UP
@@ -39,13 +38,15 @@ interface DrawPresenter {
     }
 }
 
-class DrawPresenterImpl(private val interactor: DrawInteractor,
-                        private val schedulers: SchedulersFactory,
-                        private val toolProvider: ToolProvider,
-                        private val history: History,
-                        private val drawHostHolder: DrawHostHolder,
-                        resourceProvider: DrawResourceProvider,
-                        state: Bundle?) : DrawPresenter {
+class DrawPresenterImpl(
+        private val interactor: DrawInteractor,
+        private val schedulers: SchedulersFactory,
+        private val toolProvider: ToolProvider,
+        private val history: History,
+        private val drawHostHolder: DrawHostHolder,
+        resourceProvider: DrawResourceProvider,
+        state: Bundle?
+) : DrawPresenter {
 
     private var view: DrawView? = null
     private var router: DrawPresenter.DrawRouter? = null
