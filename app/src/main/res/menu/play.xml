@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menu_share"
+        android:icon="@drawable/share_variant"
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/menu_replay"
         android:icon="@drawable/replay"
         android:title="@string/replay"

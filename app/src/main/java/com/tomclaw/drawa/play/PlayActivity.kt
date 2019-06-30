@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tomclaw.drawa.R
 import com.tomclaw.drawa.main.getComponent
 import com.tomclaw.drawa.play.di.PlayModule
+import com.tomclaw.drawa.share.createShareActivityIntent
 import javax.inject.Inject
 
 class PlayActivity : AppCompatActivity(), PlayPresenter.PlayRouter {
@@ -41,6 +42,14 @@ class PlayActivity : AppCompatActivity(), PlayPresenter.PlayRouter {
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()
+    }
+
+    override fun showShareScreen() {
+        val intent = createShareActivityIntent(
+                context = this,
+                recordId = intent.getRecordId()
+        )
+        startActivity(intent)
     }
 
     override fun leaveScreen() {

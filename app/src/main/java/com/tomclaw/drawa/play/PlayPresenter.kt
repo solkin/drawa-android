@@ -17,6 +17,8 @@ interface PlayPresenter {
 
     interface PlayRouter {
 
+        fun showShareScreen()
+
         fun leaveScreen()
 
     }
@@ -40,6 +42,7 @@ class PlayPresenterImpl(
         this.view = view
 
         subscriptions += view.navigationClicks().subscribe { router?.leaveScreen() }
+        subscriptions += view.shareClicks().subscribe { onShare() }
         subscriptions += view.replayClicks().subscribe { onReplay() }
 
         drawable.listener = object : StreamDrawable.AnimationListener {
@@ -58,8 +61,8 @@ class PlayPresenterImpl(
     }
 
     override fun detachView() {
-        subscriptions.clear()
         drawable.stop()
+        subscriptions.clear()
         this.view = null
     }
 
@@ -73,6 +76,11 @@ class PlayPresenterImpl(
 
     private fun showDrawable() {
         view?.showDrawable(drawable)
+    }
+
+    private fun onShare() {
+        router?.showShareScreen()
+        router?.leaveScreen()
     }
 
     private fun onReplay() {

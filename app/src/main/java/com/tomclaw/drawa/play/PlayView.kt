@@ -16,6 +16,8 @@ interface PlayView {
 
     fun navigationClicks(): Observable<Unit>
 
+    fun shareClicks(): Observable<Unit>
+
     fun replayClicks(): Observable<Unit>
 
     fun showDrawable(drawable: Drawable)
@@ -32,6 +34,7 @@ class PlayViewImpl(view: View) : PlayView {
     private val imageView: ImageView = view.findViewById(R.id.image_view)
 
     private val navigationRelay = PublishRelay.create<Unit>()
+    private val shareRelay = PublishRelay.create<Unit>()
     private val replayRelay = PublishRelay.create<Unit>()
 
     init {
@@ -40,6 +43,7 @@ class PlayViewImpl(view: View) : PlayView {
         toolbar.inflateMenu(R.menu.play)
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
+                R.id.menu_share -> shareRelay.accept(Unit)
                 R.id.menu_replay -> replayRelay.accept(Unit)
             }
             true
@@ -49,6 +53,8 @@ class PlayViewImpl(view: View) : PlayView {
     }
 
     override fun navigationClicks(): Observable<Unit> = navigationRelay
+
+    override fun shareClicks(): Observable<Unit> = shareRelay
 
     override fun replayClicks(): Observable<Unit> = replayRelay
 
