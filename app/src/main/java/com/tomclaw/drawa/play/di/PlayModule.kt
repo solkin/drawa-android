@@ -26,9 +26,11 @@ class PlayModule(private val recordId: Int) {
     @Provides
     @PerActivity
     fun providePlayPresenter(
-            drawable: EventsDrawable
+            drawHost: DrawHost,
+            drawable: EventsDrawable,
+            decoder: EventsProvider
     ): PlayPresenter {
-        return PlayPresenterImpl(drawable)
+        return PlayPresenterImpl(drawHost, drawable, decoder)
     }
 
     @Provides

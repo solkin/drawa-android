@@ -1,5 +1,6 @@
 package com.tomclaw.drawa.play
 
+import com.tomclaw.drawa.draw.DrawHost
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 
@@ -22,7 +23,9 @@ interface PlayPresenter {
 }
 
 class PlayPresenterImpl(
-        private val drawable: EventsDrawable
+        private val drawHost: DrawHost,
+        private val drawable: EventsDrawable,
+        private val eventsProvider: EventsProvider
 ) : PlayPresenter {
 
     private var view: PlayView? = null
@@ -34,13 +37,14 @@ class PlayPresenterImpl(
         this.view = view
 
         subscriptions += view.navigationClicks().subscribe { router?.leaveScreen() }
+        subscriptions += view.replayClicks().subscribe { onReplay() }
 
         showDrawable()
     }
 
     override fun detachView() {
         subscriptions.clear()
-        view?.destroy()
+        drawable.stop()
         this.view = null
     }
 
@@ -54,6 +58,13 @@ class PlayPresenterImpl(
 
     private fun showDrawable() {
         view?.showDrawable(drawable)
+    }
+
+    private fun onReplay() {
+        drawable.stop()
+        eventsProvider.reset()
+        drawHost.clearBitmap()
+        drawable.start()
     }
 
 }

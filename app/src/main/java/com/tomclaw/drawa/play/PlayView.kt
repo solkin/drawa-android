@@ -14,9 +14,9 @@ interface PlayView {
 
     fun navigationClicks(): Observable<Unit>
 
-    fun showDrawable(drawable: Drawable)
+    fun replayClicks(): Observable<Unit>
 
-    fun destroy()
+    fun showDrawable(drawable: Drawable)
 
 }
 
@@ -26,21 +26,27 @@ class PlayViewImpl(view: View) : PlayView {
     private val imageView: ImageView = view.findViewById(R.id.image_view)
 
     private val navigationRelay = PublishRelay.create<Unit>()
+    private val replayRelay = PublishRelay.create<Unit>()
 
     init {
         toolbar.setTitle(R.string.play)
         toolbar.setNavigationOnClickListener { navigationRelay.accept(Unit) }
+        toolbar.inflateMenu(R.menu.play)
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menu_replay -> replayRelay.accept(Unit)
+            }
+            true
+        }
     }
 
     override fun navigationClicks(): Observable<Unit> = navigationRelay
 
+    override fun replayClicks(): Observable<Unit> = replayRelay
+
     override fun showDrawable(drawable: Drawable) {
         imageView.setImageDrawable(drawable)
         (drawable as? Animatable)?.start()
-    }
-
-    override fun destroy() {
-        (imageView.drawable as? Animatable)?.stop()
     }
 
 }

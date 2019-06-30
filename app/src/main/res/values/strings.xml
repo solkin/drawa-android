@@ -9,6 +9,7 @@
     <string name="stock">Мои рисунки</string>
     <string name="draw">Рисунок</string>
     <string name="share">Поделиться</string>
+    <string name="replay">Повторить</string>
     <string name="select_share_type">Выбрать</string>
     <string name="anim_share_title">Анимация</string>
     <string name="anim_share_description">Поделитесь анимацией процесса рисования изображения</string>

@@ -31,12 +31,6 @@ open class StreamDrawable<F>(
 
     private val matrix = Matrix()
 
-    interface DiagnosticsCallback {
-        fun onDiagnostics(value: String)
-    }
-
-    var diagnosticsCallback: DiagnosticsCallback? = null
-
     fun getAnimState(): Int {
         return getState(this)
     }
@@ -186,15 +180,10 @@ open class StreamDrawable<F>(
         val startTime = System.currentTimeMillis()
         var infoTime = startTime + 10 * 1000
         var delay = 0
-        var frameIndex: Long = 0
-        var decodeTimes: Long = 0
-        var delays: Long = 0
-        var diagDone = false
 
         val drawable = info.drawable.get()
         if (drawable != null) {
             val decoder = drawable.decoder
-            val bitmap = drawable.bitmap
             try {
                 while (decoder.hasFrame()) {
                     // decode frame
@@ -228,20 +217,6 @@ open class StreamDrawable<F>(
 
                     delay = decoder.getDelay()
 
-                    // some logging
-                    if (diagnosticsCallback != null && !diagDone) {
-                        frameIndex++
-                        decodeTimes += decodeTime
-                        delays += delay.toLong()
-                        if (System.currentTimeMillis() > startTime + 5 * 1000) {
-                            val fpsa = frameIndex * 1000 / decodeTimes
-                            val fpsb = frameIndex * 1000 / delays
-                            val value = "size: " + bitmap.width + " x " + bitmap.height +
-                                    "\nfps: " + fpsa + " / " + fpsb
-                            diagnosticsCallback!!.onDiagnostics(value)
-                            diagDone = true
-                        }
-                    }
                     if (System.currentTimeMillis() > infoTime) {
                         log(INFO, "Drawa thread still running")
                         infoTime += (10 * 1000).toLong()

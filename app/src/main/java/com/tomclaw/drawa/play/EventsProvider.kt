@@ -32,6 +32,10 @@ class EventsProvider(
         subscriptions.clear()
     }
 
+    fun reset() {
+        loadEvents()
+    }
+
     private fun events(): Iterator<Event> {
         return events ?: loadEvents()
     }
