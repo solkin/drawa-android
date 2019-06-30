@@ -1,4 +1,4 @@
-package com.tomclaw.drawa.play
+package com.tomclaw.drawa.util
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -25,7 +25,7 @@ import kotlin.math.max
 
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable {
+class StreamDrawable(private val decoder: StreamDecoder) : Drawable(), Animatable {
 
     private var imageBitmap: Bitmap
 
@@ -84,7 +84,7 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
     private var mainHandler: Handler? = null
 
     private class ThreadInfo(
-            val drawable: WeakReference<DrawaDrawable>,
+            val drawable: WeakReference<StreamDrawable>,
             val pause: Semaphore = Semaphore(1),
             var paused: Boolean = false
     )
@@ -103,7 +103,7 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
     }
 
     @Synchronized
-    private fun start(view: DrawaDrawable) {
+    private fun start(view: StreamDrawable) {
         log(INFO, "start")
 
         val thread = Thread(Runnable { backgroundThread() })
@@ -115,7 +115,7 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
     }
 
     @Synchronized
-    private fun stop(view: DrawaDrawable) {
+    private fun stop(view: StreamDrawable) {
         log(INFO, "stop")
         val info = getThreadInfo(view)
         if (info != null) {
@@ -139,7 +139,7 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
     }
 
     @Synchronized
-    private fun pause(view: DrawaDrawable) {
+    private fun pause(view: StreamDrawable) {
         log(INFO, "pause")
         val info = getThreadInfo(view)
         if (info != null && !info.paused) {
@@ -153,7 +153,7 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
     }
 
     @Synchronized
-    private fun resume(view: DrawaDrawable) {
+    private fun resume(view: StreamDrawable) {
         log(INFO, "resume")
         val info = getThreadInfo(view)
         if (info != null && info.paused) {
@@ -163,13 +163,13 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
     }
 
     @Synchronized
-    private fun getState(view: DrawaDrawable): Int {
+    private fun getState(view: StreamDrawable): Int {
         val info = getThreadInfo(view) ?: return STATE_STOPPED
         return if (info.paused) STATE_PAUSED else STATE_PLAYING
     }
 
     @Synchronized
-    private fun getThreadInfo(view: DrawaDrawable): ThreadInfo? {
+    private fun getThreadInfo(view: StreamDrawable): ThreadInfo? {
         for (i in 0 until threads.size()) {
             val info = threads.valueAt(i)
             val threadView = info.drawable.get()
@@ -205,7 +205,7 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
         var diagDone = false
 
         val drawable = info.drawable.get()
-        val decoder: DrawaDecoder
+        val decoder: StreamDecoder
         if (drawable != null) {
             decoder = drawable.decoder
             val bitmap = drawable.imageBitmap
@@ -354,7 +354,7 @@ class DrawaDrawable(private val decoder: DrawaDecoder) : Drawable(), Animatable 
 
 }
 
-private const val TAG = "DrawaDrawable"
+private const val TAG = "StreamDrawable"
 private const val INFO = 1
 private const val DEBUG = 2
 private const val VERBOSE = 3

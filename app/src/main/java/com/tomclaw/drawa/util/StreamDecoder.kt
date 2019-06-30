@@ -1,6 +1,6 @@
-package com.tomclaw.drawa.play
+package com.tomclaw.drawa.util
 
-interface DrawaDecoder {
+interface StreamDecoder {
 
     fun getWidth(): Int
 
