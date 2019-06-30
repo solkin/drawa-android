@@ -10,7 +10,7 @@
     <color name="color_tint">#8a8a8a</color>
     <color name="color_semitransparent">#baffffff</color>
     <color name="color_black">#000000</color>
-    <color name="color_black_semitransparent">#cc000000</color>
+    <color name="color_white">#ffffff</color>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/color_primary</item>
@@ -46,7 +46,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <style name="CardViewStyle.Light" parent="CardView">
-        <item name="cardBackgroundColor">@color/cardview_light_background</item>
+        <item name="cardBackgroundColor">@color/color_white</item>
     </style>
 
     <style name="ToolItem">
