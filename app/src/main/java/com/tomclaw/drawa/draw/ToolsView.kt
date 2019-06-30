@@ -89,23 +89,23 @@ class ToolsViewImpl(view: View) : ToolsView {
         tuneSize.setOnClickListener { selectChooserRelay.accept(ID_SIZE_CHOOSER) }
         toolsBackground.setOnClickListener { hideChooserRelay.accept(Unit) }
 
-        view.setOnClickListener(R.id.tool_pencil, { toolRelay.accept(TYPE_PENCIL) })
-        view.setOnClickListener(R.id.tool_brush, { toolRelay.accept(TYPE_BRUSH) })
-        view.setOnClickListener(R.id.tool_marker, { toolRelay.accept(TYPE_MARKER) })
-        view.setOnClickListener(R.id.tool_fluffy, { toolRelay.accept(TYPE_FLUFFY) })
-        view.setOnClickListener(R.id.tool_fill, { toolRelay.accept(TYPE_FILL) })
-        view.setOnClickListener(R.id.tool_eraser, { toolRelay.accept(TYPE_ERASER) })
+        view.setOnClickListener(R.id.tool_pencil) { toolRelay.accept(TYPE_PENCIL) }
+        view.setOnClickListener(R.id.tool_brush) { toolRelay.accept(TYPE_BRUSH) }
+        view.setOnClickListener(R.id.tool_marker) { toolRelay.accept(TYPE_MARKER) }
+        view.setOnClickListener(R.id.tool_fluffy) { toolRelay.accept(TYPE_FLUFFY) }
+        view.setOnClickListener(R.id.tool_fill) { toolRelay.accept(TYPE_FILL) }
+        view.setOnClickListener(R.id.tool_eraser) { toolRelay.accept(TYPE_ERASER) }
         view.findViewById<PaletteView>(R.id.palette_view).colorClickListener =
                 object : PaletteView.OnColorClickListener {
                     override fun onColorClicked(color: Int) {
                         colorRelay.accept(color)
                     }
                 }
-        view.setOnClickListener(R.id.size_s, { sizeRelay.accept(SIZE_S) })
-        view.setOnClickListener(R.id.size_m, { sizeRelay.accept(SIZE_M) })
-        view.setOnClickListener(R.id.size_l, { sizeRelay.accept(SIZE_L) })
-        view.setOnClickListener(R.id.size_xl, { sizeRelay.accept(SIZE_XL) })
-        view.setOnClickListener(R.id.size_xxl, { sizeRelay.accept(SIZE_XXL) })
+        view.setOnClickListener(R.id.size_s) { sizeRelay.accept(SIZE_S) }
+        view.setOnClickListener(R.id.size_m) { sizeRelay.accept(SIZE_M) }
+        view.setOnClickListener(R.id.size_l) { sizeRelay.accept(SIZE_L) }
+        view.setOnClickListener(R.id.size_xl) { sizeRelay.accept(SIZE_XL) }
+        view.setOnClickListener(R.id.size_xxl) { sizeRelay.accept(SIZE_XXL) }
     }
 
     override fun showToolChooser(animate: Boolean) {
@@ -203,12 +203,12 @@ class ToolsViewImpl(view: View) : ToolsView {
             val tillTranslationY = if (delta >= 0) delta.toFloat() else 0f
             visibleChooser.hideWithAlphaAnimation()
             nextChooser.showWithAlphaAnimation()
-            toolsWrapper.moveWithTranslationAnimation(fromTranslationY, tillTranslationY, {
+            toolsWrapper.moveWithTranslationAnimation(fromTranslationY, tillTranslationY) {
                 toolChooser.hide()
                 colorChooser.hide()
                 sizeChooser.hide()
                 nextChooser.show()
-            })
+            }
         }
     }
 
