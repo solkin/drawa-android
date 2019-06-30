@@ -37,6 +37,7 @@ class PlayViewImpl(view: View) : PlayView {
     init {
         toolbar.setTitle(R.string.play)
         toolbar.setNavigationOnClickListener { navigationRelay.accept(Unit) }
+        toolbar.inflateMenu(R.menu.play)
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_replay -> replayRelay.accept(Unit)
@@ -57,17 +58,12 @@ class PlayViewImpl(view: View) : PlayView {
     }
 
     override fun showReplayButton() {
-        clearMenu()
-        toolbar.inflateMenu(R.menu.play)
+        toolbar.menu.findItem(R.id.menu_replay).isVisible = true
         toolbar.show()
     }
 
     override fun hideReplayButton() {
-        clearMenu()
-    }
-
-    private fun clearMenu() {
-        toolbar.menu.clear()
+        toolbar.menu.findItem(R.id.menu_replay).isVisible = false
     }
 
 }
