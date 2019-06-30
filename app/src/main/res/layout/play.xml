@@ -6,12 +6,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tomclaw.drawa.util.AspectRatioImageView
+    <com.tomclaw.drawa.util.ZoomableImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:background="@color/color_white"
         android:paddingTop="?actionBarSize"
         tools:ignore="ContentDescription" />
 
@@ -19,9 +18,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_semitransparent_black"
         android:theme="@style/ToolbarTheme"
         app:navigationIcon="?attr/homeAsUpIndicator" />
-
-    <include layout="@layout/shadow_toolbar" />
 
 </FrameLayout>

@@ -29,6 +29,8 @@ open class StreamDrawable<F>(
         private val renderer: StreamRenderer<F>
 ) : Drawable(), Animatable {
 
+    var listener: AnimationListener? = null
+
     private val matrix = Matrix()
 
     fun getAnimState(): Int {
@@ -91,6 +93,8 @@ open class StreamDrawable<F>(
 
         val info = ThreadInfo(drawable = WeakReference(view))
         threads.put(thread.id, info)
+
+        listener?.onAnimationStart()
 
         thread.start()
     }
@@ -169,6 +173,7 @@ open class StreamDrawable<F>(
     @Synchronized
     private fun removeThread(threadId: Long) {
         threads.remove(threadId)
+        listener?.onAnimationEnd()
     }
 
     private fun backgroundThread() {
@@ -178,7 +183,6 @@ open class StreamDrawable<F>(
         log(DEBUG, "started thread $threadId")
 
         val startTime = System.currentTimeMillis()
-        var infoTime = startTime + 10 * 1000
         var delay = 0
 
         val drawable = info.drawable.get()
@@ -217,18 +221,14 @@ open class StreamDrawable<F>(
 
                     delay = decoder.getDelay()
 
-                    if (System.currentTimeMillis() > infoTime) {
-                        log(INFO, "Drawa thread still running")
-                        infoTime += (10 * 1000).toLong()
-                    }
                     if (System.currentTimeMillis() > startTime + 4 * 60 * 60 * 1000) {
-                        throw RuntimeException("Drawa thread leaked, fix your code")
+                        throw RuntimeException("stream thread leaked, fix your code")
                     }
                 }
             } catch (ex: IOException) {
-                Log.d(TAG, "gif drawable warn", ex)
+                Log.d(TAG, "stream drawable warn", ex)
             } catch (ex: InterruptedException) {
-                Log.d(TAG, "gif drawable err", ex)
+                Log.d(TAG, "stream drawable err", ex)
             } finally {
                 log(DEBUG, "stopping decoder")
                 decoder.stop()
@@ -311,6 +311,14 @@ open class StreamDrawable<F>(
 
     fun log(level: Int, msg: String) {
         Log.d(TAG, "[$level] $msg")
+    }
+
+    interface AnimationListener {
+
+        fun onAnimationStart()
+
+        fun onAnimationEnd()
+
     }
 
 }

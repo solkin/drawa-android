@@ -1,6 +1,7 @@
 package com.tomclaw.drawa.play
 
 import com.tomclaw.drawa.draw.DrawHost
+import com.tomclaw.drawa.util.StreamDrawable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 
@@ -31,6 +32,8 @@ class PlayPresenterImpl(
     private var view: PlayView? = null
     private var router: PlayPresenter.PlayRouter? = null
 
+    private var isReplay: Boolean = false
+
     private val subscriptions = CompositeDisposable()
 
     override fun attachView(view: PlayView) {
@@ -38,6 +41,18 @@ class PlayPresenterImpl(
 
         subscriptions += view.navigationClicks().subscribe { router?.leaveScreen() }
         subscriptions += view.replayClicks().subscribe { onReplay() }
+
+        drawable.listener = object : StreamDrawable.AnimationListener {
+
+            override fun onAnimationStart() {
+                view.hideReplayButton()
+                drawHost.clearBitmap()
+            }
+
+            override fun onAnimationEnd() {
+                view.showReplayButton()
+            }
+        }
 
         showDrawable()
     }
@@ -61,9 +76,7 @@ class PlayPresenterImpl(
     }
 
     private fun onReplay() {
-        drawable.stop()
         eventsProvider.reset()
-        drawHost.clearBitmap()
         drawable.start()
     }
 

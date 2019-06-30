@@ -7,6 +7,8 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tomclaw.drawa.R
+import com.tomclaw.drawa.util.show
+import com.tomclaw.drawa.util.toggle
 import io.reactivex.Observable
 
 
@@ -17,6 +19,10 @@ interface PlayView {
     fun replayClicks(): Observable<Unit>
 
     fun showDrawable(drawable: Drawable)
+
+    fun showReplayButton()
+
+    fun hideReplayButton()
 
 }
 
@@ -31,13 +37,14 @@ class PlayViewImpl(view: View) : PlayView {
     init {
         toolbar.setTitle(R.string.play)
         toolbar.setNavigationOnClickListener { navigationRelay.accept(Unit) }
-        toolbar.inflateMenu(R.menu.play)
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_replay -> replayRelay.accept(Unit)
             }
             true
         }
+        imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+        imageView.setOnClickListener { toolbar.toggle() }
     }
 
     override fun navigationClicks(): Observable<Unit> = navigationRelay
@@ -47,6 +54,20 @@ class PlayViewImpl(view: View) : PlayView {
     override fun showDrawable(drawable: Drawable) {
         imageView.setImageDrawable(drawable)
         (drawable as? Animatable)?.start()
+    }
+
+    override fun showReplayButton() {
+        clearMenu()
+        toolbar.inflateMenu(R.menu.play)
+        toolbar.show()
+    }
+
+    override fun hideReplayButton() {
+        clearMenu()
+    }
+
+    private fun clearMenu() {
+        toolbar.menu.clear()
     }
 
 }
