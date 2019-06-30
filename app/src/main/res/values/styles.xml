@@ -9,6 +9,8 @@
     <color name="color_back">#EEEEEE</color>
     <color name="color_tint">#8a8a8a</color>
     <color name="color_semitransparent">#baffffff</color>
+    <color name="color_black">#000000</color>
+    <color name="color_black_semitransparent">#cc000000</color>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/color_primary</item>
