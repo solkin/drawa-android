@@ -24,9 +24,9 @@ import kotlin.math.max
 
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class StreamDrawable(
-        private val decoder: StreamDecoder,
-        private val renderer: StreamRenderer
+open class StreamDrawable<F>(
+        private val decoder: StreamDecoder<F>,
+        private val renderer: StreamRenderer<F>
 ) : Drawable(), Animatable {
 
     private var imageBitmap: Bitmap
@@ -82,11 +82,11 @@ class StreamDrawable(
 
     // Static dispatcher methods
 
-    private val threads = LongSparseArray<ThreadInfo>()
+    private val threads = LongSparseArray<ThreadInfo<F>>()
     private val mainHandler: Handler
 
-    private class ThreadInfo(
-            val drawable: WeakReference<StreamDrawable>,
+    private class ThreadInfo<F>(
+            val drawable: WeakReference<StreamDrawable<F>>,
             val pause: Semaphore = Semaphore(1),
             var paused: Boolean = false
     )
@@ -105,7 +105,7 @@ class StreamDrawable(
     }
 
     @Synchronized
-    private fun start(view: StreamDrawable) {
+    private fun start(view: StreamDrawable<F>) {
         log(INFO, "start")
 
         val thread = Thread(Runnable { backgroundThread() })
@@ -117,7 +117,7 @@ class StreamDrawable(
     }
 
     @Synchronized
-    private fun stop(view: StreamDrawable) {
+    private fun stop(view: StreamDrawable<F>) {
         log(INFO, "stop")
         val info = getThreadInfo(view)
         if (info != null) {
@@ -132,7 +132,7 @@ class StreamDrawable(
         }
     }
 
-    private fun stopThread(info: ThreadInfo) {
+    private fun stopThread(info: ThreadInfo<F>) {
         info.drawable.clear()
         if (info.paused) {
             info.pause.release()
@@ -141,7 +141,7 @@ class StreamDrawable(
     }
 
     @Synchronized
-    private fun pause(view: StreamDrawable) {
+    private fun pause(view: StreamDrawable<F>) {
         log(INFO, "pause")
         val info = getThreadInfo(view)
         if (info != null && !info.paused) {
@@ -155,7 +155,7 @@ class StreamDrawable(
     }
 
     @Synchronized
-    private fun resume(view: StreamDrawable) {
+    private fun resume(view: StreamDrawable<F>) {
         log(INFO, "resume")
         val info = getThreadInfo(view)
         if (info != null && info.paused) {
@@ -165,13 +165,13 @@ class StreamDrawable(
     }
 
     @Synchronized
-    private fun getState(view: StreamDrawable): Int {
+    private fun getState(view: StreamDrawable<F>): Int {
         val info = getThreadInfo(view) ?: return STATE_STOPPED
         return if (info.paused) STATE_PAUSED else STATE_PLAYING
     }
 
     @Synchronized
-    private fun getThreadInfo(view: StreamDrawable): ThreadInfo? {
+    private fun getThreadInfo(view: StreamDrawable<F>): ThreadInfo<F>? {
         for (i in 0 until threads.size()) {
             val info = threads.valueAt(i)
             val threadView = info.drawable.get()
@@ -183,7 +183,7 @@ class StreamDrawable(
     }
 
     @Synchronized
-    private fun getThreadInfo(threadId: Long): ThreadInfo? {
+    private fun getThreadInfo(threadId: Long): ThreadInfo<F>? {
         return threads.get(threadId)
     }
 
@@ -207,9 +207,8 @@ class StreamDrawable(
         var diagDone = false
 
         val drawable = info.drawable.get()
-        val decoder: StreamDecoder
         if (drawable != null) {
-            decoder = drawable.decoder
+            val decoder = drawable.decoder
             val bitmap = drawable.imageBitmap
             try {
                 while (decoder.hasFrame()) {

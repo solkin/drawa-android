@@ -8,6 +8,7 @@ import android.graphics.Path
 import android.graphics.Rect
 import com.tomclaw.drawa.draw.DrawHost
 import com.tomclaw.drawa.util.MetricsProvider
+import kotlin.math.min
 
 abstract class Tool {
 
@@ -79,7 +80,7 @@ abstract class Tool {
     }
 
     private fun Rect.minDimension(): Int {
-        return Math.min(width(), height())
+        return min(width(), height())
     }
 
 }

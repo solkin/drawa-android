@@ -1,6 +1,6 @@
 package com.tomclaw.drawa.util
 
-interface StreamDecoder {
+interface StreamDecoder<F> {
 
     fun getWidth(): Int
 
@@ -8,12 +8,10 @@ interface StreamDecoder {
 
     fun hasFrame(): Boolean
 
-    fun readFrame(): Frame?
+    fun readFrame(): F?
 
     fun getDelay(): Int
 
     fun stop()
-
-    interface Frame
 
 }

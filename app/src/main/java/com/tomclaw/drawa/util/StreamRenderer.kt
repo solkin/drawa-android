@@ -2,8 +2,8 @@ package com.tomclaw.drawa.util
 
 import android.graphics.Bitmap
 
-interface StreamRenderer {
+interface StreamRenderer<F> {
 
-    fun render(bitmap: Bitmap, frame: StreamDecoder.Frame)
+    fun render(bitmap: Bitmap, frame: F)
 
 }
