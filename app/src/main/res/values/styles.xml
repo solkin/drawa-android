@@ -26,6 +26,14 @@
         <item name="android:windowBackground">@color/color_light_gray</item>
     </style>
 
+    <style name="PlayTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/color_black</item>
+        <item name="colorPrimaryDark">@color/color_black</item>
+        <item name="colorAccent">@color/color_primary</item>
+
+        <item name="android:windowBackground">@color/color_black</item>
+    </style>
+
     <style name="ToolbarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>

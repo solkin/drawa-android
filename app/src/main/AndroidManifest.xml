@@ -42,7 +42,8 @@
 
         <activity
             android:name=".play.PlayActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:theme="@style/PlayTheme" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
