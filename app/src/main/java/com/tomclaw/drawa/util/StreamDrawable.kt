@@ -19,13 +19,15 @@ import android.util.Log
 import android.util.LongSparseArray
 import java.io.IOException
 import java.lang.ref.WeakReference
-import java.nio.IntBuffer
 import java.util.concurrent.Semaphore
 import kotlin.math.max
 
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class StreamDrawable(private val decoder: StreamDecoder) : Drawable(), Animatable {
+class StreamDrawable(
+        private val decoder: StreamDecoder,
+        private val renderer: StreamRenderer
+) : Drawable(), Animatable {
 
     private var imageBitmap: Bitmap
 
@@ -81,7 +83,7 @@ class StreamDrawable(private val decoder: StreamDecoder) : Drawable(), Animatabl
     // Static dispatcher methods
 
     private val threads = LongSparseArray<ThreadInfo>()
-    private var mainHandler: Handler? = null
+    private val mainHandler: Handler
 
     private class ThreadInfo(
             val drawable: WeakReference<StreamDrawable>,
@@ -214,8 +216,8 @@ class StreamDrawable(private val decoder: StreamDecoder) : Drawable(), Animatabl
                     // decode frame
                     val frameStart = System.currentTimeMillis()
 
-                    val pixels = decoder.readFrame()
-                    if (pixels == null) {
+                    val frame = decoder.readFrame()
+                    if (frame == null) {
                         log(DEBUG, "null frame, stopping")
                         break
                     }
@@ -237,7 +239,7 @@ class StreamDrawable(private val decoder: StreamDecoder) : Drawable(), Animatabl
                     }
 
                     // send frame to drawable
-                    bitmap.copyPixelsFromBuffer(IntBuffer.wrap(pixels))
+                    renderer.render(bitmap, frame)
                     sendToMain(threadId, MSG_REDRAW, null)
 
                     delay = decoder.getDelay()
@@ -282,7 +284,7 @@ class StreamDrawable(private val decoder: StreamDecoder) : Drawable(), Animatabl
         val param = ThreadParam()
         param.threadId = threadId
         param.bitmap = bitmap
-        mainHandler!!.obtainMessage(what, param).sendToTarget()
+        mainHandler.obtainMessage(what, param).sendToTarget()
     }
 
     private fun mainThread(what: Int, obj: ThreadParam) {

@@ -8,10 +8,12 @@ interface StreamDecoder {
 
     fun hasFrame(): Boolean
 
-    fun readFrame(): IntArray?
+    fun readFrame(): Frame?
 
     fun getDelay(): Int
 
     fun stop()
+
+    interface Frame
 
 }
