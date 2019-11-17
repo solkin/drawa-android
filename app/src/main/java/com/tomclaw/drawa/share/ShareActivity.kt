@@ -54,9 +54,9 @@ class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
         super.onDestroy()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putBundle(KEY_PRESENTER_STATE, presenter.saveState())
+        outState.putBundle(KEY_PRESENTER_STATE, presenter.saveState())
     }
 
     override fun leaveScreen() {
