@@ -55,7 +55,6 @@ class DrawViewImpl(
     private val overlayProgress: View = view.findViewById(R.id.overlay_progress)
     private val flipper: ViewFlipper = view.findViewById(R.id.flipper)
     private val undoButton: View = view.findViewById(R.id.undo_button)
-    private val playButton: View = view.findViewById(R.id.play_button)
 
     private val touchRelay = PublishRelay.create<TouchEvent>()
     private val drawRelay = PublishRelay.create<Unit>()
@@ -76,13 +75,13 @@ class DrawViewImpl(
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_share -> shareRelay.accept(Unit)
+                R.id.menu_play -> playRelay.accept(Unit)
                 R.id.menu_duplicate -> duplicateRelay.accept(Unit)
                 R.id.menu_delete -> deleteRelay.accept(Unit)
             }
             true
         }
         undoButton.setOnClickListener { undoRelay.accept(Unit) }
-        playButton.setOnClickListener { playRelay.accept(Unit) }
         drawingView.drawingListener = object : DrawingListener {
             override fun onTouchEvent(event: TouchEvent) {
                 touchRelay.accept(event)

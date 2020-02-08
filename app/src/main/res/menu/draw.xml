@@ -7,6 +7,11 @@
         android:title="@string/share"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/menu_play"
+        android:icon="@drawable/play"
+        android:title="@string/play"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/menu_duplicate"
         android:icon="@drawable/duplicate"
         android:title="@string/duplicate"
