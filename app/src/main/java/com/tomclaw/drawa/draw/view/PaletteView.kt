@@ -14,8 +14,7 @@ import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import com.tomclaw.drawa.R
 
-class PaletteView(context: Context, attributes: AttributeSet)
-    : View(context, attributes) {
+class PaletteView(context: Context, attributes: AttributeSet) : View(context, attributes) {
 
     private val fillPaint = Paint(ANTI_ALIAS_FLAG)
     private val shadowPaint = Paint(ANTI_ALIAS_FLAG)

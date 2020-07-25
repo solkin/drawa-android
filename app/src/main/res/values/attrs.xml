@@ -2,7 +2,7 @@
 <resources>
 
     <declare-styleable name="PaletteView">
-        <attr name="palette" />
+        <attr name="palette" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="CircleProgressView">
