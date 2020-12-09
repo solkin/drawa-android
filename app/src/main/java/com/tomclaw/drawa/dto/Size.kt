@@ -3,8 +3,10 @@ package com.tomclaw.drawa.dto
 import android.os.Parcel
 import android.os.Parcelable
 
-class Size(val width: Int,
-           val height: Int) : Parcelable {
+class Size(
+        val width: Int,
+        val height: Int
+) : Parcelable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(width)

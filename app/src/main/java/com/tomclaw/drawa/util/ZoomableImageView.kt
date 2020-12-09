@@ -20,7 +20,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.ImageView
 import android.widget.OverScroller
 import android.widget.Scroller
 
@@ -29,7 +28,7 @@ import android.widget.Scroller
  * Based on TouchImageView by Michael Ortiz
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-class ZoomableImageView : ImageView {
+class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
 
     private enum class State {
         NONE, DRAG, ZOOM, FLING, ANIMATE_ZOOM
@@ -212,7 +211,7 @@ class ZoomableImageView : ImageView {
         val superState = super.onSaveInstanceState()
         imgMatrix.getValues(matrix)
         return SavedState(
-                superState,
+                superState!!,
                 currentZoom,
                 matrix,
                 matchViewSize,
@@ -257,10 +256,12 @@ class ZoomableImageView : ImageView {
     }
 
     @JvmOverloads
-    fun setZoom(scale: Float,
-                focusX: Float = 0.5f,
-                focusY: Float = 0.5f,
-                scaleType: ScaleType = imageScaleType) {
+    fun setZoom(
+            scale: Float,
+            focusX: Float = 0.5f,
+            focusY: Float = 0.5f,
+            scaleType: ScaleType = imageScaleType
+    ) {
         if (!onDrawReady) {
             delayedZoomVariables = ZoomVariables(scale, focusX, focusY, scaleType)
             return
@@ -927,12 +928,14 @@ class ZoomableImageView : ImageView {
         val prevViewSize: SizeF
         val imageRenderedAtLeastOnce: Boolean
 
-        constructor(superState: Parcelable,
-                    currentZoom: Float,
-                    matrix: FloatArray,
-                    prevMatchViewSize: SizeF,
-                    prevViewSize: SizeF,
-                    imageRenderedAtLeastOnce: Boolean) : super(superState) {
+        constructor(
+                superState: Parcelable,
+                currentZoom: Float,
+                matrix: FloatArray,
+                prevMatchViewSize: SizeF,
+                prevViewSize: SizeF,
+                imageRenderedAtLeastOnce: Boolean
+        ) : super(superState) {
             this.currentZoom = currentZoom
             this.matrix = matrix
             this.prevMatchViewSize = prevMatchViewSize
@@ -942,9 +945,9 @@ class ZoomableImageView : ImageView {
 
         constructor(source: Parcel) : super(source) {
             currentZoom = source.readFloat()
-            matrix = source.createFloatArray()
-            prevMatchViewSize = source.readParcelable(SizeF::class.java.classLoader)
-            prevViewSize = source.readParcelable(SizeF::class.java.classLoader)
+            matrix = source.createFloatArray()!!
+            prevMatchViewSize = source.readParcelable(SizeF::class.java.classLoader)!!
+            prevViewSize = source.readParcelable(SizeF::class.java.classLoader)!!
             imageRenderedAtLeastOnce = (source.readInt() == 1)
         }
 

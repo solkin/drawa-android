@@ -20,7 +20,7 @@ class Record(
     companion object CREATOR : Parcelable.Creator<Record> {
         override fun createFromParcel(parcel: Parcel): Record {
             val id = parcel.readInt()
-            val size = parcel.readParcelable<Size>(Size::class.java.classLoader)
+            val size = parcel.readParcelable<Size>(Size::class.java.classLoader)!!
             val time = parcel.readLong()
             return Record(id, size, time)
         }
