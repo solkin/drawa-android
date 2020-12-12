@@ -2,6 +2,8 @@ package com.tomclaw.drawa.draw.tools
 
 import android.graphics.Paint
 import android.graphics.Path
+import kotlin.math.abs
+import kotlin.math.sqrt
 
 class Brush : Tool() {
 
@@ -51,9 +53,9 @@ class Brush : Tool() {
                 ((y + prevY).toFloat() / 2)
         )
 
-        val deltaX = Math.abs(x - prevX)
-        val deltaY = Math.abs(y - prevY)
-        val length = Math.sqrt((deltaX * deltaX + deltaY * deltaY).toDouble())
+        val deltaX = abs(x - prevX)
+        val deltaY = abs(y - prevY)
+        val length = sqrt((deltaX * deltaX + deltaY * deltaY).toDouble())
         val sizeStep = defaultRadius / 20
         var size = strokeSize
         if (length * 5 < defaultRadius) {
