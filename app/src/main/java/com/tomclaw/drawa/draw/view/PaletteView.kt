@@ -44,13 +44,11 @@ class PaletteView(context: Context, attributes: AttributeSet) : View(context, at
                     0,
                     0
             )
-            if (styledAttrs != null) {
-                val paletteResId = styledAttrs.getResourceId(R.styleable.PaletteView_palette, 0)
-                if (paletteResId != 0) {
-                    paletteArray = context.resources.obtainTypedArray(paletteResId)
-                    (0 until paletteArray.length()).mapTo(palette) {
-                        paletteArray.getColor(it, 0)
-                    }
+            val paletteResId = styledAttrs.getResourceId(R.styleable.PaletteView_palette, 0)
+            if (paletteResId != 0) {
+                paletteArray = context.resources.obtainTypedArray(paletteResId)
+                (0 until paletteArray.length()).mapTo(palette) {
+                    paletteArray.getColor(it, 0)
                 }
             }
         } finally {
