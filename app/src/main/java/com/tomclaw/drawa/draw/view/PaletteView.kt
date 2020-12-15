@@ -120,7 +120,7 @@ class PaletteView(context: Context, attributes: AttributeSet) : View(context, at
     private fun onTouchUp(x: Float, y: Float) {
         val column = ((x - padding) / cellSize).toInt()
         val row = ((y - padding) / cellSize).toInt()
-        if (column in 0..(columns - 1) && row in 0..(rows - 1)) {
+        if (column in 0 until columns && row in 0 until rows) {
             val color = palette[row * columns + column]
             colorClickListener?.onColorClicked(color)
         }
