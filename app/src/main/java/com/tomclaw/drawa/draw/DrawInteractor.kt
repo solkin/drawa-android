@@ -53,7 +53,7 @@ class DrawInteractorImpl(private val recordId: Int,
                                 drawHostHolder.drawHost.bitmap
                         )
                     }
-                    .map { Unit }
+                    .map { }
                     .toObservable()
                     .subscribeOn(schedulers.io())
         }, {
