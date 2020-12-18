@@ -112,7 +112,7 @@ class HistoryImpl(
         }
     }
 
-    override fun load(): Single<Unit> = Single.create<Unit> { emitter ->
+    override fun load(): Single<Unit> = Single.create { emitter ->
         clear()
         var input: DataInputStream? = null
         try {
@@ -160,13 +160,13 @@ class HistoryImpl(
         }
     }
 
-    override fun duplicate(recordId: Int): Single<Unit> = Single.create<Unit> { emitter ->
+    override fun duplicate(recordId: Int): Single<Unit> = Single.create { emitter ->
         val target = historyFile(recordId, filesDir)
         file.copyTo(target = target, overwrite = true)
         emitter.onSuccess(Unit)
     }
 
-    override fun delete(): Single<Unit> = Single.create<Unit> { emitter ->
+    override fun delete(): Single<Unit> = Single.create { emitter ->
         file.delete()
         emitter.onSuccess(Unit)
     }
