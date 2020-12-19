@@ -62,7 +62,7 @@ class HistoryImpl(
 
     override fun undo() {
         if (eventIndex > 0) {
-            while (!events.isEmpty() && events.peek().index == eventIndex) {
+            while (!events.isEmpty() && events.peek()?.index == eventIndex) {
                 events.pop()
             }
             eventIndex--
@@ -80,7 +80,7 @@ class HistoryImpl(
 
     override fun getEvents(): Iterator<Event> = events.descendingIterator()
 
-    override fun save(): Single<Unit> = Single.create<Unit> { emitter ->
+    override fun save(): Single<Unit> = Single.create { emitter ->
         val events = ArrayList(events)
         var output: DataOutputStream? = null
         try {
