@@ -62,7 +62,7 @@ class ImageProviderImpl(
             }
 
     override fun duplicateImage(sourceRecordId: Int, targetRecordId: Int): Single<Unit> = Single
-            .create<Unit> {
+            .create {
                 journal
                         .get(sourceRecordId)
                         .imageFile(filesDir)
