@@ -24,7 +24,7 @@ class EventsProvider(
 
     override fun hasFrame(): Boolean = events().hasNext()
 
-    override fun readFrame(): Event? = events().next()
+    override fun readFrame(): Event = events().next()
 
     override fun getDelay(): Int = 10
 
