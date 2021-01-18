@@ -14,7 +14,6 @@ import com.tomclaw.drawa.util.DataProvider
 import java.io.File
 import javax.inject.Inject
 
-
 class ShareActivity : AppCompatActivity(), SharePresenter.ShareRouter {
 
     @Inject
