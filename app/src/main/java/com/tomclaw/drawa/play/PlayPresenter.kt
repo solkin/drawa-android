@@ -34,8 +34,6 @@ class PlayPresenterImpl(
     private var view: PlayView? = null
     private var router: PlayPresenter.PlayRouter? = null
 
-    private var isReplay: Boolean = false
-
     private val subscriptions = CompositeDisposable()
 
     override fun attachView(view: PlayView) {

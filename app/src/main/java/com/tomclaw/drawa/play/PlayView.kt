@@ -11,7 +11,6 @@ import com.tomclaw.drawa.util.show
 import com.tomclaw.drawa.util.toggle
 import io.reactivex.Observable
 
-
 interface PlayView {
 
     fun navigationClicks(): Observable<Unit>
