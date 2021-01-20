@@ -5,10 +5,12 @@ import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-class ShareItem(val id: Int,
-                @DrawableRes val image: Int,
-                @StringRes val title: Int,
-                @StringRes val description: Int) : Parcelable {
+class ShareItem(
+        val id: Int,
+        @DrawableRes val image: Int,
+        @StringRes val title: Int,
+        @StringRes val description: Int
+) : Parcelable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(id)

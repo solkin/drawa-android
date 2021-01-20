@@ -30,11 +30,13 @@ interface SharePresenter {
 
 }
 
-class SharePresenterImpl(private val interactor: ShareInteractor,
-                         private val dataProvider: DataProvider<ShareItem>,
-                         private val sharePlugins: Set<SharePlugin>,
-                         private val schedulers: SchedulersFactory,
-                         state: Bundle?) : SharePresenter {
+class SharePresenterImpl(
+        private val interactor: ShareInteractor,
+        private val dataProvider: DataProvider<ShareItem>,
+        private val sharePlugins: Set<SharePlugin>,
+        private val schedulers: SchedulersFactory,
+        state: Bundle?
+) : SharePresenter {
 
     private var view: ShareView? = null
     private var router: SharePresenter.ShareRouter? = null
