@@ -5,7 +5,6 @@ import android.graphics.Rect
 import android.util.DisplayMetrics
 import android.view.WindowManager
 
-
 interface MetricsProvider {
 
     /**
