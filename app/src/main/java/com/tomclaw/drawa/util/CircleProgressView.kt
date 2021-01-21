@@ -11,6 +11,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import com.tomclaw.drawa.R
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
  * A subclass of [android.view.View] class for creating a custom circular progressBar
@@ -106,7 +108,7 @@ class CircleProgressView(context: Context, attrs: AttributeSet) : View(context, 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val height = View.getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
         val width = View.getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
-        val min = Math.min(width, height)
+        val min = min(width, height)
         setMeasuredDimension(min, min)
         rectF.set(
                 0 + strokeWidth / 2,
@@ -127,9 +129,9 @@ class CircleProgressView(context: Context, attrs: AttributeSet) : View(context, 
         val r = Color.red(color) * factor
         val g = Color.green(color) * factor
         val b = Color.blue(color) * factor
-        val ir = Math.min(255, r.toInt())
-        val ig = Math.min(255, g.toInt())
-        val ib = Math.min(255, b.toInt())
+        val ir = min(255, r.toInt())
+        val ig = min(255, g.toInt())
+        val ib = min(255, b.toInt())
         val ia = Color.alpha(color)
         return Color.argb(ia, ir, ig, ib)
     }
@@ -143,7 +145,7 @@ class CircleProgressView(context: Context, attrs: AttributeSet) : View(context, 
      * @return int - A transplanted color
      */
     fun adjustAlpha(color: Int, factor: Float): Int {
-        val alpha = Math.round(Color.alpha(color) * factor)
+        val alpha = (Color.alpha(color) * factor).roundToInt()
         val red = Color.red(color)
         val green = Color.green(color)
         val blue = Color.blue(color)
