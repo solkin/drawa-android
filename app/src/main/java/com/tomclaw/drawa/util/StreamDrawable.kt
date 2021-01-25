@@ -20,7 +20,6 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.Semaphore
 import kotlin.math.max
 
-
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 open class StreamDrawable<F>(
         private val bitmap: Bitmap,
