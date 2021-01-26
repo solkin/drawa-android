@@ -22,6 +22,9 @@ import android.view.ScaleGestureDetector
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.OverScroller
 import android.widget.Scroller
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 /*
  * ZoomableImageView allows you to zoom and move bitmap on view with touch effects
@@ -392,17 +395,17 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
                 scaleX = scaleY
             }
             ScaleType.CENTER_CROP -> {
-                scaleY = Math.max(scaleX, scaleY)
+                scaleY = max(scaleX, scaleY)
                 scaleX = scaleY
             }
             ScaleType.CENTER_INSIDE -> {
-                scaleY = Math.min(1.0f, Math.min(scaleX, scaleY))
+                scaleY = min(1.0f, min(scaleX, scaleY))
                 scaleX = scaleY
-                scaleY = Math.min(scaleX, scaleY)
+                scaleY = min(scaleX, scaleY)
                 scaleX = scaleY
             }
             ScaleType.FIT_CENTER -> {
-                scaleY = Math.min(scaleX, scaleY)
+                scaleY = min(scaleX, scaleY)
                 scaleX = scaleY
             }
             ScaleType.FIT_XY -> {
@@ -463,7 +466,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
     private fun setViewSize(mode: Int, size: Int, drawableWidth: Int): Int {
         return when (mode) {
             MeasureSpec.EXACTLY -> size
-            MeasureSpec.AT_MOST -> Math.min(drawableWidth, size)
+            MeasureSpec.AT_MOST -> min(drawableWidth, size)
             MeasureSpec.UNSPECIFIED -> drawableWidth
             else -> size
         }
@@ -486,7 +489,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
                 matrix[axis] = -((imageSize - viewSize) / 2)
             }
             else -> {
-                val percentage = (Math.abs(trans) + prevViewSize / 2) / prevImageSize
+                val percentage = (abs(trans) + prevViewSize / 2) / prevImageSize
                 matrix[axis] = -(percentage * imageSize - viewSize / 2)
             }
         }
@@ -504,7 +507,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
             return false
         } else if (x >= -1 && direction < 0) {
             return false
-        } else if (Math.abs(x) + viewSize.width + 1f >= imageWidth && direction > 0) {
+        } else if (abs(x) + viewSize.width + 1f >= imageWidth && direction > 0) {
             return false
         }
 
@@ -725,7 +728,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
         private fun interpolate(): Float {
             val currTime = System.currentTimeMillis()
             var elapsed = (currTime - startTime) / ZOOM_TIME
-            elapsed = Math.min(1f, elapsed)
+            elapsed = min(1f, elapsed)
             return interpolator.getInterpolation(elapsed)
         }
 
@@ -746,8 +749,8 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
         var finalY = (y - transY) * origH / imageHeight
 
         if (clipToBitmap) {
-            finalX = Math.min(Math.max(finalX, 0f), origW)
-            finalY = Math.min(Math.max(finalY, 0f), origH)
+            finalX = min(max(finalX, 0f), origW)
+            finalY = min(max(finalY, 0f), origH)
         }
 
         return PointF(finalX, finalY)
