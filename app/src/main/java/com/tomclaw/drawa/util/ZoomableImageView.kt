@@ -675,11 +675,12 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
         fixScaleTrans()
     }
 
-    private inner class DoubleTapZoom internal constructor(
+    private inner class DoubleTapZoom(
             private val targetZoom: Float,
             focusX: Float,
             focusY: Float,
-            private val stretchImageToSuper: Boolean) : Runnable {
+            private val stretchImageToSuper: Boolean
+    ) : Runnable {
 
         private val startTime: Long
         private val startZoom: Float
@@ -767,11 +768,11 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
         return PointF(finalX, finalY)
     }
 
-    private inner class Fling internal constructor(velocityX: Int, velocityY: Int) : Runnable {
+    private inner class Fling(velocityX: Int, velocityY: Int) : Runnable {
 
-        internal var scroller: CompatScroller? = null
-        internal var currX: Int = 0
-        internal var currY: Int = 0
+        var scroller: CompatScroller? = null
+        var currX: Int = 0
+        var currY: Int = 0
 
         init {
             state = State.FLING
@@ -841,9 +842,9 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
     @TargetApi(VERSION_CODES.GINGERBREAD)
     private inner class CompatScroller(context: Context) {
 
-        internal lateinit var scroller: Scroller
-        internal var overScroller: OverScroller
-        internal var isPreGingerbread: Boolean = false
+        lateinit var scroller: Scroller
+        var overScroller: OverScroller
+        var isPreGingerbread: Boolean = false
 
         val currX: Int
             get() {
