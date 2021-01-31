@@ -163,8 +163,9 @@ class NeuQuant {
     public byte[] colorMap() {
         byte[] map = new byte[3 * netsize];
         int[] index = new int[netsize];
-        for (int i = 0; i < netsize; i++)
+        for (int i = 0; i < netsize; i++) {
             index[network[i][3]] = i;
+        }
         int k = 0;
         for (int i = 0; i < netsize; i++) {
             int j = index[i];
@@ -228,8 +229,9 @@ class NeuQuant {
             }
         }
         netindex[previouscol] = (startpos + maxnetpos) >> 1;
-        for (j = previouscol + 1; j < 256; j++)
+        for (j = previouscol + 1; j < 256; j++) {
             netindex[j] = maxnetpos; /* really 256 */
+        }
     }
 
     /*
@@ -242,8 +244,9 @@ class NeuQuant {
         byte[] p;
         int pix, lim;
 
-        if (lengthcount < minpicturebytes)
+        if (lengthcount < minpicturebytes) {
             samplefac = 1;
+        }
         alphadec = 30 + ((samplefac - 1) / 3);
         p = thepicture;
         pix = 0;
@@ -254,25 +257,28 @@ class NeuQuant {
         radius = initradius;
 
         rad = radius >> radiusbiasshift;
-        if (rad <= 1)
+        if (rad <= 1) {
             rad = 0;
-        for (i = 0; i < rad; i++)
+        }
+        for (i = 0; i < rad; i++) {
             radpower[i] = alpha * (((rad * rad - i * i) * radbias) / (rad * rad));
+        }
 
         // fprintf(stderr,"beginning 1D learning: initial radius=%d\n", rad);
 
-        if (lengthcount < minpicturebytes)
+        if (lengthcount < minpicturebytes) {
             step = 3;
-        else if ((lengthcount % prime1) != 0)
+        } else if ((lengthcount % prime1) != 0) {
             step = 3 * prime1;
-        else {
-            if ((lengthcount % prime2) != 0)
+        } else {
+            if ((lengthcount % prime2) != 0) {
                 step = 3 * prime2;
-            else {
-                if ((lengthcount % prime3) != 0)
+            } else {
+                if ((lengthcount % prime3) != 0) {
                     step = 3 * prime3;
-                else
+                } else {
                     step = 3 * prime4;
+                }
             }
         }
 
@@ -434,7 +440,7 @@ class NeuQuant {
                     p[0] -= (a * (p[0] - b)) / alpharadbias;
                     p[1] -= (a * (p[1] - g)) / alpharadbias;
                     p[2] -= (a * (p[2] - r)) / alpharadbias;
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 } // prevents 1.3 miscompilation
             }
             if (k > lo) {
@@ -443,7 +449,7 @@ class NeuQuant {
                     p[0] -= (a * (p[0] - b)) / alpharadbias;
                     p[1] -= (a * (p[1] - g)) / alpharadbias;
                     p[2] -= (a * (p[2] - r)) / alpharadbias;
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }
