@@ -23,8 +23,10 @@ interface StockInteractor {
 
 }
 
-class StockInteractorImpl(private val journal: Journal,
-                          private val schedulers: SchedulersFactory) : StockInteractor {
+class StockInteractorImpl(
+        private val journal: Journal,
+        private val schedulers: SchedulersFactory
+) : StockInteractor {
 
     override fun create() = journal.create()
 

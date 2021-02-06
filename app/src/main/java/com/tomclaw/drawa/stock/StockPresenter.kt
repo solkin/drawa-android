@@ -31,11 +31,13 @@ interface StockPresenter {
 
 }
 
-class StockPresenterImpl(private val interactor: StockInteractor,
-                         private val dataProvider: DataProvider<StockItem>,
-                         private val recordConverter: RecordConverter,
-                         private val schedulers: SchedulersFactory,
-                         state: Bundle?) : StockPresenter {
+class StockPresenterImpl(
+        private val interactor: StockInteractor,
+        private val dataProvider: DataProvider<StockItem>,
+        private val recordConverter: RecordConverter,
+        private val schedulers: SchedulersFactory,
+        state: Bundle?
+) : StockPresenter {
 
     private var view: StockView? = null
     private var router: StockPresenter.StockRouter? = null
