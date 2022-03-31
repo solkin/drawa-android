@@ -55,6 +55,7 @@ class StockActivity : AppCompatActivity(), StockPresenter.StockRouter {
         outState.putBundle(KEY_PRESENTER_STATE, presenter.saveState())
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_DRAW -> {

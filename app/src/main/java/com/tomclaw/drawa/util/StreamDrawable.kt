@@ -296,6 +296,7 @@ open class StreamDrawable<F>(
         paint.colorFilter = colorFilter
     }
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int {
         return PixelFormat.TRANSPARENT
     }
