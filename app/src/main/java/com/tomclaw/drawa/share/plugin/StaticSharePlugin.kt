@@ -16,10 +16,10 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 class StaticSharePlugin(
-        recordId: Int,
-        journal: Journal,
-        imageProvider: ImageProvider,
-        private val cache: DiskLruCache
+    recordId: Int,
+    journal: Journal,
+    imageProvider: ImageProvider,
+    private val cache: DiskLruCache
 ) : SharePlugin {
 
     override val weight: Int
@@ -34,29 +34,29 @@ class StaticSharePlugin(
         get() = Single.just(1f).toObservable()
 
     override val operation: Single<ShareResult> = journal.load()
-            .map { journal.get(recordId) }
-            .flatMap { record ->
-                val key = "static-${record.uniqueKey()}"
-                val cached = cache.get(key)
-                if (cached != null) {
-                    Single.just(ShareResult(cached, MIME_TYPE))
-                } else {
-                    imageProvider.readImage(recordId)
-                            .map { bitmap ->
-                                val imageFile: File = createTempFile("stat", ".jpg")
-                                var stream: OutputStream? = null
-                                try {
-                                    stream = FileOutputStream(imageFile)
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
-                                } finally {
-                                    stream.safeClose()
-                                }
-                                val file = cache.put(key, imageFile)
-                                ShareResult(file, MIME_TYPE)
-                            }
-                }
+        .map { journal.get(recordId) }
+        .flatMap { record ->
+            val key = "static-${record.uniqueKey()}"
+            val cached = cache.get(key)
+            if (cached != null) {
+                Single.just(ShareResult(cached, MIME_TYPE))
+            } else {
+                imageProvider.readImage(recordId)
+                    .map { bitmap ->
+                        val imageFile: File = createTempFile("stat", ".png")
+                        var stream: OutputStream? = null
+                        try {
+                            stream = FileOutputStream(imageFile)
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+                        } finally {
+                            stream.safeClose()
+                        }
+                        val file = cache.put(key, imageFile)
+                        ShareResult(file, MIME_TYPE)
+                    }
             }
+        }
 
 }
 
-private const val MIME_TYPE = "image/jpeg"
+private const val MIME_TYPE = "image/png"

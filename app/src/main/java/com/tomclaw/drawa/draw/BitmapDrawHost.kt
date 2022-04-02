@@ -11,15 +11,15 @@ import com.tomclaw.drawa.core.BITMAP_WIDTH
 class BitmapDrawHost(width: Int = BITMAP_WIDTH, height: Int = BITMAP_HEIGHT) : BitmapHost {
 
     private val hiddenBitmap: Bitmap = Bitmap.createBitmap(
-            width,
-            height,
-            Bitmap.Config.ARGB_8888
+        width,
+        height,
+        Bitmap.Config.ARGB_8888
     )
 
     override val normalBitmap: Bitmap = Bitmap.createBitmap(
-            width,
-            height,
-            Bitmap.Config.ARGB_8888
+        width,
+        height,
+        Bitmap.Config.ARGB_8888
     )
 
     private val hiddenCanvas: Canvas = Canvas(hiddenBitmap)
@@ -41,6 +41,7 @@ class BitmapDrawHost(width: Int = BITMAP_WIDTH, height: Int = BITMAP_HEIGHT) : B
     override var hidden = false
         set(value) {
             if (!value) {
+                normalBitmap.eraseColor(Color.TRANSPARENT)
                 normalCanvas.drawBitmap(hiddenBitmap, src, src, paint)
             }
             field = value
@@ -57,7 +58,7 @@ class BitmapDrawHost(width: Int = BITMAP_WIDTH, height: Int = BITMAP_HEIGHT) : B
     }
 
     override fun clearBitmap() {
-        canvas.drawColor(Color.WHITE)
+        bitmap.eraseColor(Color.TRANSPARENT)
     }
 
 }

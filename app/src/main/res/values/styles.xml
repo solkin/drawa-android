@@ -12,6 +12,8 @@
     <color name="color_black">#000000</color>
     <color name="color_semitransparent_black">#cc000000</color>
     <color name="color_white">#ffffff</color>
+    <color name="transparent_chess_light">#fff2f3f2</color>
+    <color name="transparent_chess_dark">#ffe6e7e8</color>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/color_primary</item>

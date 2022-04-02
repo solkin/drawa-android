@@ -6,4 +6,5 @@
     <dimen name="tunes_height">60dp</dimen>
     <dimen name="buttons_height">48dp</dimen>
     <dimen name="buttons_divider_height">28dp</dimen>
+    <dimen name="transparent_chess_size">22dp</dimen>
 </resources>
