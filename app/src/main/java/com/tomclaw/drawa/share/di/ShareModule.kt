@@ -17,6 +17,7 @@ import com.tomclaw.drawa.share.SharePresenter
 import com.tomclaw.drawa.share.SharePresenterImpl
 import com.tomclaw.drawa.share.plugin.AnimSharePlugin
 import com.tomclaw.drawa.share.plugin.StaticSharePlugin
+import com.tomclaw.drawa.share.plugin.VideoSharePlugin
 import com.tomclaw.drawa.util.DataProvider
 import com.tomclaw.drawa.util.Logger
 import com.tomclaw.drawa.util.MetricsProvider
@@ -29,31 +30,32 @@ import java.io.File
 
 @Module
 class ShareModule(
-        private val recordId: Int,
-        private val presenterState: Bundle?
+    private val recordId: Int,
+    private val presenterState: Bundle?
 ) {
 
     @Provides
     @PerActivity
-    fun provideSharePresenter(interactor: ShareInteractor,
-                              dataProvider: DataProvider<ShareItem>,
-                              sharePlugins: Set<@JvmSuppressWildcards SharePlugin>,
-                              schedulers: SchedulersFactory
+    fun provideSharePresenter(
+        interactor: ShareInteractor,
+        dataProvider: DataProvider<ShareItem>,
+        sharePlugins: Set<@JvmSuppressWildcards SharePlugin>,
+        schedulers: SchedulersFactory
     ): SharePresenter {
         return SharePresenterImpl(
-                interactor,
-                dataProvider,
-                sharePlugins,
-                schedulers,
-                presenterState
+            interactor,
+            dataProvider,
+            sharePlugins,
+            schedulers,
+            presenterState
         )
     }
 
     @Provides
     @PerActivity
     fun provideShareInteractor(
-            history: History,
-            schedulers: SchedulersFactory
+        history: History,
+        schedulers: SchedulersFactory
     ): ShareInteractor {
         return ShareInteractorImpl(history, schedulers)
     }
@@ -73,30 +75,52 @@ class ShareModule(
     @Provides
     @IntoSet
     fun provideAnimSharePlugin(
-            toolProvider: ToolProvider,
-            metricsProvider: MetricsProvider,
-            journal: Journal,
-            history: History,
-            drawHost: DrawHost,
-            cache: DiskLruCache
+        toolProvider: ToolProvider,
+        metricsProvider: MetricsProvider,
+        journal: Journal,
+        history: History,
+        drawHost: DrawHost,
+        cache: DiskLruCache
     ): SharePlugin {
         return AnimSharePlugin(
-                recordId,
-                toolProvider,
-                metricsProvider,
-                journal,
-                history,
-                drawHost,
-                cache
+            recordId,
+            toolProvider,
+            metricsProvider,
+            journal,
+            history,
+            drawHost,
+            cache
+        )
+    }
+
+    @Provides
+    @IntoSet
+    fun provideVideoSharePlugin(
+        toolProvider: ToolProvider,
+        metricsProvider: MetricsProvider,
+        journal: Journal,
+        history: History,
+        drawHost: DrawHost,
+        cache: DiskLruCache
+    ): SharePlugin {
+        return VideoSharePlugin(
+            recordId,
+            toolProvider,
+            metricsProvider,
+            journal,
+            history,
+            drawHost,
+            cache
         )
     }
 
     @Provides
     @IntoSet
     fun provideStaticSharePlugin(
-            journal: Journal,
-            imageProvider: ImageProvider,
-            cache: DiskLruCache): SharePlugin {
+        journal: Journal,
+        imageProvider: ImageProvider,
+        cache: DiskLruCache
+    ): SharePlugin {
         return StaticSharePlugin(recordId, journal, imageProvider, cache)
     }
 
