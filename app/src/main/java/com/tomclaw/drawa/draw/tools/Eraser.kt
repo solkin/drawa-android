@@ -1,7 +1,12 @@
 package com.tomclaw.drawa.draw.tools
 
+import android.graphics.Color
+import android.graphics.MaskFilter
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.PathEffect
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 
 class Eraser : Tool() {
 
@@ -22,6 +27,7 @@ class Eraser : Tool() {
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
         color = ERASER_COLOR
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
     }
 
     override fun onTouchDown(x: Int, y: Int) {
@@ -47,10 +53,10 @@ class Eraser : Tool() {
             path.lineTo(x + 0.1f, y.toFloat())
         } else {
             path.quadTo(
-                    prevX.toFloat(),
-                    prevY.toFloat(),
-                    ((x + prevX) / 2).toFloat(),
-                    ((y + prevY) / 2).toFloat()
+                prevX.toFloat(),
+                prevY.toFloat(),
+                ((x + prevX) / 2).toFloat(),
+                ((y + prevY) / 2).toFloat()
             )
         }
 
@@ -78,4 +84,4 @@ class Eraser : Tool() {
 
 }
 
-const val ERASER_COLOR = -0x1
+const val ERASER_COLOR = Color.TRANSPARENT

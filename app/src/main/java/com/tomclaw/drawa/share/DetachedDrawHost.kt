@@ -32,7 +32,7 @@ class DetachedDrawHost(width: Int, height: Int) : DrawHost, BitmapHost by Bitmap
     }
 
     override fun clearBitmap() {
-        canvas.drawColor(Color.WHITE)
+        canvas.drawColor(Color.TRANSPARENT)
     }
 
 }
