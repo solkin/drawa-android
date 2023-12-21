@@ -64,6 +64,7 @@ class DrawActivity : AppCompatActivity(), DrawPresenter.DrawRouter {
     }
 
     override fun onBackPressed() {
+        super.onBackPressed()
         presenter.onBackPressed()
     }
 

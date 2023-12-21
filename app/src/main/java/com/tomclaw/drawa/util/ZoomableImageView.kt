@@ -584,7 +584,12 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
             performLongClick()
         }
 
-        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+        override fun onFling(
+            e1: MotionEvent?,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
             fling?.cancelFling()
             fling = Fling(velocityX.toInt(), velocityY.toInt())
             fling?.let {
