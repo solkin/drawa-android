@@ -51,10 +51,6 @@
         <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Dark</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
-
     <style name="CardViewStyle.Light" parent="CardView">
         <item name="cardBackgroundColor">@color/color_white</item>
     </style>

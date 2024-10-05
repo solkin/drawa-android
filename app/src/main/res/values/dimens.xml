@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="toolbar_shadow_size">5dp</dimen>
-    <dimen name="popup_width">50dp</dimen>
-    <dimen name="popup_height">180dp</dimen>
     <dimen name="tunes_height">60dp</dimen>
-    <dimen name="buttons_height">48dp</dimen>
-    <dimen name="buttons_divider_height">28dp</dimen>
     <dimen name="transparent_chess_size">22dp</dimen>
 </resources>
