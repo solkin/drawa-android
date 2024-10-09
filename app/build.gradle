@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId "com.tomclaw.drawa"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 34
         versionCode project.hasProperty("versionCode") ? Integer.parseInt(project.versionCode) : 1
         versionName "1.0"
